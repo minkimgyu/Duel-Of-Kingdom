@@ -23,6 +23,14 @@ public class MeleeAttackComponent : AttackComponent
     [SerializeField] private float _maxDistance = 20.0f;
     [SerializeField] Transform rayStartPoint;
 
+    public override void Attack(float damage)
+    {
+        // 레이케스트 방식이 아니라 오브젝트에 직접 데미지를 입히는 방식을 채용해보자
+        Debug.Log("Attack");
+        _animator.SetTrigger("NowAttack");
+        _isFinish = true;
+    }
+
     public override void Attack(Vector3 targetDir, float damage)
     {
         // 레이케스트 방식이 아니라 오브젝트에 직접 데미지를 입히는 방식을 채용해보자

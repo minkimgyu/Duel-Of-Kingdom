@@ -10,6 +10,10 @@ namespace WPP.Battle
         [SerializeField] private CrownSystem _crownSystem;
         [Header("Elixir System")]
         [SerializeField] private ElixirSystem _elixirSystem;
+
+        public TowerSystem Tower => _towerSystem;
+        public CrownSystem Crown => _crownSystem;
+        public ElixirSystem Elixir => _elixirSystem;
     }
 }
 

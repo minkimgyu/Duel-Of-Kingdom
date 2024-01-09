@@ -12,6 +12,7 @@ namespace WPP.Battle
         public event System.Action<float, float> OnTimerUpdate;
         public event System.Action OnTimerEnd;
 
+
         public void StartTimer(float length)
         {
             _timerLength = length;
@@ -37,6 +38,8 @@ namespace WPP.Battle
         {
             throw new System.NotImplementedException();
         }
+
+        public float TimeLeft => Mathf.Clamp(_timerLength - _elapsedTime, 0, _timerLength);
 
         private bool _isPaused;
         private float _timerLength;

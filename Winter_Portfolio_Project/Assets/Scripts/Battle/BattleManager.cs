@@ -11,6 +11,16 @@ namespace WPP.Battle
         [SerializeField] private float _battleLength = 3f;
         [SerializeField] private float _overtimeLength = 2f;
 
+        [Header("Player")]
+        [SerializeField] private BattlePlayer _player;
+        [SerializeField] private BattlePlayer _opponent;
+
+        [Header("Elixir System")]
+        //[SerializeField] private ElixirTimer _playerElixirTimer;
+        [SerializeField] private float _battleRegenRate = 2.8f;
+        [SerializeField] private float _overtimeRegenRate1 = 1.4f;
+        [SerializeField] private float _overtimeRegenRate2 = 0.9f;
+
         public enum Status
         {
             PreBattle,
@@ -45,6 +55,11 @@ namespace WPP.Battle
             _fsm.OnFsmStep(FsmStep.Enter);
         }
 
+        private void Update()
+        {
+            _fsm.OnFsmStep(FsmStep.Update);
+        }
+
         public void StartBattle()
         {
             if(_status == Status.PreBattle)
@@ -65,6 +80,9 @@ namespace WPP.Battle
             {
                 _battleTimer.StartTimer(_battleLength * 60);
                 _battleTimer.OnTimerEnd += TransitionToOvertime;
+
+                _player.Elixir.SetElixirRegenTime(_battleRegenRate);
+                _player.Elixir.StartRegen();
             }
             else if(step == FsmStep.Exit)
             {
@@ -78,17 +96,33 @@ namespace WPP.Battle
             }
         }
 
+        private bool _isOvertimeSecondHalf = false;
         private void Overtime(Fsm<Status> fsm, FsmStep step)
         {
             if(step == FsmStep.Enter)
             {
                 _battleTimer.StartTimer(_overtimeLength * 60);
                 _battleTimer.OnTimerEnd += TransitionToTiebreaker;
+
+                _player.Elixir.SetElixirRegenTime(_overtimeRegenRate1);
+            }
+            else if(step == FsmStep.Update)
+            {
+                if (!_isOvertimeSecondHalf)
+                {
+                    if (_battleTimer.TimeLeft <= _overtimeLength * 60f * 0.5f)
+                    {
+                        _player.Elixir.SetElixirRegenTime(_overtimeRegenRate2);
+                        _isOvertimeSecondHalf = true;
+                    }
+                }
             }
             else if (step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
                 _battleTimer.OnTimerEnd -= TransitionToTiebreaker;
+
+                _player.Elixir.StopRegen();
             }
 
             void TransitionToTiebreaker()

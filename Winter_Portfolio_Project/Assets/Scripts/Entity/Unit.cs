@@ -4,7 +4,7 @@ using UnityEngine;
 using BehaviorTree;
 using Tree = BehaviorTree.Tree;
 
-public class GroundEntity : Entity
+public class GroundUnit : Unit
 {
     protected override void Start()
     {
@@ -13,7 +13,7 @@ public class GroundEntity : Entity
     }
 }
 
-public class Entity : MonoBehaviour
+public class Unit : Entity
 {
     // 기본적인 겹치는 기능은 여기서 구현
 
@@ -32,6 +32,8 @@ public class Entity : MonoBehaviour
     protected CaptureComponent _captureComponent;
 
     protected List<Vector3> _posListForDrawingGizmo = new List<Vector3>(); // 이거는 BT에서 지정해주기
+
+    
 
     // Start is called before the first frame update
     protected virtual void Start()

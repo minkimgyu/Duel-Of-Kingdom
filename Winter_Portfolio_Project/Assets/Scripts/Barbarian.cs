@@ -5,7 +5,7 @@ using BehaviorTree;
 using System;
 using Tree = BehaviorTree.Tree;
 
-public class Barbarian : GroundEntity
+public class Barbarian : GroundUnit
 {
     MeleeAttackComponent _meleeAttackComponent;
 
@@ -33,7 +33,7 @@ public class Barbarian : GroundEntity
                     (
                         new List<Node>
                         {
-                            new CanFindTarget(_captureComponent),
+                            new CanFindTarget(_captureComponent), // 만약 타겟이 없다면 타워를 타겟으로 지정해준다.
                             new Selector
                             (
                                 new List<Node>
@@ -46,10 +46,20 @@ public class Barbarian : GroundEntity
                                             (
                                                 new List<Node>
                                                 {
-                                                    new IsNearAndDelayForAttack(_captureComponent, 1.5f, _meleeAttackComponent), // DelayForAttack도 넣어주기
+                                                    new CheckIsNearAndCancelAttackWhenExit(_captureComponent, 1.5f, 0.3f, _meleeAttackComponent), // DelayForAttack도 넣어주기
 
                                                     new StopAndLookAtTarget(_captureComponent, _moveComponent),
-                                                    new Attack(_meleeAttackComponent),
+
+                                                    new Sequence
+                                                    (
+                                                        new List<Node>
+                                                        {
+                                                            new DelayForAttack(_meleeAttackComponent), // 딜레이 확인
+                                                            new Attack(_meleeAttackComponent)
+                                                        }
+                                                    ),
+
+                                                    
                                                     // 공격 진행
                                                     // 만약 공격이 진행 중인 경우 거리가 멀어져도 계속 진행
                                                 }
@@ -58,7 +68,7 @@ public class Barbarian : GroundEntity
                                             (
                                                 new List<Node>
                                                 {
-                                                    new IsNear(_captureComponent, 2.5f),
+                                                    new CheckIsNear(_captureComponent, 2.5f),
                                                     new GoDirectToPoint(_captureComponent, _moveComponent, ResetPosListForDrawingGizmo, IsPosListEmpty)
                                                 }
                                             )
@@ -81,17 +91,36 @@ public class Barbarian : GroundEntity
 
 public class Attack : Node // 좀 멀면 FindPath, 가까우면 GoDirectToPoint로 노드를 2개로 구분해주기
 {
+    Timer _delayTimer;
     AttackComponent _attackComponent;
-    float damage = 10;
+    CaptureComponent _captureComponent;
 
-    public Attack(AttackComponent attackComponent)
+    float damage = 10;
+    float _damageApplyDelay;
+
+    public Attack(AttackComponent attackComponent, CaptureComponent captureComponent, float damageApplyDelay)
     {
         _attackComponent = attackComponent;
+        _delayTimer = new Timer();
+
+        _damageApplyDelay = damageApplyDelay;
+        _captureComponent = captureComponent;
     }
 
     public override NodeState Evaluate()
     {
-        _attackComponent.Attack(damage);
+        _delayTimer.Update();
+
+        if(_delayTimer.IsRunning == false) _delayTimer.Start(_damageApplyDelay); // 이만큼 딜레이를 시켜줌
+
+        if (_delayTimer.IsFinish == true)
+        {
+            // 타겟 찾아서 공격
+            Transform target = _captureComponent.ReturnTarget();
+            _attackComponent.Attack(target, damage);
+            _delayTimer.Reset();
+        }
+        
         return NodeState.SUCCESS;
     }
 }
@@ -116,35 +145,86 @@ public class CanFindTarget : Node // 좀 멀면 FindPath, 가까우면 GoDirectToPoint�
 
 abstract public class CheckDistance : Node // 좀 멀면 FindPath, 가까우면 GoDirectToPoint로 노드를 2개로 구분해주기
 {
-    float _nearDistance;
+    float _offsetDistance;
+    protected float _nearDistance;
+
+    float Distance { get { return _nearDistance + _offsetDistance; } }
+
     CaptureComponent _captureComponent;
 
-    public CheckDistance(CaptureComponent captureComponent, float nearDistance)
+    public CheckDistance(CaptureComponent captureComponent, float nearDistance, float offsetDistance = 0)
     {
         _captureComponent = captureComponent;
         _nearDistance = nearDistance;
+        _offsetDistance = offsetDistance;
     }
 
-    protected bool NowEnoughClose()
+    protected bool NowEnoughClose(bool useOffset = false)
     {
         Transform target = _captureComponent.ReturnTarget();
 
         float distance = Vector3.Distance(_captureComponent.transform.position, target.position);
-        if (distance <= _nearDistance) return true;
 
-        return false;
+        if(useOffset == true)
+        {
+            if (distance <= Distance) return true;
+            return false;
+        }
+        else
+        {
+            if (distance <= _nearDistance) return true;
+            return false;
+        }
     }
 }
 
-public class IsNearAndDelayForAttack : CheckDistance
+/// <summary>
+/// 가까워지면 SUCCESS를 반환해줌. 한번 SUCCESS를 반환해줬다면 FAILURE을 반환하는 거리가 길어짐
+/// </summary>
+public class CheckIsNearAndCancelAttackWhenExit : CheckDistance
+{
+    bool _isNearBefore = false; // 이전에 한번 가까워졌던 경우
+    AttackComponent _attackComponent;
+
+    public CheckIsNearAndCancelAttackWhenExit(CaptureComponent captureComponent, float nearDistance, float offsetDistance, AttackComponent attackComponent) : base(captureComponent, nearDistance, offsetDistance) 
+    {
+        _attackComponent = attackComponent;
+    }
+
+    public override NodeState Evaluate()
+    {
+        bool isClose = false;
+
+        // 이전에 실행된 경우는 다음과 같이 Exit 거리를 길게 잡아준다.
+        if (_isNearBefore == true) isClose = NowEnoughClose(true);
+        else isClose = NowEnoughClose();
+
+        if(isClose == true)
+        {
+            if(_isNearBefore == false) _isNearBefore = true;
+            return NodeState.SUCCESS;
+        }
+
+        if(_isNearBefore == true && isClose == false)
+        {
+            _isNearBefore = false; // 만약 이전에 실행된 경우인데 범위 밖으로 나가게 될 경우
+            _attackComponent.CancelAttack = true; // 공격 취소해주기
+            _attackComponent.CancelAttackAnimation(); // 애니메이션 캔슬해주기
+        }
+
+        return NodeState.FAILURE;
+    }
+}
+
+public class DelayForAttack : Node
 {
     // IsNear의 경우 SUCCESS 반환
     // DelayForAttack의 경우 Running 반환
     Timer _delayTimer;
-    AttackComponent _attackComponent;
+    AttackComponent _attackComponent; // AttackComponent 내로 Delay를 빼준다.
     float _attackDelay = 2.5f;
 
-    public IsNearAndDelayForAttack(CaptureComponent captureComponent, float nearDistance, AttackComponent attackComponent) : base(captureComponent, nearDistance) 
+    public DelayForAttack(AttackComponent attackComponent)
     {
         _attackComponent = attackComponent;
         _delayTimer = new Timer();
@@ -154,27 +234,33 @@ public class IsNearAndDelayForAttack : CheckDistance
     {
         _delayTimer.Update();
 
-        if(_attackComponent.IsFinish == true)
+        if(_attackComponent.CancelAttack == true) // 다른 곳에서 공격이 캔슬이 난 경우
+        {
+            _attackComponent.CancelAttack = false;
+            _delayTimer.Reset(); // 타이머 리셋 후 Success 리턴
+            return NodeState.SUCCESS;
+        }
+
+        if (_attackComponent.IsFinish == true)
         {
             _delayTimer.Start(_attackDelay);
             _attackComponent.IsFinish = false;
         }
 
-        if(_delayTimer.IsRunning)
+        if (_delayTimer.IsRunning)
         {
             return NodeState.RUNNING;
         }
 
         if (_delayTimer.IsFinish) _delayTimer.Reset();
 
-        if (NowEnoughClose()) return NodeState.SUCCESS;
-        return NodeState.FAILURE;
+        return NodeState.SUCCESS;
     }
 }
 
-public class IsNear : CheckDistance
+public class CheckIsNear : CheckDistance
 {
-    public IsNear(CaptureComponent captureComponent, float nearDistance) : base(captureComponent, nearDistance) { }
+    public CheckIsNear(CaptureComponent captureComponent, float nearDistance) : base(captureComponent, nearDistance) { }
 
     public override NodeState Evaluate()
     {

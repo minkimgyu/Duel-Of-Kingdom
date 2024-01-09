@@ -2728,7 +2728,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Set Regen Rate
+  m_text: Set Regen Time
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5538,6 +5538,11 @@ MonoBehaviour:
   _battleTimer: {fileID: 303761429}
   _battleLength: 3
   _overtimeLength: 2
+  _player: {fileID: 510489111}
+  _opponent: {fileID: 2020809561}
+  _battleRegenRate: 2.8
+  _overtimeRegenRate1: 1.4
+  _overtimeRegenRate2: 0.9
 --- !u!4 &1605224475
 Transform:
   m_ObjectHideFlags: 0

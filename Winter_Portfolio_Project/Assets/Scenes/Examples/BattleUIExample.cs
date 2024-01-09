@@ -24,11 +24,11 @@ namespace WPP.Battle.Example
         [SerializeField] private BattleManager _battleManager;
         [SerializeField] private TextMeshProUGUI _statusText;
         [SerializeField] private Button _startButton;
-
+        [Space]
         [Header("Timer")]
         [SerializeField] private BattleTimer _battleTimer;
         [SerializeField] private TextMeshProUGUI _timerText;
-        
+        [Space]
         [Header("Player Tower")]
         [SerializeField] private TowerSystem _playerTowerSystem;
         [SerializeField] private TowerUIGroup _playerCT1;
@@ -39,7 +39,13 @@ namespace WPP.Battle.Example
         [SerializeField] private TowerUIGroup _opponentCT1;
         [SerializeField] private TowerUIGroup _opponentCT2;
         [SerializeField] private TowerUIGroup _opponentKT;
-
+        [Space]
+        [Header("Elixir System")]
+        [SerializeField] private ElixirSystem _playerElixirSystem;
+        [SerializeField] private TextMeshProUGUI _elixirText;
+        [SerializeField] private Button _multiplyRate;
+        [SerializeField] private Button _divideRate;
+        [SerializeField] private Button[] _spendElixir;
 
         private void OnEnable()
         {
@@ -65,6 +71,18 @@ namespace WPP.Battle.Example
             SubscribeTowerEvent(_opponentCT1);
             SubscribeTowerEvent(_opponentCT2);
             SubscribeTowerEvent(_opponentKT);
+
+            // Elixir System
+            _playerElixirSystem.OnElixirCountChange += SetElixirText;
+
+            _multiplyRate.onClick.AddListener(() => _playerElixirSystem.SetElixirRegenTime(_playerElixirSystem.ElixirRegenTime * 2));
+            _divideRate.onClick.AddListener(() => _playerElixirSystem.SetElixirRegenTime(_playerElixirSystem.ElixirRegenTime / 2));
+
+            for(int i = 0; i < 3; i++)
+            {
+                int index = i;
+                _spendElixir[i].onClick.AddListener(() => _playerElixirSystem.SpendElixir(index * 2 + 1));
+            }
         }
 
         private void OnDisable()
@@ -90,6 +108,15 @@ namespace WPP.Battle.Example
             UnsubscribeTowerEvent(_opponentCT2);
             UnsubscribeTowerEvent(_opponentKT);
 
+            _playerElixirSystem.OnElixirCountChange -= SetElixirText;
+
+            _multiplyRate.onClick.RemoveAllListeners();
+            _divideRate.onClick.RemoveAllListeners();
+
+            for (int i = 0; i < 3; i++)
+            {
+                _spendElixir[i].onClick.RemoveAllListeners();
+            }
         }
 
         private void SetStatusText(BattleManager.Status status)
@@ -126,6 +153,12 @@ namespace WPP.Battle.Example
         {
             towerUIGroup.tower.OnDamaged -= towerUIGroup.OnDamaged;
             towerUIGroup.tower.OnDestroyed -= towerUIGroup.OnDestroyed;
+        }
+    
+        private void SetElixirText(int elixir)
+        {
+            print(elixir);
+            _elixirText.text = $"{elixir}/{_playerElixirSystem.MaxElixirCount}";
         }
     }
 }

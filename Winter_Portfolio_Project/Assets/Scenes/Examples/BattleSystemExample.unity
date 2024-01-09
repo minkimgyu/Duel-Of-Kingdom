@@ -815,6 +815,14 @@ MonoBehaviour:
     tower: {fileID: 1857808263}
     hpText: {fileID: 1486009743}
     damageButton: {fileID: 1103879796}
+  _playerElixirSystem: {fileID: 510489113}
+  _elixirText: {fileID: 413078487}
+  _multiplyRate: {fileID: 129222191}
+  _divideRate: {fileID: 1863703939}
+  _spendElixir:
+  - {fileID: 319285179}
+  - {fileID: 1603482262}
+  - {fileID: 1927901409}
 --- !u!1 &187234055
 GameObject:
   m_ObjectHideFlags: 0
@@ -2576,6 +2584,8 @@ GameObject:
   - component: {fileID: 510489110}
   - component: {fileID: 510489111}
   - component: {fileID: 510489112}
+  - component: {fileID: 510489114}
+  - component: {fileID: 510489113}
   m_Layer: 0
   m_Name: BattlePlayer (Me)
   m_TagString: Untagged
@@ -2614,6 +2624,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _towerSystem: {fileID: 510489112}
+  _crownSystem: {fileID: 510489114}
+  _elixirSystem: {fileID: 510489113}
 --- !u!114 &510489112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2630,6 +2642,33 @@ MonoBehaviour:
   - {fileID: 392204706}
   - {fileID: 2090687784}
   _kingTower: {fileID: 798263535}
+--- !u!114 &510489113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510489109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8facebe49a1639d429068bd5866c4a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _startElixir: 5
+  _maxElixir: 10
+  _startElixirRegenTime: 2.8
+--- !u!114 &510489114
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 510489109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c733337683686fc4b94334aa66054b41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &514636439
 GameObject:
   m_ObjectHideFlags: 0
@@ -3024,7 +3063,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: -1
+  m_text: /2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3461,7 +3500,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +1
+  m_text: x2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -6450,6 +6489,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _towerSystem: {fileID: 2020809560}
+  _crownSystem: {fileID: 0}
+  _elixirSystem: {fileID: 0}
 --- !u!4 &2020809562
 Transform:
   m_ObjectHideFlags: 0

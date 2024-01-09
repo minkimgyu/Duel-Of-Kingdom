@@ -157,7 +157,6 @@ namespace WPP.Battle.Example
     
         private void SetElixirText(int elixir)
         {
-            print(elixir);
             _elixirText.text = $"{elixir}/{_playerElixirSystem.MaxElixirCount}";
         }
     }

@@ -1,0 +1,17 @@
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.exe.config
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.exe
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.pdb
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.AssemblyReference.cache
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.CoreCompileInputs.cache
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.exe
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.pdb
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\MySql.Data.dll
+C:\Users\zinol\OneDrive\바탕 화면\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.CopyComplete
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.exe.config
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.exe
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\bin\Debug\ClashRoyale_Server.pdb
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.AssemblyReference.cache
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.CoreCompileInputs.cache
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.csproj.CopyComplete
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.exe
+C:\Users\zinol\OneDrive\바탕 화면\Winter_Portfolio_Project\Winter_Portfolio_Project\ClashRoyale_Server\ClashRoyale_Server\obj\Debug\ClashRoyale_Server.pdb

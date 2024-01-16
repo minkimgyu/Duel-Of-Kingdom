@@ -1,5 +1,4 @@
-﻿using ClashRoyale_Server.Logic.GameRoom;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using WPP.ClashRoyale_Server.Protocol;
 using WPP.ClashRoyale_Server.Logic;
+using WPP.ClashRoyale_Server.Logic.Room;
 
 namespace WPP.ClashRoyale_Server.Logic.Battle
 {

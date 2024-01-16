@@ -5,9 +5,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using WPP.ClashRoyale_Server.Database;
-using WPP.ClashRoyale_Server.Database.ClientInfo;
+using WPP.ClashRoyale_Server.Database.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Protocol.Client;
 using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
+using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
 
 namespace WPP.ClashRoyale_Server
 {
@@ -24,6 +25,7 @@ namespace WPP.ClashRoyale_Server
         public ClientState state { get; set; }
         public ClientAccount accountInfo { get; set; }
         public Towers towers  { get; set; }
+        public Decks decks  { get; set; }
 
         public int gameRoomID { get; set; }
 
@@ -33,6 +35,7 @@ namespace WPP.ClashRoyale_Server
             state = ClientState.DISCONNECTED;
             accountInfo = new ClientAccount();
             towers = new Towers();
+            decks = new Decks();
             gameRoomID = 0;
         }
     }

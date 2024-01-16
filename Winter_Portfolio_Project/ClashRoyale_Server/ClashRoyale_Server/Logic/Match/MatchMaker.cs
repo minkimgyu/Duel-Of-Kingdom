@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using WPP.ClashRoyale_Server.Protocol.Server;
 using WPP.ClashRoyale_Server.Protocol;
-using ClashRoyale_Server.Logic.GameRoom;
+using WPP.ClashRoyale_Server.Logic.Room;
 using System.Reflection;
 
 namespace WPP.ClashRoyale_Server.Logic.Match

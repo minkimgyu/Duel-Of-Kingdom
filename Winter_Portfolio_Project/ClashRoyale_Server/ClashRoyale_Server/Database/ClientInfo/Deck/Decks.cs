@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WPP.ClashRoyale_Server;
 
 namespace WPP.ClashRoyale_Server.Database.ClientInfo.Deck
 {
     class Decks
     {
-        public Deck[] decks;
+        public List<Deck> decks { get; set; }
         public Decks()
         {
-            decks = new Deck[Constants.MAXIMUM_DECK];
+            decks = new List<Deck>();
+        }
+
+        public void AddDeck(Deck deck)
+        {
+            if (decks.Count > Constants.MAXIMUM_DECKS)
+                return;
+
+            decks.Add(deck);
         }
     }
 }

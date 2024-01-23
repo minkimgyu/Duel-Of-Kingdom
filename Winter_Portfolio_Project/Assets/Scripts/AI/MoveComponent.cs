@@ -7,7 +7,6 @@ public class MoveComponent : MonoBehaviour
     Rigidbody _rigid;
     Animator _animator;
     [SerializeField] float _moveSpeed = 5f;
-    [SerializeField] float _viewSpeed = 3f;
 
     private void Start()
     {
@@ -21,14 +20,14 @@ public class MoveComponent : MonoBehaviour
         _animator.SetBool("IsMove", false);
     }
 
-    public void Stop(Vector3 targetPos)
-    {
-        _rigid.MovePosition(transform.position);
-        _animator.SetBool("IsMove", false);
+    //public void Stop(Vector3 targetPos)
+    //{
+    //    _rigid.MovePosition(transform.position);
+    //    _animator.SetBool("IsMove", false);
 
-        Vector3 dir = ReturnDirection(targetPos);
-        View(dir);
-    }
+    //    Vector3 dir = ReturnDirection(targetPos);
+    //    View(dir);
+    //}
 
     Vector3 ReturnDirection(Vector3 targetPos)
     {
@@ -41,12 +40,5 @@ public class MoveComponent : MonoBehaviour
         _rigid.MovePosition(transform.position + dir * _moveSpeed * Time.deltaTime);
 
         _animator.SetBool("IsMove", true);
-
-        View(dir);
-    }
-
-    void View(Vector3 dir)
-    {
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * _viewSpeed);
     }
 }

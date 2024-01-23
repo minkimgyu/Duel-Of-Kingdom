@@ -12,4 +12,9 @@ public class HpContainer : MonoBehaviour
     {
         content.DOFillAmount(ratio, 0.5f);
     }
+
+    private void OnDisable()
+    {
+        DOTween.KillAll();
+    }
 }

@@ -9,6 +9,7 @@ using WPP.ClashRoyale_Server.Database.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Protocol.Client;
 using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
 using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
+using System.Net;
 
 namespace WPP.ClashRoyale_Server
 {
@@ -26,6 +27,7 @@ namespace WPP.ClashRoyale_Server
         public ClientAccount accountInfo { get; set; }
         public Towers towers  { get; set; }
         public Decks decks  { get; set; }
+        public IPEndPoint p2pAddress { get; set; }
 
         public int gameRoomID { get; set; }
 
@@ -37,6 +39,7 @@ namespace WPP.ClashRoyale_Server
             towers = new Towers();
             decks = new Decks();
             gameRoomID = 0;
+            p2pAddress = null;
         }
     }
 }

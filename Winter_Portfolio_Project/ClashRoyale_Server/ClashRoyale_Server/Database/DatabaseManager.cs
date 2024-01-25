@@ -5,6 +5,10 @@ using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
 using WPP.ClashRoyale_Server.Database.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
 using WPP.ClashRoyale_Server.Database.ClientInfo.CardData;
+using WPP.ClashRoyale_Server.Database.Collection;
+using System.Security.Cryptography;
+using ClashRoyale_Server.Database;
+using System.IO.Ports;
 
 namespace WPP.ClashRoyale_Server.Database
 {
@@ -14,12 +18,14 @@ namespace WPP.ClashRoyale_Server.Database
 
         private MySqlConnection _mySqlConnection;
 
-        private static string _server = "localhost";
+        private static string _server = "127.0.0.1";
+        private static string _server_port = "3306";
         private static string _db_id = "root";
-        private static string _db_pw = "";
+        private static string _db_pw = "0000";
         private static string _db_name = "clashroyale";
 
-        string strConn = string.Format("server={0};uid={1};pwd={2};database={3};charset=utf8;", _server, _db_id, _db_pw, _db_name);
+        string strConn = string.Format("server={0};port={1};database={2};uid={3};pwd={4};SSL Mode=None;", _server, _server_port, _db_name, _db_id, _db_pw);
+
         public static DatabaseManager Instance()
         {
             if (_instance == null)
@@ -33,7 +39,6 @@ namespace WPP.ClashRoyale_Server.Database
         {
             InitializeMySqlConnection();
             ConnectToMySqlServer();
-            InitializeTableSetting();
         }
 
         private void InitializeMySqlConnection()
@@ -65,24 +70,6 @@ namespace WPP.ClashRoyale_Server.Database
             try
             {
                 _mySqlConnection.Close();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-        }
-
-        public void InitializeTableSetting()
-        {
-            string accountQuery = "ALTER TABLE account AUTO_INCREMENT = 1";
-            string towerQuery = "ALTER TABLE tower AUTO_INCREMENT = 1";
-
-            try
-            {
-                MySqlCommand cmd = new MySqlCommand(accountQuery, _mySqlConnection);
-                cmd.ExecuteNonQuery();
-                cmd = new MySqlCommand(towerQuery, _mySqlConnection);
-                cmd.ExecuteNonQuery();
             }
             catch (Exception e)
             {
@@ -144,29 +131,53 @@ namespace WPP.ClashRoyale_Server.Database
             return null;
         }
 
-        public Card FindCard(int cardID)
+        public Card FindCard(int card_id)
         {
-            string query = "SELECT * FROM card WHERE card_id = '" + cardID + "'";
+            string query = "SELECT * FROM card WHERE card_id = '" + card_id + "'";
             MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.Read())
             {
-                int cardId = Convert.ToInt32(reader["card_id"]);
-                int unitId = Convert.ToInt32(reader["unit_id"]);
+                int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
+                int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
+                int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
+
+                int unit_id = troop_id ?? building_id ?? spell_id ?? 0;
+
                 Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
                 int needElixir = Convert.ToInt32(reader["needElixir"]);
 
-                Card card = new Card(cardId, unitId, rarity, needElixir);
-
                 reader.Close();
+                Card card = new Card(card_id, unit_id, rarity, needElixir);
                 return card;
             }
             reader.Close();
             return null;
         }
 
+        public Unit FindUnit(int unitID)
+        {
+            string query = "SELECT * FROM unit WHERE unit_id = '" + unitID + "'";
+            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+
+            MySqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.Read())
+            {
+                int unitId = Convert.ToInt32(reader["unit_id"]);
+                Enum.TryParse<UnitType>((string)reader["type"], out UnitType unitType);
+                int level = Convert.ToInt32(reader["level"]);
+
+                Unit unit = new Unit(unitId, unitType, level);
+
+                reader.Close();
+                return unit;
+            }
+            reader.Close();
+            return null;
+        }
 
         public void AddAccount(string username, string password)
         {
@@ -222,19 +233,21 @@ namespace WPP.ClashRoyale_Server.Database
 
         public void AddDecks(string username)
         {
+            int account_id = FindAcountID(username);
+
             for (int i = 0; i < Constants.MAXIMUM_DECKS; i++)
             {
-                int account_id = FindAcountID(username);
-
-                string query = "INSERT INTO deck_instance (account_id, deck_id, card_id_1, card_id_2, card_id_3, card_id_4, card_id_5, card_id_6) VALUES('" +
+                string query = "INSERT INTO deck_instance (account_id, deck_id, card_id_1, card_id_2, card_id_3, card_id_4, card_id_5, card_id_6, card_id_7, card_id_8) VALUES('" +
                             account_id + "','" +
-                            (i+1) + "','" +
+                            (i + 1) + "','" +
                             1 + "','" +
-                            2 + "','" +
-                            3 + "','" +
-                            4 + "','" +
-                            5 + "','" +
-                            6 + "')";
+                            1 + "','" +
+                            1 + "','" +
+                            1 + "','" +
+                            1 + "','" +
+                            1 + "','" +
+                            1 + "','" +
+                            1 + "')";
 
                 try
                 {
@@ -247,7 +260,6 @@ namespace WPP.ClashRoyale_Server.Database
                 }
             }
         }
-
 
         public ClientAccount LoadAccount(int clientID, string username)
         {
@@ -287,7 +299,7 @@ namespace WPP.ClashRoyale_Server.Database
 
 
             for (int i = 0; i < Constants.MAXIMUM_TOWERS; i++)
-            {
+                  {
                 if (reader.Read())
                 {
                     Enum.TryParse<TowerType>((string)reader["type"], out TowerType type);
@@ -296,7 +308,7 @@ namespace WPP.ClashRoyale_Server.Database
 
                     Tower tower = new Tower(type, level, hp);
 
-                    switch(i)
+                    switch (i)
                     {
                         case 0:
                             ServerTCP.Instance().clients[clientID].towers.kingTower = tower;
@@ -319,12 +331,12 @@ namespace WPP.ClashRoyale_Server.Database
             int id = FindAcountID(username);
 
             Decks decks = new Decks();
-            int[] cardIds = new int[6];
+            int[] card_ids = new int[6];
             int deckId = 0;
 
             for (int i = 0; i < Constants.MAXIMUM_DECKS; i++)
             {
-                string query = "SELECT * FROM deck_instance WHERE account_id = '" + id + "' AND deck_id = '" + (i+1) + "'";
+                string query = "SELECT * FROM deck_instance WHERE account_id = '" + id + "' AND deck_id = '" + (i + 1) + "'";
                 MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
 
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -332,23 +344,57 @@ namespace WPP.ClashRoyale_Server.Database
                 if (reader.Read())
                 {
                     deckId = Convert.ToInt32(reader["deck_id"]);
-                    for (int j = 0; j < cardIds.Length; j++)
+                    for (int j = 0; j < card_ids.Length; j++)
                     {
-                        cardIds[j] = Convert.ToInt32(reader["card_id_" + (j+1)]);
+                        card_ids[j] = Convert.ToInt32(reader["card_id_" + (j + 1)]);
                     }
                 }
                 reader.Close();
 
                 Deck deck = new Deck(deckId);
-                for(int j=0; j<cardIds.Length; j++)
+                for (int j = 0; j < card_ids.Length; j++)
                 {
-                    deck.AddCard(FindCard(cardIds[j]));
+                    deck.AddCard(FindCard(card_ids[j]));
                 }
 
                 decks.AddDeck(deck);
             }
             ServerTCP.Instance().clients[clientID].decks = decks;
             return ServerTCP.Instance().clients[clientID].decks;
+        }
+
+        public CardCollection LoadCardCollection(int clientID, string username)
+        {
+            int id = FindAcountID(username);
+
+            CardCollection cardCollection = new CardCollection();
+
+            for (int i = 0; i < Constants.MAXIMUM_CARDS_IN_DECK; i++)
+            {
+                string query = "SELECT * FROM card";
+                MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+                int card_id, needElixir;
+
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    card_id = Convert.ToInt32(reader["card_id"]);
+                    int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
+                    int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
+                    int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
+
+                    int unit_id = troop_id ?? building_id ?? spell_id ?? 0;
+
+                    Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
+                    needElixir = Convert.ToInt32(reader["needElixir"]);
+                    reader.Close();
+                    Card card = new Card(card_id, unit_id, rarity, needElixir);
+                    cardCollection.AddCard(card);
+                }
+                reader.Close();
+
+            }
+            return cardCollection;
         }
 
         public bool CheckRowExists(string query)
@@ -377,7 +423,7 @@ namespace WPP.ClashRoyale_Server.Database
             return false;
         }
 
-        public bool HandleLogin(string username, string password)
+        public bool CheckAccountExists(string username, string password)
         {
             string query = "SELECT username, password FROM account WHERE username = '" + username + "'" + " AND " +
                             "password = '" + password + "'";

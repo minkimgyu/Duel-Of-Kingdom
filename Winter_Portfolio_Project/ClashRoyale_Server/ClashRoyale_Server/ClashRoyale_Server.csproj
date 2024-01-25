@@ -81,8 +81,10 @@
     <Compile Include="Database\ClientInfo\Deck\Deck.cs" />
     <Compile Include="Database\ClientInfo\Deck\Decks.cs" />
     <Compile Include="Database\ClientInfo\Tower\Tower.cs" />
+    <Compile Include="Database\Collection\CardCollection.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
     <Compile Include="Database\ClientInfo\Tower\Towers.cs" />
+    <Compile Include="Database\Unit.cs" />
     <Compile Include="Logic\Battle\BattleLogic.cs" />
     <Compile Include="Logic\Battle\BattleTimer.cs" />
     <Compile Include="Logic\Match\MatchMaker.cs" />
@@ -100,8 +102,6 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Database\ClientInfo\Collection\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

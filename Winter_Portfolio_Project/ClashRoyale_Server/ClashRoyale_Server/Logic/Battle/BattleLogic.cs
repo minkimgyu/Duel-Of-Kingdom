@@ -45,14 +45,9 @@ namespace WPP.ClashRoyale_Server.Logic.Battle
             }
             return;
         }
-        public void SetDoubleElixirMode()
+        public void SetOverTimeMode()
         {
-            _gameRoom.SendDataToAll(Server_PacketTagPackages.S_ALERT_DOUBLE_ELIXIR_TIME);
-        }
-
-        public void SetSuddenDeathMode()
-        {
-            _gameRoom.SendDataToAll(Server_PacketTagPackages.S_ALERT_SUDDEN_DEATH_TIME);
+            _gameRoom.SendDataToAll(Server_PacketTagPackages.S_ALERT_OVER_TIME);
         }
 
         public void EndBattle()
@@ -90,7 +85,9 @@ namespace WPP.ClashRoyale_Server.Logic.Battle
 
             int score = (winner.accountInfo.trophy - loser.accountInfo.trophy) / 12 + 30;
             winner.accountInfo.trophy += score;
-            loser.accountInfo.trophy -= score;
+            loser.accountInfo.trophy += score;
+            if (loser.accountInfo.trophy <= 0)
+                loser.accountInfo.trophy = 0;
             return;
         }
     }

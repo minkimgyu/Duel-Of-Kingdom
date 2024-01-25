@@ -16,8 +16,7 @@ namespace WPP.ClashRoyale_Server.Protocol
 
         S_REQUEST_PLAY_GAME,
 
-        S_ALERT_DOUBLE_ELIXIR_TIME,
-        S_ALERT_SUDDEN_DEATH_TIME,
+        S_ALERT_OVER_TIME,
 
         S_REQUEST_END_GAME,
     }
@@ -28,8 +27,9 @@ namespace WPP.ClashRoyale_Server.Protocol
         C_REQUEST_LOGIN,
         C_REQUEST_ENTER_ROOM,
 
-        C_DESTROY_OPPONENT_KING_TOWER,
-        C_DESTROY_OPPONENT_LEFT_TOWER,
-        C_DESTROY_OPPONENT_RIGHT_TOWER,
+        C_ALERT_WIN,
+        C_ALERT_LOOSE,
+
+        C_REQUEST_END_GAME
     }
 }

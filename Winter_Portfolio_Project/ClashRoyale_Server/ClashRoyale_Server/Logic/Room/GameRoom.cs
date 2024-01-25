@@ -8,6 +8,7 @@ using WPP.ClashRoyale_Server;
 using WPP.ClashRoyale_Server.Protocol.Server;
 using WPP.ClashRoyale_Server.Protocol;
 using WPP.ClashRoyale_Server.Logic.Battle;
+using System.Net;
 
 namespace WPP.ClashRoyale_Server.Logic.Room
 {
@@ -62,9 +63,22 @@ namespace WPP.ClashRoyale_Server.Logic.Room
 
         public void StartGame()
         {
-            ByteBuffer buffer = new ByteBuffer();
-            buffer.WriteInteger(id);
-            SendDataToAll(Server_PacketTagPackages.S_REQUEST_PLAY_GAME, buffer.ToArray());
+            // send roomID and opponent's ip address
+            ByteBuffer buffer1 = new ByteBuffer();
+            ByteBuffer buffer2 = new ByteBuffer();
+
+            IPEndPoint ep = clients[1].p2pAddress;
+            buffer1.WriteInteger(id);
+            if (ep != null)
+                buffer1.WriteEndPoint(ep);
+            ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_REQUEST_PLAY_GAME, clients[0].tcp.id, buffer1.ToArray());
+
+            ep = clients[0].p2pAddress;
+            buffer2.WriteInteger(id);
+            if (ep != null)
+                buffer2.WriteEndPoint(ep);
+            ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_REQUEST_PLAY_GAME, clients[1].tcp.id, buffer2.ToArray());
+
             battle.StartBattle();
         }
 

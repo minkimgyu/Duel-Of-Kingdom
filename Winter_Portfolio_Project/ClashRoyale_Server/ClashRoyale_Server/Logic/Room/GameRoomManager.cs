@@ -4,7 +4,6 @@ using System.Threading;
 using WPP.ClashRoyale_Server;
 using System.Timers;
 using WPP.ClashRoyale_Server.Protocol.Server;
-using MySql.Data.MySqlClient.Memcached;
 
 namespace WPP.ClashRoyale_Server.Logic.Room
 {

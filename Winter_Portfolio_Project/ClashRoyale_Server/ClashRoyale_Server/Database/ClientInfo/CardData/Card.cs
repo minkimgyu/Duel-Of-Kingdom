@@ -1,4 +1,6 @@
 ﻿
+using ClashRoyale_Server.Database;
+
 namespace WPP.ClashRoyale_Server.Database.ClientInfo.CardData
 {
     public enum CardRarity
@@ -11,16 +13,24 @@ namespace WPP.ClashRoyale_Server.Database.ClientInfo.CardData
     }
     class Card
     {
-        public int id { get; set; }
-        public int level { get; set; }
-        public int needElixir { get; set; }
-        public CardRarity rarity { get; set; }
+        private int _id;
 
-        public Card(int id, int level, CardRarity rarity, int needElixir) {
-            this.id = id;
-            this.level = level;
-            this.rarity = rarity;
-            this.needElixir = needElixir;
+        private CardRarity _rarity;
+
+        private int _needElixir;
+
+        private int _unitID;
+
+        private Unit _unit;
+
+        public Card() { }
+        public Card(int id, int unitID, CardRarity rarity, int needElixir)
+        {
+            this._id = id;
+            this._unitID = unitID;
+            this._rarity = rarity;
+            this._needElixir = needElixir;
+            _unit = DatabaseManager.Instance().FindUnit(unitID);
         }
     }
 }

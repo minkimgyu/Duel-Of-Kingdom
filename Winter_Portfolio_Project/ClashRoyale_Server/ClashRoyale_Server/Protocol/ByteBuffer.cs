@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WPP.ClashRoyale_Server.Protocol
 {
-     class ByteBuffer
+    class ByteBuffer
     {
         public List<byte> buffer;
         private byte[] _tempBuffer;
@@ -47,7 +48,7 @@ namespace WPP.ClashRoyale_Server.Protocol
             buffer.AddRange(BitConverter.GetBytes(input));
         }
 
-        public void WriteInteger (int input)
+        public void WriteInteger(int input)
         {
             buffer.AddRange(BitConverter.GetBytes(input));
         }
@@ -68,12 +69,19 @@ namespace WPP.ClashRoyale_Server.Protocol
             buffer.AddRange(Encoding.ASCII.GetBytes(input));
         }
 
+        public void WriteEndPoint(IPEndPoint ep)
+        {
+            string endPointString = $"{ep.Address}:{ep.Port}";
+            buffer.AddRange(BitConverter.GetBytes(endPointString.Length));
+            buffer.AddRange(Encoding.ASCII.GetBytes(endPointString));
+        }
+
         public byte[] ReadBytes(int numOfBytesToRead, bool moveHead)
         {
             _tempBuffer = buffer.ToArray();
             byte[] returnBytes = new byte[numOfBytesToRead];
             Buffer.BlockCopy(_tempBuffer, readIndex, returnBytes, 0, numOfBytesToRead);
-            if(moveHead)
+            if (moveHead)
                 readIndex += numOfBytesToRead;
             return returnBytes;
         }
@@ -90,7 +98,7 @@ namespace WPP.ClashRoyale_Server.Protocol
         {
             _tempBuffer = buffer.ToArray();
             int ret = BitConverter.ToInt32(_tempBuffer, readIndex);
-            if (moveHead) 
+            if (moveHead)
                 readIndex += sizeof(int);
             return ret;
         }
@@ -99,7 +107,7 @@ namespace WPP.ClashRoyale_Server.Protocol
         {
             _tempBuffer = buffer.ToArray();
             long ret = BitConverter.ToInt64(_tempBuffer, readIndex);
-            if (moveHead) 
+            if (moveHead)
                 readIndex += sizeof(long);
             return ret;
         }
@@ -108,7 +116,7 @@ namespace WPP.ClashRoyale_Server.Protocol
         {
             _tempBuffer = buffer.ToArray();
             float ret = BitConverter.ToSingle(_tempBuffer, readIndex);
-            if (moveHead) 
+            if (moveHead)
                 readIndex += sizeof(float);
             return ret;
         }
@@ -118,9 +126,28 @@ namespace WPP.ClashRoyale_Server.Protocol
             _tempBuffer = buffer.ToArray();
             int length = ReadInteger(true);
             string ret = Encoding.ASCII.GetString(_tempBuffer, readIndex, length);
-            if (moveHead) 
+            if (moveHead)
                 readIndex += length;
             return ret;
+        }
+
+        public IPEndPoint ReadEndPoint(bool moveHead)
+        {
+            _tempBuffer = buffer.ToArray();
+            int length = ReadInteger(true);
+
+            string ret = Encoding.ASCII.GetString(_tempBuffer, readIndex, length);
+
+            if (moveHead)
+                readIndex += length;
+
+            string[] parts = ret.Split(':');
+            if (parts.Length == 2 && IPAddress.TryParse(parts[0], out IPAddress ipAddress) && int.TryParse(parts[1], out int port))
+            {
+                IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
+                return endPoint;
+            }
+            return null;
         }
     }
 }

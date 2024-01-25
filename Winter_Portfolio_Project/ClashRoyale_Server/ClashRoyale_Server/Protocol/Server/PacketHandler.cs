@@ -33,6 +33,7 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
             packetHandler.Add((int)Client_PacketTagPackages.C_REQUEST_REGISTER_ACCOUNT, HandleRegister);
             packetHandler.Add((int)Client_PacketTagPackages.C_REQUEST_LOGIN, HandleLogin);
             packetHandler.Add((int)Client_PacketTagPackages.C_REQUEST_ENTER_ROOM, HandleEnterRoom);
+            packetHandler.Add((int)Client_PacketTagPackages.C_REQUEST_END_GAME, EndGame);
         }
 
         public void HandlePacket(int clientID, byte[] packet)
@@ -111,7 +112,7 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
             string password = buffer.ReadString(true);
             buffer.Dispose();
 
-            if (DatabaseManager.Instance().HandleLogin(username, password))
+            if (DatabaseManager.Instance().CheckAccountExists(username, password))
             {
                 ClientAccount account = DatabaseManager.Instance().LoadAccount(clientID, username);
                 Towers towers = DatabaseManager.Instance().LoadTowers(clientID, username);
@@ -137,6 +138,9 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
                 // 클라이언트에 별도의 데이터 시트를 먼저 만든 다음
                 // 업데이트 된 부분만 별도 적용하는 방법도 생각중
 
+                //string cardCollectionString = JsonSerializer.Serialize(decks);
+                //loginBuffer.WriteString(decksString);
+
                 ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_ACCEPT_LOGIN, clientID, loginBuffer.ToArray());
                 return;
             }
@@ -148,8 +152,17 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
         {
             ServerTCP server = ServerTCP.Instance();
             server.clients[clientID].state = ClientState.IN_ROOM;
-            server.waitingClients.Add(ServerTCP.Instance().clients[clientID]);
+            server.clients[clientID].p2pAddress = buffer.ReadEndPoint(true);
+            server.waitingClients.Add(server.clients[clientID]);
             server.waitingClients.OrderByDescending(p => p.accountInfo.trophy).ThenBy(p => p.towers.kingTower.level);
+        }
+
+        public void EndGame(int clientID, ref ByteBuffer buffer)
+        {
+            int roomID = buffer.ReadInteger(true);
+            GameRoom room = GameRoomManager.Instance().FindGameRoom(roomID);
+            room.EndGame();
+            return;
         }
     }
 }

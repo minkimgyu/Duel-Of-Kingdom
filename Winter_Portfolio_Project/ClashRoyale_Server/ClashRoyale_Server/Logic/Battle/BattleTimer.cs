@@ -13,31 +13,25 @@ namespace WPP.ClashRoyale_Server.Logic.Battle
     internal class BattleTimer
     {
         private Timer _timer;
-        private Timer _extraElixiertimer;
-        private Timer _suddenDeathTimer;
+        private Timer _overTImer;
 
         public BattleTimer() { }
         public void InitializeTimers(BattleLogic battle)
         {
-            _timer = new Timer(120000);
-            _extraElixiertimer = new Timer(60000);
-            _suddenDeathTimer = new Timer(120000);
+            _timer = new Timer(180000);
+            _overTImer = new Timer(120000);
 
             _timer.Elapsed += (s, e) =>
             {
                 _timer.Enabled = false;
-                _extraElixiertimer.Enabled = true;
+                _overTImer.Enabled = true;
+                battle.SetOverTimeMode();
             };
 
-            _extraElixiertimer.Elapsed += (s, e) =>
-            {
-                _extraElixiertimer.Enabled = false;
-                _suddenDeathTimer.Enabled = true;
-            };
 
-            _suddenDeathTimer.Elapsed += (s, e) =>
+            _overTImer.Elapsed += (s, e) =>
             {
-                _suddenDeathTimer.Enabled = false;
+                _overTImer.Enabled = false;
                 battle.EndBattle();
             };
         }
@@ -45,15 +39,13 @@ namespace WPP.ClashRoyale_Server.Logic.Battle
         public void StartTimer()
         {
             _timer.Enabled = true;
-            _extraElixiertimer.Enabled = false;
-            _suddenDeathTimer.Enabled = false;
+            _overTImer.Enabled = false;
         }
 
         public void StopTimer()
         {
             _timer.Enabled = false;
-            _extraElixiertimer.Enabled = false;
-            _suddenDeathTimer.Enabled = false;
+            _overTImer.Enabled = false;
         }
     }
 }

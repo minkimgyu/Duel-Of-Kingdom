@@ -8,7 +8,8 @@ namespace WPP.ClashRoyale_Server.Protocol
 {
     public enum Server_PacketTagPackages
     {
-        S_ACCEPT_REGISTER_ACCOUNT = 1,
+        S_LOAD_CARD_COLLECTION = 1,
+        S_ACCEPT_REGISTER_ACCOUNT,
         S_REJECT_REGISTER_ACCOUNT,
 
         S_ACCEPT_LOGIN,

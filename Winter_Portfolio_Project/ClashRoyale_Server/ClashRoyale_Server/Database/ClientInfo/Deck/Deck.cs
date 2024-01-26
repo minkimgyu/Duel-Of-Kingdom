@@ -10,20 +10,20 @@ namespace WPP.ClashRoyale_Server.Database.ClientInfo.Deck
     class Deck
     {
         public int id { get; set; }
-        public List<Card> cards { get; set; }
+        public List<int> card_ids { get; set; }
 
         public Deck(int id)
         {
-            this.id = id;
-            cards = new List<Card>();
+            this.id = id;   
+            card_ids = new List<int>();
         }
 
-        public void AddCard(Card card)
+        public void AddCard(int card_id)
         {
-            if (cards.Count > Constants.MAXIMUM_CARDS_IN_DECK)
+            if (card_ids.Count > Constants.MAXIMUM_CARDS_IN_DECK)
                 return;
 
-            cards.Add(card);
+            card_ids.Add(card_id);
         }
     }
 }

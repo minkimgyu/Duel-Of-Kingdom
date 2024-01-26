@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClashRoyale_Server.Database
+namespace ClashRoyale_Server.Database.Units
 {
     public enum UnitType
     {

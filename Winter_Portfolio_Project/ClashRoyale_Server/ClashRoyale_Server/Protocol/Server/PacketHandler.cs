@@ -133,14 +133,6 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
                 string decksString = JsonSerializer.Serialize(decks);
                 loginBuffer.WriteString(decksString);
 
-                // Collection 정보 JSON화
-                // 모든 카드 정보를 넣기엔 너무 많기 때문에
-                // 클라이언트에 별도의 데이터 시트를 먼저 만든 다음
-                // 업데이트 된 부분만 별도 적용하는 방법도 생각중
-
-                //string cardCollectionString = JsonSerializer.Serialize(decks);
-                //loginBuffer.WriteString(decksString);
-
                 ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_ACCEPT_LOGIN, clientID, loginBuffer.ToArray());
                 return;
             }

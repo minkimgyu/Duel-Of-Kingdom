@@ -1,36 +1,46 @@
 ﻿
-using ClashRoyale_Server.Database;
+using ClashRoyale_Server.Database.Units;
 
 namespace WPP.ClashRoyale_Server.Database.ClientInfo.CardData
 {
+    public enum CardType
+    {
+        Troop, Spell, Building
+    }
     public enum CardRarity
     {
-        Common = 1,
-        Rare,
-        Epic,
-        Legendary,
-        Champion,
+        Common, Rare, Epic, Legendary
     }
+    public struct Vector2Int
+    {
+        public int x {get; set;}
+        public int y {get; set;}
+
+        public Vector2Int One()
+        {
+            return new Vector2Int { x = 1, y = 1 };
+        }
+    }
+
     class Card
     {
-        private int _id;
+        public int id { get; set; }
 
-        private CardRarity _rarity;
+        public CardType type { get; set; }
 
-        private int _needElixir;
+        public CardRarity rarity { get; set; }
 
-        private int _unitID;
+        public int needElixir { get; set; }
 
-        private Unit _unit;
+        public Vector2Int gridSize { get; set; }
 
         public Card() { }
-        public Card(int id, int unitID, CardRarity rarity, int needElixir)
+        public Card(int id, CardType type, CardRarity rarity, int needElixir, Vector2Int gridSize)
         {
-            this._id = id;
-            this._unitID = unitID;
-            this._rarity = rarity;
-            this._needElixir = needElixir;
-            _unit = DatabaseManager.Instance().FindUnit(unitID);
+            this.id = id;
+            this.rarity = rarity;
+            this.needElixir = needElixir;
+            this.gridSize = gridSize;
         }
     }
 }

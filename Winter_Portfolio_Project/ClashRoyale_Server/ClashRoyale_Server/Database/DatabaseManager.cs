@@ -7,8 +7,11 @@ using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
 using WPP.ClashRoyale_Server.Database.ClientInfo.CardData;
 using WPP.ClashRoyale_Server.Database.Collection;
 using System.Security.Cryptography;
-using ClashRoyale_Server.Database;
+using ClashRoyale_Server.Database.Units;
 using System.IO.Ports;
+using System.Data;
+using System.Runtime.Remoting.Messaging;
+using System.Diagnostics.Eventing.Reader;
 
 namespace WPP.ClashRoyale_Server.Database
 {
@@ -79,11 +82,13 @@ namespace WPP.ClashRoyale_Server.Database
 
         public int FindAcountID(string username)
         {
-            string query = "SELECT account_id FROM account WHERE username = '" + username + "'";
-            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            string storedProcedureName = "GetAccount";
+            MySqlCommand cmd = new MySqlCommand(storedProcedureName, _mySqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@in_username", username);
 
             MySqlDataReader reader = cmd.ExecuteReader();
-
             if (reader.Read())
             {
                 int id = Convert.ToInt32(reader["account_id"]);
@@ -93,6 +98,7 @@ namespace WPP.ClashRoyale_Server.Database
             reader.Close();
             return -1;
         }
+
         public int FindTowerID(TowerType type, int level)
         {
             string query = "SELECT tower_id FROM tower WHERE type = '" + type + "' AND level = '" + level + "'";
@@ -133,27 +139,52 @@ namespace WPP.ClashRoyale_Server.Database
 
         public Card FindCard(int card_id)
         {
-            string query = "SELECT * FROM card WHERE card_id = '" + card_id + "'";
-            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            string storedProcedureName = "GetCard";
 
-            MySqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.Read())
+            using (MySqlCommand cmd = new MySqlCommand(storedProcedureName, _mySqlConnection))
             {
-                int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
-                int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
-                int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
+                cmd.CommandType = CommandType.StoredProcedure;
 
-                int unit_id = troop_id ?? building_id ?? spell_id ?? 0;
+                cmd.Parameters.AddWithValue("@in_card_id", card_id);
 
-                Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
-                int needElixir = Convert.ToInt32(reader["needElixir"]);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
+                        int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
+                        int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
 
-                reader.Close();
-                Card card = new Card(card_id, unit_id, rarity, needElixir);
-                return card;
+                        CardType type;
+                        if (troop_id != null)
+                        {
+                            type = CardType.Troop;
+                        }
+                        else if(building_id != null)
+                        {
+                            type = CardType.Building;
+                        }
+                        else if (spell_id != null)
+                        {
+                            type = CardType.Spell;
+                        }else
+                        {
+                            type = 0;
+                        }
+
+
+                        Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
+                        int needElixir = Convert.ToInt32(reader["needElixir"]);
+
+                        reader.Close();
+
+                        // girdSize 추가 필요
+                        Card card = new Card(card_id, type, rarity, needElixir, new Vector2Int().One());
+                        return card;
+                    }
+                }
             }
-            reader.Close();
+
             return null;
         }
 
@@ -206,13 +237,21 @@ namespace WPP.ClashRoyale_Server.Database
             {
                 int account_id = FindAcountID(username);
                 int tower_id;
-                if (i == 0)
+
+                switch(i)
                 {
-                    tower_id = FindTowerID(TowerType.kingTower, 1);
-                }
-                else
-                {
-                    tower_id = FindTowerID(TowerType.princessTower, 1);
+                    case 0:
+                        tower_id = FindTowerID(TowerType.king_tower, 1);
+                        break;
+                    case 1:
+                        tower_id = FindTowerID(TowerType.left_princess_tower, 1);
+                        break;
+                    case 2:
+                        tower_id = FindTowerID(TowerType.right_princess_tower, 1);
+                        break;
+                    default:
+                        tower_id = 0;
+                        break;
                 }
 
                 string query = "INSERT INTO tower_instance(account_id, tower_id) VALUES('" +
@@ -297,9 +336,8 @@ namespace WPP.ClashRoyale_Server.Database
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
-
             for (int i = 0; i < Constants.MAXIMUM_TOWERS; i++)
-                  {
+            {
                 if (reader.Read())
                 {
                     Enum.TryParse<TowerType>((string)reader["type"], out TowerType type);
@@ -354,7 +392,7 @@ namespace WPP.ClashRoyale_Server.Database
                 Deck deck = new Deck(deckId);
                 for (int j = 0; j < card_ids.Length; j++)
                 {
-                    deck.AddCard(FindCard(card_ids[j]));
+                    deck.AddCard(card_ids[j]);
                 }
 
                 decks.AddDeck(deck);
@@ -365,35 +403,29 @@ namespace WPP.ClashRoyale_Server.Database
 
         public CardCollection LoadCardCollection(int clientID, string username)
         {
-            int id = FindAcountID(username);
-
             CardCollection cardCollection = new CardCollection();
 
-            for (int i = 0; i < Constants.MAXIMUM_CARDS_IN_DECK; i++)
-            {
-                string query = "SELECT * FROM card";
-                MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
-                int card_id, needElixir;
+            string query = "SELECT * FROM card";
+            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            MySqlDataReader reader = cmd.ExecuteReader();
 
-                MySqlDataReader reader = cmd.ExecuteReader();
+            int[] card_ids = new int[Constants.MAXIMUM_CARDS];
+
+            for (int i = 0; i < Constants.MAXIMUM_CARDS; i++)
+            {
                 if (reader.Read())
                 {
-                    card_id = Convert.ToInt32(reader["card_id"]);
-                    int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
-                    int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
-                    int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
-
-                    int unit_id = troop_id ?? building_id ?? spell_id ?? 0;
-
-                    Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
-                    needElixir = Convert.ToInt32(reader["needElixir"]);
-                    reader.Close();
-                    Card card = new Card(card_id, unit_id, rarity, needElixir);
-                    cardCollection.AddCard(card);
+                    int card_id = Convert.ToInt32(reader["card_id"]);
+                    card_ids[i] = card_id;
                 }
-                reader.Close();
-
             }
+            reader.Close();
+
+            for (int i = 0; i < Constants.MAXIMUM_CARDS; i++)
+            {
+                cardCollection.AddCard(FindCard(card_ids[i]));
+            }
+
             return cardCollection;
         }
 

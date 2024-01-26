@@ -84,7 +84,7 @@
     <Compile Include="Database\Collection\CardCollection.cs" />
     <Compile Include="Database\DatabaseManager.cs" />
     <Compile Include="Database\ClientInfo\Tower\Towers.cs" />
-    <Compile Include="Database\Unit.cs" />
+    <Compile Include="Database\Units\Unit.cs" />
     <Compile Include="Logic\Battle\BattleLogic.cs" />
     <Compile Include="Logic\Battle\BattleTimer.cs" />
     <Compile Include="Logic\Match\MatchMaker.cs" />

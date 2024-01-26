@@ -8,9 +8,9 @@ using WPP.ClashRoyale_Server;
 
 namespace WPP.ClashRoyale_Server.Database.Collection
 {
-    internal class CardCollection
+    class CardCollection
     {
-        private List<Card> _cardCollection;
+        public List<Card> _cardCollection { get; set; }
 
         public CardCollection()
         {

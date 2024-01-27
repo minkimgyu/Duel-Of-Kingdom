@@ -12,7 +12,6 @@ namespace WPP.Battle
         public event System.Action<float, float> OnTimerUpdate;
         public event System.Action OnTimerEnd;
 
-
         public void StartTimer(float length)
         {
             _timerLength = length;

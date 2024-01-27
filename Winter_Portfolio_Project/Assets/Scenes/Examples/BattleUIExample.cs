@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using WPP.Network;
 
 namespace WPP.Battle.Example
 {
@@ -47,6 +48,16 @@ namespace WPP.Battle.Example
         [SerializeField] private Button _divideRate;
         [SerializeField] private Button[] _spendElixir;
 
+        private static BattleUIExample _instance;
+        public static BattleUIExample Instance()
+        {
+            return _instance;
+        }
+        public void Start()
+        {
+            _instance = this;
+            _battleManager.StartBattle();
+        }
         private void OnEnable()
         {
             _battleManager.OnStatusChange += SetStatusText;
@@ -56,8 +67,14 @@ namespace WPP.Battle.Example
 
             // Player Tower
             _playerCT1.damageButton.onClick.AddListener(() => _playerCT1.tower.Damage(1));
+            _playerCT1.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_LPT, BitConverter.GetBytes(3)));
+
             _playerCT2.damageButton.onClick.AddListener(() => _playerCT2.tower.Damage(1));
+            _playerCT2.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_RPT, BitConverter.GetBytes(2)));
+
             _playerKT.damageButton.onClick.AddListener(() => _playerKT.tower.Damage(1));
+            _playerKT.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_KT, BitConverter.GetBytes(1)));
+
 
             SubscribeTowerEvent(_playerCT1);
             SubscribeTowerEvent(_playerCT2);
@@ -158,6 +175,23 @@ namespace WPP.Battle.Example
         private void SetElixirText(int elixir)
         {
             _elixirText.text = $"{elixir}/{_playerElixirSystem.MaxElixirCount}";
+        }
+
+        public void DamageTower(int towerID)
+        {
+            Debug.Log("DamageTower");
+            switch(towerID)
+            {
+                case 1:
+                    _opponentKT.tower.Damage(1);
+                    break;
+                case 2:
+                    _opponentCT1.tower.Damage(1);
+                    break;
+                case 3:
+                    _opponentCT2.tower.Damage(1);
+                    break;
+            }
         }
     }
 }

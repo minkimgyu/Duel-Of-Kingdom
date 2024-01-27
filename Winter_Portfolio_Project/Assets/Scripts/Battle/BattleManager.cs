@@ -30,6 +30,17 @@ namespace WPP.Battle
             PostBattle
         }
 
+        private static BattleManager _instance;
+
+        public static BattleManager Instance()
+        {
+            if(_instance == null )
+            {
+                return null;
+            }
+            return _instance;
+        }
+
         public event Action<Status> OnStatusChange;
 
         private Status _status;
@@ -39,6 +50,7 @@ namespace WPP.Battle
 
         private void Awake()
         {
+            _instance = this;
             _fsm = new Fsm<Status>();
             _fsm.OnStateTransition += (status) => { OnStatusChange?.Invoke(status); };
 
@@ -64,6 +76,16 @@ namespace WPP.Battle
         {
             if(_status == Status.PreBattle)
                 _fsm.TransitionTo(Status.Battle);
+        }
+
+        public void StartOverTime()
+        {
+             _fsm.TransitionTo(Status.Overtime);
+        }
+
+        public void StartTiebreak()
+        {
+            _fsm.TransitionTo(Status.Tiebreaker);
         }
 
         private void PreBattle(Fsm<Status> fsm, FsmStep step)
@@ -97,6 +119,7 @@ namespace WPP.Battle
         }
 
         private bool _isOvertimeSecondHalf = false;
+
         private void Overtime(Fsm<Status> fsm, FsmStep step)
         {
             if(step == FsmStep.Enter)

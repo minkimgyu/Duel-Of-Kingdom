@@ -4,11 +4,12 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
-using System.Text.Json;
 using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
 using WPP.ClashRoyale_Server.Data.Collection;
 using WPP.ClashRoyale_Server.Data;
 using System.Security.Cryptography;
+using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace WPP.ClashRoyale_Server.Protocol.Server
 {
@@ -78,7 +79,7 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
                     // 클라이언트에 별도의 데이터 시트를 먼저 만든 다음
                     // 업데이트 된 부분만 별도 적용하는 방법도 생각중
                     CardCollection cardCollection = DatabaseManager.Instance().LoadCardCollection(clients[i].tcp.id, clients[i].accountInfo.username);
-                    string cardCollectionString = JsonSerializer.Serialize(cardCollection);
+                    string cardCollectionString = JsonConvert.SerializeObject(cardCollection);
                     ByteBuffer buffer = new ByteBuffer();
                     buffer.WriteString(cardCollectionString);
                     ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_LOAD_CARD_COLLECTION, i, buffer.ToArray());

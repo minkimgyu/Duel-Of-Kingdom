@@ -6,8 +6,7 @@ using WPP.ClashRoyale_Server.Data;
 using WPP.ClashRoyale_Server.Data.ClientInfo.Tower;
 using WPP.ClashRoyale_Server.Data.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
-using System.Text.Json;
-using System.Text.Json.Nodes;
+using Newtonsoft.Json;
 
 namespace WPP.ClashRoyale_Server.Protocol.Server
 {
@@ -122,15 +121,15 @@ namespace WPP.ClashRoyale_Server.Protocol.Server
                 ByteBuffer loginBuffer = new ByteBuffer();
 
                 // 클라이언트 계정 정보 JSON화
-                string accountString = JsonSerializer.Serialize(account);
+                string accountString = JsonConvert.SerializeObject(account);
                 loginBuffer.WriteString(accountString);
 
                 // 클라이언트 타워 정보 JSON화
-                string towersString = JsonSerializer.Serialize(towers);
+                string towersString = JsonConvert.SerializeObject(towers);
                 loginBuffer.WriteString(towersString);
 
                 // 클라이언트 덱 정보 JSON화
-                string decksString = JsonSerializer.Serialize(decks);
+                string decksString = JsonConvert.SerializeObject(decks);
                 loginBuffer.WriteString(decksString);
 
                 ServerTCP.Instance().SendDataTo(Server_PacketTagPackages.S_ACCEPT_LOGIN, clientID, loginBuffer.ToArray());

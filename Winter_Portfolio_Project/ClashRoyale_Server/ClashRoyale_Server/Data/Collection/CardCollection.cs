@@ -10,16 +10,16 @@ namespace WPP.ClashRoyale_Server.Data.Collection
 {
     class CardCollection
     {
-        public List<Card> _cardCollection { get; set; }
+        public List<Card> cardCollection { get; set; }
 
         public CardCollection()
         {
-            _cardCollection = new List<Card>();
+            cardCollection = new List<Card>();
         }
 
         public void AddCard(Card card)
         {
-            _cardCollection.Add(card);
+            cardCollection.Add(card);
         }
     }
 }

@@ -6,9 +6,7 @@ using WPP.ClashRoyale_Server.Data.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
 using WPP.ClashRoyale_Server.Data.ClientInfo.CardData;
 using WPP.ClashRoyale_Server.Data.Collection;
-using System.Security.Cryptography;
-using ClashRoyale_Server.Database.Units;
-using System.IO.Ports;
+using WPP.ClashRoyale_Server.Data.Units;
 using System.Data;
 using System.Runtime.Remoting.Messaging;
 using System.Diagnostics.Eventing.Reader;
@@ -152,34 +150,49 @@ namespace WPP.ClashRoyale_Server.Data
                     if (reader.Read())
                     {
                         int? troop_id = reader["troop_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["troop_id"]);
-                        int? building_id = reader["building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["building_id"]);
+                        int? attack_building_id = reader["attack_building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["attack_building_id"]);
+                        int? spawn_building_id = reader["spawn_building_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spawn_building_id"]);
                         int? spell_id = reader["spell_id"] is DBNull ? (int?)null : Convert.ToInt32(reader["spell_id"]);
 
                         CardType type;
+                        int unit_id;
                         if (troop_id != null)
                         {
-                            type = CardType.Troop;
+                            type = CardType.troop;
+                            unit_id = (int)troop_id;
                         }
-                        else if(building_id != null)
+                        else if(attack_building_id != null)
                         {
-                            type = CardType.Building;
+                            type = CardType.attack_building;
+                            unit_id = (int)attack_building_id;
+                        }
+                        else if (spawn_building_id != null)
+                        {
+                            type = CardType.spawn_building;
+                            unit_id = (int)spawn_building_id;
                         }
                         else if (spell_id != null)
                         {
-                            type = CardType.Spell;
-                        }else
+                            type = CardType.spell;
+                            unit_id = (int)spell_id;
+                        }
+                        else
                         {
                             type = 0;
+                            unit_id = 0;
                         }
-
 
                         Enum.TryParse<CardRarity>((string)reader["rarity"], out CardRarity rarity);
                         int needElixir = Convert.ToInt32(reader["needElixir"]);
+                        string gridSizeName = (string)(reader["grid_size_name"]);
+
+                        GridSize gridSize = new GridSize();
+                        if (String.Equals(gridSizeName, "troop_default")) gridSize.TroopGrid();
+                        if(String.Equals(gridSizeName, "building_default")) gridSize.BuildingGrid();
 
                         reader.Close();
 
-                        // girdSize 추가 필요
-                        Card card = new Card(card_id, type, rarity, needElixir, new Vector2Int().One());
+                        Card card = new Card(card_id, unit_id, type, rarity, needElixir, gridSize);
                         return card;
                     }
                 }
@@ -188,20 +201,86 @@ namespace WPP.ClashRoyale_Server.Data
             return null;
         }
 
-        public Unit FindUnit(int unitID)
+        public Unit FindUnit(CardType type, int unit_id)
         {
-            string query = "SELECT * FROM unit WHERE unit_id = '" + unitID + "'";
+            string tableName;
+            string idName;
+
+            // selecting table name
+            switch(type)
+            {
+                case CardType.troop:
+                    tableName = "troop";
+                    idName = "troop_id";
+                    break;
+                case CardType.attack_building:
+                    tableName = "attack_building";
+                    idName = "attack_building_id";
+                    break;
+                case CardType.spawn_building:
+                    tableName = "spawn_building";
+                    idName = "spawn_building_id";
+                    break;
+                case CardType.spell:
+                    tableName = "spell";
+                    idName = "spell_id";
+                    break;
+                default:
+                    tableName = "";
+                    idName = "";
+                    break;
+            }
+
+            string query = "SELECT * FROM " + tableName + " WHERE " + idName + " = '" + unit_id + "'";
             MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.Read())
             {
-                int unitId = Convert.ToInt32(reader["unit_id"]);
-                Enum.TryParse<UnitType>((string)reader["type"], out UnitType unitType);
+                string name = (string)(reader["name"]);
                 int level = Convert.ToInt32(reader["level"]);
+                Unit unit;
 
-                Unit unit = new Unit(unitId, unitType, level);
+                switch (type)
+                {
+                    case CardType.troop:
+                        Troop troop = new Troop(unit_id, name, level);
+                        troop.hitpoints = Convert.ToInt32(reader["hitpoints"]);
+                        troop.damage = Convert.ToSingle(reader["damage"]);
+                        troop.hit_speed = Convert.ToSingle(reader["hit_speed"]);
+                        troop.range = Convert.ToSingle(reader["range"]);
+
+                        unit = troop;
+                        break;
+                    case CardType.attack_building:
+                        AttackBuilding attackBuilding = new AttackBuilding(unit_id, name, level);
+                        attackBuilding.hitpoints = Convert.ToSingle(reader["hitpoints"]);
+                        attackBuilding.damage = Convert.ToSingle(reader["damage"]);
+                        attackBuilding.life_time = Convert.ToSingle(reader["life_time"]);
+                        attackBuilding.hit_speed = Convert.ToSingle(reader["hit_speed"]);
+                        attackBuilding.range = Convert.ToSingle(reader["range"]);
+
+                        unit = attackBuilding;
+                        break;
+                    case CardType.spawn_building:
+                        SpawnBuilding spawnBuilding = new SpawnBuilding(unit_id, name, level);
+                        spawnBuilding.hitpoints = Convert.ToSingle(reader["hitpoints"]);
+                        spawnBuilding.life_time = Convert.ToSingle(reader["life_time"]);
+                        spawnBuilding.spawn_unit_id = Convert.ToInt32(reader["spawn_unit_id"]);
+                        spawnBuilding.spawn_unit_count = Convert.ToInt32(reader["spawn_unit_count"]);
+
+                        unit = spawnBuilding;
+                        break;
+                    case CardType.spell:
+                        Spell spell = new Spell(unit_id, name, level);
+
+                        unit = spell;
+                        break;
+                    default:
+                        unit = null;
+                        break;
+                }
 
                 reader.Close();
                 return unit;
@@ -233,40 +312,42 @@ namespace WPP.ClashRoyale_Server.Data
 
         public void AddTowers(string username)
         {
+            int account_id = FindAcountID(username);
+            int king_tower_id = 0;
+            int left_princess_id = 0;
+            int right_princess_id = 0;
             for (int i = 0; i < Constants.MAXIMUM_TOWERS; i++)
             {
-                int account_id = FindAcountID(username);
-                int tower_id;
-
                 switch(i)
                 {
                     case 0:
-                        tower_id = FindTowerID(TowerType.king_tower, 1);
+                        king_tower_id = FindTowerID(TowerType.king_tower, 1);
                         break;
                     case 1:
-                        tower_id = FindTowerID(TowerType.left_princess_tower, 1);
+                        left_princess_id = FindTowerID(TowerType.princess_tower, 1);
                         break;
                     case 2:
-                        tower_id = FindTowerID(TowerType.right_princess_tower, 1);
+                        right_princess_id = FindTowerID(TowerType.princess_tower, 1);
                         break;
                     default:
-                        tower_id = 0;
                         break;
                 }
+            }
 
-                string query = "INSERT INTO tower_instance(account_id, tower_id) VALUES('" +
+            string query = "INSERT INTO tower_instance(account_id, king_tower_id, left_princess_tower_id, right_princess_tower_id) VALUES('" +
                             account_id + "','" +
-                            tower_id + "')";
+                            king_tower_id + "','" +
+                            left_princess_id + "','" +
+                            right_princess_id + "')";
 
-                try
-                {
-                    MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
-                    cmd.ExecuteNonQuery();
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.ToString());
-                }
+            try
+            {
+                MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
             }
         }
 

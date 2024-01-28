@@ -6,25 +6,17 @@ using System.Threading.Tasks;
 
 namespace WPP.ClashRoyale_Server.Data.Units
 {
-    public enum UnitType
+    public class Unit
     {
-        kinght = 1,
-        dragon,
-        shooter
-    }
-    class Unit
-    {
+        public int id { get; set; }
+        public string name { get; set; }
+        public int level { get; set; }
 
-        private int _id;
-        private UnitType _type;
-        private int _level;
-
-        public Unit() { }
-
-        public Unit(int id, UnitType type, int level) {
-            this._id = id;
-            this._type = type;
-            this._level = level;
+        public Unit(int id, string name, int level) 
+        {
+          this.id = id;
+          this.name = name;
+          this.level = level;
         }
     }
 }

@@ -135,12 +135,30 @@ namespace WPP.Network
         {
             string accountString = buffer.ReadString(true);
             ClientData.Instance().account = JsonConvert.DeserializeObject<ClientAccount>(accountString);
+            string accountFilePath = "Assets\\GameFile\\account.json";
+            if (File.Exists(accountFilePath))
+            {
+                File.Delete(accountFilePath);
+            }
+            File.WriteAllText(accountFilePath, accountString);
 
             string towersString = buffer.ReadString(true);
             ClientData.Instance().towers = JsonConvert.DeserializeObject<Towers>(towersString);
+            string towersFilePath = "Assets\\GameFile\\towers.json";
+            if (File.Exists(towersFilePath))
+            {
+                File.Delete(towersFilePath);
+            }
+            File.WriteAllText(towersFilePath, towersString);
 
             string decksString = buffer.ReadString(true);
             ClientData.Instance().decks = JsonConvert.DeserializeObject<Decks>(decksString);
+            string decksFilePath = "Assets\\GameFile\\decks.json";
+            if (File.Exists(decksFilePath))
+            {
+                File.Delete(decksFilePath);
+            }
+            File.WriteAllText(decksFilePath, decksString);
 
             SceneManager.LoadScene("Lobby");
             Debug.Log("login completed");

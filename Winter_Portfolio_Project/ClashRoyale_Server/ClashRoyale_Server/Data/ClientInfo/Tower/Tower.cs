@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.Tower
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.Tower
 {
     public enum TowerType
     {

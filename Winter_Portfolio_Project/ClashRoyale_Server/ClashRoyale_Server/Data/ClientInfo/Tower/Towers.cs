@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPP.ClashRoyale_Server.Database.ClientInfo;
+using WPP.ClashRoyale_Server.Data.ClientInfo;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.Tower
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.Tower
 {
     class Towers
     {

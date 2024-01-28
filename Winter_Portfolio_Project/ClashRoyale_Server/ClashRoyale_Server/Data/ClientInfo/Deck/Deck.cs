@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPP.ClashRoyale_Server.Database.ClientInfo.CardData;
+using WPP.ClashRoyale_Server.Data.ClientInfo.CardData;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.Deck
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.Deck
 {
     class Deck
     {

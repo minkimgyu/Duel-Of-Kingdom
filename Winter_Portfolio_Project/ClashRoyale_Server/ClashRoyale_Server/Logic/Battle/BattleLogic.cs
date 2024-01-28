@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPP.ClashRoyale_Server.Protocol;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Tower;
 using WPP.ClashRoyale_Server.Logic.Room;
 
 namespace WPP.ClashRoyale_Server.Logic.Battle

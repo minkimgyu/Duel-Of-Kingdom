@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using WPP.ClashRoyale_Server.Protocol.Server;
 using WPP.ClashRoyale_Server.Logic.Match;
-using WPP.ClashRoyale_Server.Database;
+using WPP.ClashRoyale_Server.Data;
 
 namespace WPP.ClashRoyale_Server
 {

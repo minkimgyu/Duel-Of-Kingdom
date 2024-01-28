@@ -1,7 +1,7 @@
 ﻿
 using ClashRoyale_Server.Database.Units;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.CardData
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.CardData
 {
     public enum CardType
     {

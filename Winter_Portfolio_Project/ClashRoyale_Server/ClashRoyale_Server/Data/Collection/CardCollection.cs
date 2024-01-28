@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPP.ClashRoyale_Server.Database.ClientInfo.CardData;
+using WPP.ClashRoyale_Server.Data.ClientInfo.CardData;
 using WPP.ClashRoyale_Server;
 
-namespace WPP.ClashRoyale_Server.Database.Collection
+namespace WPP.ClashRoyale_Server.Data.Collection
 {
     class CardCollection
     {

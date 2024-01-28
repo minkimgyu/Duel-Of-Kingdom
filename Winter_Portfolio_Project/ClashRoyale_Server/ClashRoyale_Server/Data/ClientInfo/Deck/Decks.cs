@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.Deck
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.Deck
 {
     class Decks
     {

@@ -5,9 +5,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Text.Json;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
-using WPP.ClashRoyale_Server.Database.Collection;
-using WPP.ClashRoyale_Server.Database;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
+using WPP.ClashRoyale_Server.Data.Collection;
+using WPP.ClashRoyale_Server.Data;
 using System.Security.Cryptography;
 
 namespace WPP.ClashRoyale_Server.Protocol.Server

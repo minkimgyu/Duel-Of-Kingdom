@@ -4,11 +4,11 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using WPP.ClashRoyale_Server.Database;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Account;
+using WPP.ClashRoyale_Server.Data;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Account;
 using WPP.ClashRoyale_Server.Protocol.Client;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Tower;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
 using System.Net;
 
 namespace WPP.ClashRoyale_Server

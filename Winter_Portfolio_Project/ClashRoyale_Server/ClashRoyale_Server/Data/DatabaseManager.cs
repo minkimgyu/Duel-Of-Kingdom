@@ -1,11 +1,11 @@
 ﻿using System;
 using MySql.Data.MySqlClient;
 using WPP.ClashRoyale_Server.Protocol.Server;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Tower;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Account;
-using WPP.ClashRoyale_Server.Database.ClientInfo.Deck;
-using WPP.ClashRoyale_Server.Database.ClientInfo.CardData;
-using WPP.ClashRoyale_Server.Database.Collection;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Tower;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Account;
+using WPP.ClashRoyale_Server.Data.ClientInfo.Deck;
+using WPP.ClashRoyale_Server.Data.ClientInfo.CardData;
+using WPP.ClashRoyale_Server.Data.Collection;
 using System.Security.Cryptography;
 using ClashRoyale_Server.Database.Units;
 using System.IO.Ports;
@@ -13,7 +13,7 @@ using System.Data;
 using System.Runtime.Remoting.Messaging;
 using System.Diagnostics.Eventing.Reader;
 
-namespace WPP.ClashRoyale_Server.Database
+namespace WPP.ClashRoyale_Server.Data
 {
     class DatabaseManager
     {

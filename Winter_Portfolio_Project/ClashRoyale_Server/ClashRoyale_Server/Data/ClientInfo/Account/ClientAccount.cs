@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPP.ClashRoyale_Server.Database.ClientInfo.Account
+namespace WPP.ClashRoyale_Server.Data.ClientInfo.Account
 {
     class ClientAccount
     {

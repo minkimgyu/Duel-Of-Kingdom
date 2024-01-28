@@ -9,8 +9,7 @@ namespace WPP.ClashRoyale_Server.Data.ClientInfo.Tower
     public enum TowerType
     {
         king_tower = 1,
-        left_princess_tower,
-        right_princess_tower
+        princess_tower
     }
     public enum TowerStatus
     {

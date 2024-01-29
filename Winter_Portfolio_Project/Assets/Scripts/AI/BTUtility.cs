@@ -4,9 +4,9 @@ using UnityEngine;
 using BehaviorTree;
 using WPP.AI.TARGET;
 using WPP.AI.ATTACK;
-using WPP.AI;
+using WPP.AI.CAPTURE;
 using System;
-using Tree = BehaviorTree.Tree;
+using WPP.GRID;
 
 namespace WPP.AI.BTUtility
 {
@@ -57,15 +57,21 @@ namespace WPP.AI.BTUtility
         float _offsetDistance;
         protected float _nearDistance;
 
+        bool _useOffset;
+        float _myColliderOffset;
+
         float Distance { get { return _nearDistance + _offsetDistance; } }
 
         CaptureComponent _captureComponent;
 
-        public CheckDistance(CaptureComponent captureComponent, float nearDistance, float offsetDistance = 0)
+        public CheckDistance(CaptureComponent captureComponent, float nearDistance, float offsetDistance = 0, bool useOffset = false, float myColliderOffset = 0)
         {
             _captureComponent = captureComponent;
             _nearDistance = nearDistance;
             _offsetDistance = offsetDistance;
+
+            _useOffset = useOffset;
+            _myColliderOffset = myColliderOffset;
         }
 
         protected bool NowEnoughClose(bool useOffset = false)
@@ -74,8 +80,8 @@ namespace WPP.AI.BTUtility
             if (target == null) return false;
 
             Vector3 nowTargetPosition = target.ReturnPosition();
-
             float distance = Vector3.Distance(_captureComponent.transform.position, nowTargetPosition);
+            if (_useOffset == true) distance -= _myColliderOffset + target.ReturnColliderSize();
 
             if (useOffset == true)
             {
@@ -98,7 +104,7 @@ namespace WPP.AI.BTUtility
         bool _isNearBefore = false; // 이전에 한번 가까워졌던 경우
         AttackComponent _attackComponent;
 
-        public CheckIsNearAndCancelAttackWhenExit(CaptureComponent captureComponent, float nearDistance, float offsetDistance, AttackComponent attackComponent) : base(captureComponent, nearDistance, offsetDistance)
+        public CheckIsNearAndCancelAttackWhenExit(CaptureComponent captureComponent, float nearDistance, float offsetDistance, AttackComponent attackComponent, bool useOffset = false, float myColliderOffset = 0) : base(captureComponent, nearDistance, offsetDistance, useOffset, myColliderOffset)
         {
             _attackComponent = attackComponent;
         }
@@ -119,7 +125,7 @@ namespace WPP.AI.BTUtility
 
             if (_isNearBefore == true && isClose == false)
             {
-                if(_attackComponent.Fix) // 현재 이미 공격이 나간 경우
+                if(_attackComponent.Fix) // 현재 이미 공격이 나간 경우 고정시켜줌
                 {
                     return NodeState.RUNNING;
                 }
@@ -138,17 +144,6 @@ namespace WPP.AI.BTUtility
     public class CheckIsNear : CheckDistance
     {
         public CheckIsNear(CaptureComponent captureComponent, float nearDistance) : base(captureComponent, nearDistance) { }
-
-        public override NodeState Evaluate()
-        {
-            if (NowEnoughClose()) return NodeState.SUCCESS;
-            return NodeState.FAILURE;
-        }
-    }
-
-    public class IsCloseAndWhileAttack : CheckDistance // 가깝고 공격 중인 경우
-    {
-        public IsCloseAndWhileAttack(CaptureComponent captureComponent, float nearDistance) : base(captureComponent, nearDistance) { }
 
         public override NodeState Evaluate()
         {

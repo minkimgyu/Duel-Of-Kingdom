@@ -56,7 +56,7 @@ namespace WPP.AI.TIMER
         {
             if (_isRunning == false || _isFinish == true) return;
 
-            _currentTime += Time.smoothDeltaTime;
+            _currentTime += Time.deltaTime;
             if (_currentTime >= _duration)
             {
                 Finish();

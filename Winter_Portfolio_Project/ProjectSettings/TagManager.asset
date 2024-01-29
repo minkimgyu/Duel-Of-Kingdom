@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - GridManager
+  - GroundUnit
+  - AirUnit
+  - Building
+  - Grid
   layers:
   - Default
   - TransparentFX
@@ -12,10 +15,10 @@ TagManager:
   - 
   - Water
   - UI
-  - Unit
+  - GroundEntity
   - CaptureTrigger
   - Projectile
-  - 
+  - AirEntity
   - 
   - 
   - 

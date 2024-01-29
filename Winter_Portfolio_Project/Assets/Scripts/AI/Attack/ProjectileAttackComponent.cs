@@ -5,17 +5,18 @@ using System;
 using WPP.AI.TARGET;
 using WPP.AI.FSM;
 using WPP.AI.ATTACK.STATE;
+using WPP.AI.PROJECTILE;
 
 namespace WPP.AI.ATTACK
 {
     public class ProjectileAttackComponent : AttackComponent
     {
-        [SerializeField] Projectile _projectile;
+        [SerializeField] BaseProjectile _projectile;
         [SerializeField] Transform _spawnPoint;
 
         public override void DoAttackTask()
         {
-            Projectile projectile = Instantiate(_projectile, _spawnPoint.position, Quaternion.identity);
+            BaseProjectile projectile = Instantiate(_projectile, _spawnPoint.position, Quaternion.identity);
             projectile.Initialize(Target, Damage, ApplyDamage);
         }
 
@@ -25,7 +26,7 @@ namespace WPP.AI.ATTACK
 
             BaseState ready = new ReadyState(this);
             BaseState preDelay = new DelayState(this, 2, AttackState.Fire);
-            BaseState fire = new FireState(this, 0.05f, 0.2f);
+            BaseState fire = new FireState(this, 0.2f, 0.4f);
             BaseState afterDelay = new DelayState(this, 2);
 
             attackStates.Add(AttackState.Ready, ready);

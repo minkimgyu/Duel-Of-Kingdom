@@ -99,8 +99,12 @@ namespace WPP.ClashRoyale_Server.Data
 
         public int FindTowerID(TowerType type, int level)
         {
-            string query = "SELECT tower_id FROM tower WHERE type = '" + type + "' AND level = '" + level + "'";
-            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            string storedProcedureName = "GetTowerID";
+            MySqlCommand cmd = new MySqlCommand(storedProcedureName, _mySqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@in_type", type.ToString());
+            cmd.Parameters.AddWithValue("@in_level", level);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -116,8 +120,11 @@ namespace WPP.ClashRoyale_Server.Data
 
         public Tower FindTower(int towerID)
         {
-            string query = "SELECT * FROM tower WHERE tower_id = '" + towerID + "'";
-            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            string storedProcedureName = "GetTower";
+            MySqlCommand cmd = new MySqlCommand(storedProcedureName, _mySqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@in_tower_id", towerID);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 
@@ -161,7 +168,7 @@ namespace WPP.ClashRoyale_Server.Data
                             type = CardType.troop;
                             unit_id = (int)troop_id;
                         }
-                        else if(attack_building_id != null)
+                        else if (attack_building_id != null)
                         {
                             type = CardType.attack_building;
                             unit_id = (int)attack_building_id;
@@ -188,7 +195,7 @@ namespace WPP.ClashRoyale_Server.Data
 
                         GridSize gridSize = new GridSize();
                         if (String.Equals(gridSizeName, "troop_default")) gridSize.TroopGrid();
-                        if(String.Equals(gridSizeName, "building_default")) gridSize.BuildingGrid();
+                        if (String.Equals(gridSizeName, "building_default")) gridSize.BuildingGrid();
 
                         reader.Close();
 
@@ -207,7 +214,7 @@ namespace WPP.ClashRoyale_Server.Data
             string idName;
 
             // selecting table name
-            switch(type)
+            switch (type)
             {
                 case CardType.troop:
                     tableName = "troop";
@@ -318,7 +325,7 @@ namespace WPP.ClashRoyale_Server.Data
             int right_princess_id = 0;
             for (int i = 0; i < Constants.MAXIMUM_TOWERS; i++)
             {
-                switch(i)
+                switch (i)
                 {
                     case 0:
                         king_tower_id = FindTowerID(TowerType.king_tower, 1);
@@ -383,8 +390,11 @@ namespace WPP.ClashRoyale_Server.Data
 
         public ClientAccount LoadAccount(int clientID, string username)
         {
-            string query = "SELECT * FROM account WHERE username = '" + username + "'";
-            MySqlCommand cmd = new MySqlCommand(query, _mySqlConnection);
+            string storedProcedureName = "GetAccount";
+            MySqlCommand cmd = new MySqlCommand(storedProcedureName, _mySqlConnection);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@in_username", username);
 
             MySqlDataReader reader = cmd.ExecuteReader();
 

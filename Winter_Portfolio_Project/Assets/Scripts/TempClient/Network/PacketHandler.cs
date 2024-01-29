@@ -1,3 +1,6 @@
+#undef DEBUG
+#define BUILD
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -74,7 +77,7 @@ namespace WPP.Network
                 return;
             }
 
-            if(ClientTCP.Instance().buffer.Count() > 4)
+            if (ClientTCP.Instance().buffer.Count() > 4)
             {
                 int dataLength = ClientTCP.Instance().buffer.ReadInteger(true);
                 byte[] data = new byte[dataLength];
@@ -116,7 +119,11 @@ namespace WPP.Network
         public void LoadCardCollection(ref ByteBuffer buffer)
         {
             string cardCollectionString = buffer.ReadString(true);
+#if DEBUG
             string jsonFilePath = "Assets\\GameFile\\card_collection.json";
+#elif BUILD
+            string jsonFilePath = Application.persistentDataPath + "/card_collection.json";
+#endif
             if (File.Exists(jsonFilePath))
             {
                 File.Delete(jsonFilePath);
@@ -135,7 +142,11 @@ namespace WPP.Network
         {
             string accountString = buffer.ReadString(true);
             ClientData.Instance().account = JsonConvert.DeserializeObject<ClientAccount>(accountString);
+#if DEBUG
             string accountFilePath = "Assets\\GameFile\\account.json";
+#elif BUILD
+            string accountFilePath = Application.persistentDataPath + "/account.json";
+#endif
             if (File.Exists(accountFilePath))
             {
                 File.Delete(accountFilePath);
@@ -144,7 +155,11 @@ namespace WPP.Network
 
             string towersString = buffer.ReadString(true);
             ClientData.Instance().towers = JsonConvert.DeserializeObject<Towers>(towersString);
+#if DEBUG
             string towersFilePath = "Assets\\GameFile\\towers.json";
+#elif BUILD
+            string towersFilePath = Application.persistentDataPath + "/towers.json";
+#endif
             if (File.Exists(towersFilePath))
             {
                 File.Delete(towersFilePath);
@@ -153,7 +168,11 @@ namespace WPP.Network
 
             string decksString = buffer.ReadString(true);
             ClientData.Instance().decks = JsonConvert.DeserializeObject<Decks>(decksString);
+#if DEBUG
             string decksFilePath = "Assets\\GameFile\\decks.json";
+#elif BUILD
+            string decksFilePath = Application.persistentDataPath + "/decks.json";
+#endif
             if (File.Exists(decksFilePath))
             {
                 File.Delete(decksFilePath);

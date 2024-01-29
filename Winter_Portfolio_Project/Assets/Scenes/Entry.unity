@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _serverIP: 192.168.1.81
-  _serverPort: 0
+  _serverPort: 7000
 --- !u!1 &852170057
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,47 +78,6 @@ namespace WPP.Battle.Example
             SubscribeTowerEvent(_playerKT);
 
             // Opponent Tower
-            _opponentCT1.damageButton.onClick.AddListener(() => _opponentCT1.tower.Damage(1));
-            _playerCT1.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_LPT, BitConverter.GetBytes(3)));
-
-            _opponentCT2.damageButton.onClick.AddListener(() => _opponentCT2.tower.Damage(1));
-            _playerCT2.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_RPT, BitConverter.GetBytes(2)));
-
-            _opponentKT.damageButton.onClick.AddListener(() => _opponentKT.tower.Damage(1));
-            _playerKT.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_KT, BitConverter.GetBytes(1)));
-
-            SubscribeTowerEvent(_opponentCT1);
-            SubscribeTowerEvent(_opponentCT2);
-            SubscribeTowerEvent(_opponentKT);
-
-            // Elixir System
-            _playerElixirSystem.OnElixirCountChange += SetElixirText;
-
-            _multiplyRate.onClick.AddListener(() => _playerElixirSystem.SetElixirRegenTime(_playerElixirSystem.ElixirRegenTime * 2));
-            _divideRate.onClick.AddListener(() => _playerElixirSystem.SetElixirRegenTime(_playerElixirSystem.ElixirRegenTime / 2));
-
-            for(int i = 0; i < 3; i++)
-            {
-                int index = i;
-                _spendElixir[i].onClick.AddListener(() => _playerElixirSystem.SpendElixir(index * 2 + 1));
-            }
-        }
-
-        private void OnDisable()
-        {
-            _battleManager.OnStatusChange -= SetStatusText;
-            _battleTimer.OnTimerUpdate -= SetTimerText;
-
-            _startButton.onClick.RemoveAllListeners();
-
-            _playerCT1.damageButton.onClick.RemoveAllListeners();
-            _playerCT2.damageButton.onClick.RemoveAllListeners();
-            _playerKT.damageButton.onClick.RemoveAllListeners();
-
-            UnsubscribeTowerEvent(_playerCT1);
-            UnsubscribeTowerEvent(_playerCT2);
-            UnsubscribeTowerEvent(_playerKT);
-
             _opponentCT1.damageButton.onClick.RemoveAllListeners();
             _opponentCT2.damageButton.onClick.RemoveAllListeners();
             _opponentKT.damageButton.onClick.RemoveAllListeners();
@@ -173,7 +132,7 @@ namespace WPP.Battle.Example
             towerUIGroup.tower.OnDamaged -= towerUIGroup.OnDamaged;
             towerUIGroup.tower.OnDestroyed -= towerUIGroup.OnDestroyed;
         }
-    
+
         private void SetElixirText(int elixir)
         {
             _elixirText.text = $"{elixir}/{_playerElixirSystem.MaxElixirCount}";
@@ -182,16 +141,16 @@ namespace WPP.Battle.Example
         public void DamageTower(int towerID)
         {
             Debug.Log("DamageTower");
-            switch(towerID)
+            switch (towerID)
             {
                 case 1:
-                    _playerKT.tower.Damage(1);
+                    _opponentKT.tower.Damage(1);
                     break;
                 case 2:
-                    _playerCT1.tower.Damage(1);
+                    _opponentCT1.tower.Damage(1);
                     break;
                 case 3:
-                    _playerCT2.tower.Damage(1);
+                    _opponentCT2.tower.Damage(1);
                     break;
             }
         }

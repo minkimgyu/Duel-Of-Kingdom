@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace WPP.Deck.UI
 {
@@ -8,6 +10,10 @@ namespace WPP.Deck.UI
     {
         [SerializeField] private GameObject _addButton;
         [SerializeField] private GameObject _removeButton;
+        [Space]
+        [SerializeField] private TextMeshProUGUI _cardLv;
+        [SerializeField] private Button _levelUp;
+        [SerializeField] private Button _levelDown;
 
         private DeckUIController _controller;
         private int _gridIndex;
@@ -21,11 +27,18 @@ namespace WPP.Deck.UI
             {
                 _addButton.SetActive(false);
                 _removeButton.SetActive(true);
+
+                _levelUp.interactable = true;
+                _levelDown.interactable = true;
             }
             else
             {
                 _addButton.SetActive(true);
                 _removeButton.SetActive(false);
+
+                _cardLv.text = "-";
+                _levelUp.interactable = false;
+                _levelDown.interactable = false;
             }
         }
 
@@ -36,6 +49,20 @@ namespace WPP.Deck.UI
         public void RemoveFromDeck()
         {
             _controller.RemoveCardFromDeck(_gridIndex);
+        }
+
+        public void SetCardLevel(int level)
+        {
+            _cardLv.text = level.ToString();
+        }
+
+        public void LevelUp()
+        {
+            _controller.LevelUpCard(_gridIndex);
+        }
+        public void LevelDown()
+        {
+            _controller.LevelDownCard(_gridIndex);
         }
     }
 }

@@ -97,6 +97,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _addButton: {fileID: 6027713471657235060}
   _removeButton: {fileID: 5734691647798523262}
+  _cardLv: {fileID: 5198231516085889456}
+  _levelUp: {fileID: 2370016062483100284}
+  _levelDown: {fileID: 6479336532196726421}
 --- !u!1 &1003160348556030227
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,7 +609,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1273799005694204072}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -4849222204777771428}
+        m_TargetAssemblyTypeName: WPP.Deck.UI.CardPopupUI, Assembly-CSharp
+        m_MethodName: LevelDown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3980704379580173993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1395,7 +1410,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 341671138424870184}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -4849222204777771428}
+        m_TargetAssemblyTypeName: WPP.Deck.UI.CardPopupUI, Assembly-CSharp
+        m_MethodName: LevelUp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8606786985065270266
 GameObject:
   m_ObjectHideFlags: 0

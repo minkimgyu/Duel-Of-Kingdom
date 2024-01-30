@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using TMPro;
 using UnityEngine;
 
 namespace WPP.Deck.UI
@@ -9,6 +10,7 @@ namespace WPP.Deck.UI
     {
         [SerializeField] private DeckEditor _deckEditor;
         [Header("Deck UI")]
+        [SerializeField] private TextMeshProUGUI _deckTotalPoint;
         [SerializeField] private GameObject _deckCardGrid;
         [SerializeField] private GameObject _deckCardPopupGrid;
         [SerializeField] private int _defaultDeckCardCount = 8;
@@ -37,6 +39,9 @@ namespace WPP.Deck.UI
         private void Start()
         {
             _deckEditor.OnDeckChanged += SetCards;
+            _deckEditor.OnDeckChanged += SetCardLevel;
+            _deckEditor.OnDeckChanged += SetTotalPoint;
+
             InitializeGrid();
             _deckEditor.LoadDeck();
             _deckEditor.SelectDeck(0);
@@ -110,6 +115,12 @@ namespace WPP.Deck.UI
                 popup.SetActive(false);
         }
 
+        public void SelectDeck(int index)
+        {
+            TurnAllPopupsOff();
+            _deckEditor.SelectDeck(index);
+        }
+
         public void AddCardToDeck(int index)
         {
             _deckEditor.AddCard(_cardCollection[index]);
@@ -120,6 +131,16 @@ namespace WPP.Deck.UI
         {
             _deckEditor.RemoveCard(index);
             TurnAllPopupsOff();
+        }
+
+        public void LevelUpCard(int index)
+        {
+            _deckEditor.IncreaseCardLevel(index);
+        }
+
+        public void LevelDownCard(int index)
+        {
+            _deckEditor.DecreaseCardLevel(index);
         }
     
         public void SetCards(Deck deck)
@@ -145,6 +166,18 @@ namespace WPP.Deck.UI
             }
             Debug.Log(sb.ToString());
         }
-    
+        
+        public void SetCardLevel(Deck deck)
+        {
+            for (int i = 0; i < deck.CardId.Count; i++)
+            {
+                _deckPopups[i].GetComponentInChildren<CardPopupUI>().SetCardLevel(deck.GetCardLevel(i));
+            }
+        }
+
+        public void SetTotalPoint(Deck deck)
+        {
+            _deckTotalPoint.text = _deckEditor.GetTotalDeckPoint(deck).ToString() + "/" + _deckEditor.MaxPoint;
+        }
     }
 }

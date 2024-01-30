@@ -7,6 +7,8 @@ namespace WPP.Deck
 {
     public class DeckEditor : MonoBehaviour
     {
+        [SerializeField] private int _maxPoint = 40;
+        public int MaxPoint => _maxPoint;
         public event System.Action<Deck> OnDeckChanged;
 
         private Deck[] _deck;
@@ -51,6 +53,7 @@ namespace WPP.Deck
             {
                 if (_deck[currentDeck].IsEmpty(i))
                 {
+                    _deck[currentDeck].SetCardLevel(i, 0);
                     _deck[currentDeck].SetCard(i, id);
                     OnDeckChanged?.Invoke(SelectedDeck);
                     return;
@@ -62,22 +65,65 @@ namespace WPP.Deck
 
         public void RemoveCard(int cardIndex)
         {
+            _deck[currentDeck].SetCardLevel(cardIndex, 0);
             _deck[currentDeck].SetEmpty(cardIndex);
             OnDeckChanged?.Invoke(SelectedDeck);
         }
 
-        public void SetCardLevel(int cardIndex, int level)
+        public void IncreaseCardLevel(int cardIndex)
         {
-            _deck[currentDeck].SetCardLevel(cardIndex, level);
+            int level = _deck[currentDeck].GetCardLevel(cardIndex);
+            if (level >= 10)
+            {
+                Debug.Log("Card is already max level");
+                return;
+            }
+            if (GetTotalDeckPoint() >= _maxPoint)
+            {
+                Debug.Log("Cannot level up beyond total of " + _maxPoint + " points");
+                return;
+            }
+
+            _deck[currentDeck].SetCardLevel(cardIndex, _deck[currentDeck].GetCardLevel(cardIndex) + 1);
+            OnDeckChanged?.Invoke(SelectedDeck);
+        }
+
+        public void DecreaseCardLevel(int cardIndex)
+        {
+            int level = _deck[currentDeck].GetCardLevel(cardIndex);
+            if (level <= 0)
+            {
+                Debug.Log("Card is already min level");
+                return;
+            }
+
+            _deck[currentDeck].SetCardLevel(cardIndex, _deck[currentDeck].GetCardLevel(cardIndex) - 1);
+            OnDeckChanged?.Invoke(SelectedDeck);
         }
     
         public void ClearDeck()
         {
             for (int i = 0; i < _deck[currentDeck].CardId.Count; i++)
             {
+                _deck[currentDeck].SetCardLevel(i, 0);
                 _deck[currentDeck].SetEmpty(i);
             }
             OnDeckChanged?.Invoke(SelectedDeck);
+        }
+
+        public int GetTotalDeckPoint() => GetTotalDeckPoint(SelectedDeck);
+
+        public int GetTotalDeckPoint(Deck deck)
+        {
+            int totalPoint = 0;
+            for (int i = 0; i < deck.CardId.Count; i++)
+            {
+                if (!deck.IsEmpty(i))
+                {
+                    totalPoint += deck.GetCardLevel(i);
+                }
+            }
+            return totalPoint;
         }
 
         public bool IsInDeck(string id)

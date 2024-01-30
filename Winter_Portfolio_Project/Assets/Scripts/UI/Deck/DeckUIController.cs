@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace WPP.Deck.UI
@@ -135,6 +136,14 @@ namespace WPP.Deck.UI
                 _collectionCardUIs[i].SetCard(_cardCollection[i].id);
                 _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id);
             }
+
+            StringBuilder sb = new StringBuilder();
+            foreach (var id in deck.CardId)
+            {
+                sb.Append(id);
+                sb.Append(" ");
+            }
+            Debug.Log(sb.ToString());
         }
     
     }

@@ -17,7 +17,7 @@ namespace WPP.Deck
             cardLevel = new(8);
             for (int i = 0; i < 8; i++)
             {
-                cardLevel.Add(5);
+                cardLevel.Add(0);
             }
         }
 
@@ -28,10 +28,14 @@ namespace WPP.Deck
 
         public string GetCardId(int index) => cardId[index];
         public int GetCardLevel(int index) => cardLevel[index];
-        public void SetCard(int index, Card card) => cardId[index] = card.id;
+
+        public void SetCard(int index, string id) => cardId[index] = id;
+        public void SetCard(int index, Card card) => SetCard(index, card.id);
+
         public void SetCardLevel(int index, int level) => cardLevel[index] = level;
 
         public void SetEmpty(int index) => cardId[index] = Card.Empty.id;
+
         public bool IsEmpty(int index) => cardId[index] == Card.Empty.id;
     }
 }

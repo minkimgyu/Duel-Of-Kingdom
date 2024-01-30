@@ -147,15 +147,15 @@ namespace WPP.Deck.UI
         {
             for (int i = 0; i < deck.CardId.Count; i++)
             {
-                _deckCardUIs[i].SetCard(deck.CardId[i]);
-                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i]);
+                _deckCardUIs[i].SetCard(deck.CardId[i], deck.GetCardLevel(i) / 10f);
+                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i], deck.GetCardLevel(i) / 10f);
 
             }
 
             for (int i = 0; i < _cardCollection.Count; i++)
             {
-                _collectionCardUIs[i].SetCard(_cardCollection[i].id);
-                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id);
+                _collectionCardUIs[i].SetCard(_cardCollection[i].id, 0);
+                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id, 0);
             }
 
             StringBuilder sb = new StringBuilder();

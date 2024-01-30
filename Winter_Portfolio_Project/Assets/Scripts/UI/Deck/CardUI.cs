@@ -11,6 +11,8 @@ namespace WPP.Deck.UI
         [SerializeField] private TextMeshProUGUI _cardName;
         [SerializeField] private Button _button;
 
+        [SerializeField] private RectTransform _levelBar;
+
         private DeckUIController _controller;
         private GameObject _popup;
         private int _gridIndex;
@@ -23,7 +25,7 @@ namespace WPP.Deck.UI
             _gridIndex = gridIndex;
         }
 
-        public void SetCard(string id)
+        public void SetCard(string id, float lvProgress)
         {
             if (string.IsNullOrEmpty(id))
             {
@@ -35,6 +37,8 @@ namespace WPP.Deck.UI
                 _cardName.text = id;
                 _button.interactable = true;
             }
+
+            SetLevelBar(lvProgress);
         }
 
         public void TogglePopup()
@@ -42,6 +46,11 @@ namespace WPP.Deck.UI
             bool isPopupActive = _popup.activeSelf;
             _controller.TurnAllPopupsOff();
             _popup.SetActive(!isPopupActive);
+        }
+
+        private void SetLevelBar(float progress)
+        {
+            _levelBar.anchorMax = new Vector2(progress, 0);
         }
     }
 }

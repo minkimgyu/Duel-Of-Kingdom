@@ -23,7 +23,7 @@ namespace WPP.GRID
 
         // 이중 배열의 길이, 인덱스 0의 배열의 길이
         public Vector2Int LocalBottomLeft { get { return new Vector2Int(0, 0); } } // BottomLeft로 시작지점 고정
-        public Vector2Int LocalTopRight { get { return new Vector2Int(_gridArray.GetLength(0) - 1, _gridArray.Length - 1); } }
+        public Vector2Int LocalTopRight { get { return new Vector2Int(_gridArray.GetLength(0) - 1, _gridArray.GetLength(1) - 1); } }
     }
 
     public class PathFinder : MonoBehaviour

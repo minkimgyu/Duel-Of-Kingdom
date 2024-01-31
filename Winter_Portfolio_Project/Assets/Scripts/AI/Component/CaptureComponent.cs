@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using WPP.AI.TARGET;
 using System;
+using WPP.AI.BUILDING;
 
 namespace WPP.AI.CAPTURE
 {
@@ -20,6 +21,7 @@ namespace WPP.AI.CAPTURE
 
         List<ITarget> _targets = new List<ITarget>();
         CaptureTag[] _tagsToCapture;
+        float _playerId;
 
         bool CheckContainTag(string tag)
         {
@@ -31,15 +33,37 @@ namespace WPP.AI.CAPTURE
             return false;
         }
 
-        public void Initialize(CaptureTag[] tagsToCapture)
+        // 플레이어 id를 비교해서 상대방의 타워로 인식되는 오브젝트를 리스트 안에 추가함
+        void AddTowers()
+        {
+            // 이런식으로 찾아서 _captureComponent에 집어넣어줌
+            PrincessTower[] princessTowers = FindObjectsOfType<PrincessTower>();
+            KingTower[] kingTowers = FindObjectsOfType<KingTower>();
+
+            for (int i = 0; i < princessTowers.Length; i++)
+                if(princessTowers[i].PlayerId != _playerId) _targets.Add(princessTowers[i]);
+
+            for (int i = 0; i < kingTowers.Length; i++)
+                if (kingTowers[i].PlayerId != _playerId) _targets.Add(kingTowers[i]);
+        }
+
+        public void Initialize(CaptureTag[] tagsToCapture, int playerId, float range)
         {
             _tagsToCapture = tagsToCapture;
+            _playerId = playerId;
+
+            AddTowers();
+
+            CapsuleCollider collider = GetComponent<CapsuleCollider>();
+            if (collider == null) return;
+
+            collider.radius = range;
         }
 
         private void OnTriggerEnter(Collider other)
         {
             ITarget tmpTarget = other.GetComponent<ITarget>();
-            if (tmpTarget == null || _targets.Contains(tmpTarget) == true) return;
+            if (tmpTarget == null || _targets.Contains(tmpTarget) == true || IsTower(tmpTarget)) return;
             // 만약 ITarget이 없다면 null을 리턴함
             // targets 리스트가 tmpTarget를 포함하면 리턴
 
@@ -52,9 +76,15 @@ namespace WPP.AI.CAPTURE
         private void OnTriggerExit(Collider other)
         {
             ITarget tmpTarget = other.GetComponent<ITarget>();
-            if (tmpTarget == null || _targets.Contains(tmpTarget) == false) return;
+            if (tmpTarget == null || _targets.Contains(tmpTarget) == false || IsTower(tmpTarget)) return;
 
             _targets.Remove(tmpTarget);
+        }
+
+        // 오브젝트 이름에 타워가 들어가면 타겟을 해제하지 않음
+        public bool IsTower(ITarget target)
+        {
+            return target.ReturnName().Contains("tower");
         }
 
         public bool IsContainTarget()
@@ -79,6 +109,8 @@ namespace WPP.AI.CAPTURE
                     if (i > lastIndex) break; //  // 마지막 인덱스에 비교해서 더 큰 경우
                     else continue;
                 }
+
+                if (_targets[i].PlayerId == _playerId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
 
                 if (i == 0)
                 {

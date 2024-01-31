@@ -8,6 +8,8 @@ using WPP.AI.ATTACK;
 using WPP.AI.BTUtility;
 using WPP.AI.CAPTURE;
 using WPP.GRID;
+using WPP.AI.FSM;
+using WPP.AI.ACTION.STATE;
 
 namespace WPP.AI.UNIT
 {
@@ -15,6 +17,8 @@ namespace WPP.AI.UNIT
     {
         // 기본적인 겹치는 기능은 여기서 구현
         // 이동성을 가짐
+
+        // Ready --> Active State로 전환됨
 
         protected MoveComponent _moveComponent;
         protected ViewComponent _viewComponent;
@@ -74,15 +78,20 @@ namespace WPP.AI.UNIT
         protected float _directFollowOffset = 0.5f;
         //
 
+        protected float _delayDuration = 0; // 스폰 시 일정 시간 딜레이
+
         AttackComponent _attackComponent;
+
+        public override void ResetDelayAfterSpawn(float delayDuration) { _delayDuration = delayDuration; }
 
         protected override void InitializeComponent()
         {
             _attackComponent = GetComponent<AttackComponent>();
+            _attackComponent.Initialize(_damage);
             base.InitializeComponent();
         }
 
-        public override void Initialize(int id, int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range)
+        public override void Initialize(int id, int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
         {
             // BT에 사용될 변수는 여기서 초기화해야함
 
@@ -100,8 +109,15 @@ namespace WPP.AI.UNIT
             // 여기서 컴포넌트를 가져와서 초기화해준다.
             // 추가로 BT도 초기화해준다.
            
+            _captureComponent.Initialize(targetTag, PlayerId, captureRange); // 이런 식으로 세부 변수를 할당해준다.
 
-            _captureComponent.Initialize(targetTag); // 이런 식으로 세부 변수를 할당해준다.
+            Dictionary<ActionState, BaseState> attackStates = new Dictionary<ActionState, BaseState>()
+            {
+                {ActionState.Ready, new ReadyState(this, _delayDuration)},
+                {ActionState.Active, new ActiveState(this)}
+            };
+
+            InitializeFSM(attackStates, ActionState.Ready);
         }
 
         protected override void InitializeBT()

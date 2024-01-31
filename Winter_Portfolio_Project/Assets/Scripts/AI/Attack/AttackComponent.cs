@@ -36,8 +36,10 @@ namespace WPP.AI.ATTACK
         public void CancelAttackAnimation() => _animator.SetTrigger("CancelAttack");
         public void PlayAttackAnimation() => _animator.SetTrigger("NowAttack");
 
-        private void Start()
+        public void Initialize(float damage)
         {
+            _damage = damage;
+
             _animator = GetComponent<Animator>();
             _fsm = new StateMachine<AttackState>();
             InitializeFSM();
@@ -46,10 +48,10 @@ namespace WPP.AI.ATTACK
         protected abstract void InitializeFSM();
 
         // 내부에서 getcomponent 사용해서 공격 적용
-        public virtual void Attack(ITarget target, float damage) 
+        public virtual void Attack(ITarget target) 
         {
             _target = target;
-            _damage = damage;
+            //_damage = damage;
             _fsm.OnAttack(); // 공격 적용
         }
 

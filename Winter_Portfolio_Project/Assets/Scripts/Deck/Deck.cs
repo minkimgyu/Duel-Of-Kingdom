@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace WPP.Deck
+namespace WPP.DeckManagement
 {
     public class Deck
     {

@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using WPP.Deck.UI;
+using WPP.DeckManagement.UI;
 
-namespace WPP.Deck
+namespace WPP.DeckManagement
 {
     public class DeckEditor : MonoBehaviour
     {

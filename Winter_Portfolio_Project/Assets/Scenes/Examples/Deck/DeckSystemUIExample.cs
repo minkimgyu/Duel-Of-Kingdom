@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-namespace WPP.Deck.Example
+namespace WPP.DeckManagement.Example
 {
     public class DeckSystemUIExample : MonoBehaviour
     {

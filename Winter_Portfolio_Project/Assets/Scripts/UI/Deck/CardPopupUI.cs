@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WPP.Deck.UI
+namespace WPP.DeckManagement.UI
 {
     public class CardPopupUI : MonoBehaviour
     {

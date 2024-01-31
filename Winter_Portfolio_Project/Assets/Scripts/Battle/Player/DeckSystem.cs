@@ -5,11 +5,8 @@ using WPP.DeckManagement;
 
 namespace WPP.Battle
 {
-    public class SpawnManager : MonoBehaviour
+    public class DeckSystem : MonoBehaviour
     {
-        public void Spawn(Card card, Vector3 position)
-        {
-
-        }
+        DeckManagement.Deck deck;
     }
 }

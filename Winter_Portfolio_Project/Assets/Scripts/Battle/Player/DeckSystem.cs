@@ -42,6 +42,7 @@ namespace WPP.Battle
     public class DeckSystem : MonoBehaviour
     {
         public event Action OnHandChange;
+        public event Action<Card> OnCardUsed;
 
         [SerializeField] private float _defaultDrawCooldown = 2f;
         private Deck _deck;
@@ -110,11 +111,13 @@ namespace WPP.Battle
                 Debug.Log("Empty card");
                 return;
             }
-            _cardQueue.Enqueue(_hand[index]);
+            var usedCard = _hand[index];
+            _cardQueue.Enqueue(usedCard);
             _hand[index] = Card.Empty;
 
             QueueDrawCard(index);
             OnHandChange?.Invoke();
+            OnCardUsed?.Invoke(usedCard);
         }
 
         private void QueueDrawCard(int index)

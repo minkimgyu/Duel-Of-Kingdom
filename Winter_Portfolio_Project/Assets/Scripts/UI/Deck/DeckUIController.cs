@@ -4,7 +4,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 
-namespace WPP.Deck.UI
+namespace WPP.DeckManagement.UI
 {
     public class DeckUIController : MonoBehaviour
     {

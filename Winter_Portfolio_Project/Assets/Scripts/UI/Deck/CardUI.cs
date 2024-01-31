@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-namespace WPP.Deck.UI
+namespace WPP.DeckManagement.UI
 {
     public class CardUI : MonoBehaviour
     {

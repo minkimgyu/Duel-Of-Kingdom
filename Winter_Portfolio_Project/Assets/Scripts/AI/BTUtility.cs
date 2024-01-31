@@ -5,6 +5,8 @@ using BehaviorTree;
 using WPP.AI.TARGET;
 using WPP.AI.ATTACK;
 using WPP.AI.CAPTURE;
+using WPP.AI.TIMER;
+using WPP.AI.SPAWNER;
 using System;
 using WPP.GRID;
 
@@ -14,8 +16,6 @@ namespace WPP.AI.BTUtility
     {
         AttackComponent _attackComponent;
         CaptureComponent _captureComponent;
-
-        float damage = 10;
 
         public Attack(AttackComponent attackComponent, CaptureComponent captureComponent)
         {
@@ -29,7 +29,7 @@ namespace WPP.AI.BTUtility
             ITarget target = _captureComponent.ReturnTarget();
             if (target == null) return NodeState.FAILURE;
 
-            _attackComponent.Attack(target, damage);
+            _attackComponent.Attack(target);
             return NodeState.SUCCESS;
         }
     }
@@ -221,6 +221,8 @@ namespace WPP.AI.BTUtility
 
         void MoveAlongPath()
         {
+            if (_path.Count == 0) return;
+
             UpPathIndexWhenClose();
             _moveComponent.Move(_path[_nowIndexOfPath]);
             _viewComponent.View(_path[_nowIndexOfPath]);
@@ -228,6 +230,10 @@ namespace WPP.AI.BTUtility
 
         public override NodeState Evaluate()
         {
+            // 타겟이 없으면 리턴
+            ITarget target = _captureComponent.ReturnTarget();
+            if (target == null) return NodeState.FAILURE;
+
             bool nowChanged = IsTargetPositionChanged();
             if (nowChanged) ResetPath();
 
@@ -309,6 +315,67 @@ namespace WPP.AI.BTUtility
         public override NodeState Evaluate()
         {
             _moveComponent.Stop();
+            return NodeState.SUCCESS;
+        }
+    }
+
+    public class Delay : Node
+    {
+        Timer _delayTimer;
+        float _duration;
+
+        public Delay(float duration)
+        {
+            _duration = duration;
+            _delayTimer = new Timer();
+            _delayTimer.Start(_duration);
+        }
+
+        public override NodeState Evaluate()
+        {
+            _delayTimer.Update();
+
+            if(_delayTimer.IsRunning == true) return NodeState.RUNNING;
+
+            if (_delayTimer.IsFinish == true)
+            {
+                _delayTimer.Reset();
+                _delayTimer.Start(_duration);
+            }
+
+            return NodeState.SUCCESS;
+        }
+    }
+
+    public class Spawn : Node
+    {
+        int _unitId;
+        int _playerId;
+        Transform _spawnPoint;
+        Vector3[] _offsets;
+        Quaternion _rotation;
+        Action<int, int, Vector3, Vector3[], Quaternion> OnSpawnRequested;
+
+        public Spawn(int unitId, int playerId, Transform spawnPoint, Vector3[] offsets, Quaternion rotation)
+        {
+            _unitId = unitId;
+            _playerId = playerId;
+            _spawnPoint = spawnPoint;
+            _offsets = offsets;
+            _rotation = rotation;
+
+            GameObject go = GameObject.FindWithTag("Spawner");
+            if (go == null) return;
+
+            Spawner spawner = go.GetComponent<Spawner>();
+            if (spawner == null) return;
+
+            OnSpawnRequested = spawner.Spawn;
+        }
+
+        public override NodeState Evaluate()
+        {
+            OnSpawnRequested?.Invoke(_unitId, _playerId, _spawnPoint.position, _offsets, _rotation);
             return NodeState.SUCCESS;
         }
     }

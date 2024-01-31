@@ -8,6 +8,7 @@ TagManager:
   - AirUnit
   - Building
   - Grid
+  - Spawner
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - CaptureTrigger
   - Projectile
   - AirEntity
-  - 
+  - Tile
   - 
   - 
   - 

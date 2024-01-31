@@ -8,7 +8,7 @@ namespace WPP.AI.FSM
     {
         public override void CheckStateChange() { }
 
-
+        public override void OnDamageRequested() { }
         public override void OnAttackRequested() { }
 
         public override void OnCancelAttackRequested() { }
@@ -24,7 +24,7 @@ namespace WPP.AI.FSM
     {
         public abstract void CheckStateChange();
 
-
+        public abstract void OnDamageRequested();
         public abstract void OnAttackRequested();
 
         public abstract void OnCancelAttackRequested();
@@ -63,6 +63,12 @@ namespace WPP.AI.FSM
         {
             if (_currentState == null) return;
             _currentState.OnAttackRequested();
+        }
+
+        public void OnDamage()
+        {
+            if (_currentState == null) return;
+            _currentState.OnDamageRequested();
         }
 
         public void OnCancelAttack()

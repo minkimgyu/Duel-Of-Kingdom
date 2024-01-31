@@ -80,26 +80,29 @@ namespace WPP.GRID
         );
 
 
-        AreaData cAreaData = new AreaData(new Vector2Int(14, 33), new Vector2Int(0, 16), true);
+        AreaData cAreaData = new AreaData(new Vector2Int(13, 32), new Vector2Int(0, 16), true);
 
-        AreaData cLeftAreaData = new AreaData(new Vector2Int(7, 21), new Vector2Int(0, 17), false);
-        AreaData cRightAreaData = new AreaData(new Vector2Int(14, 21), new Vector2Int(7, 17), false);
+        AreaData cLeftAreaData = new AreaData(new Vector2Int(6, 20), new Vector2Int(0, 16), false);
+        AreaData cRightAreaData = new AreaData(new Vector2Int(13, 20), new Vector2Int(7, 16), false);
 
-        AreaData rFillData = new AreaData(new Vector2Int(14, 17), new Vector2Int(0, 0), true);
+        AreaData rAreaData = new AreaData(new Vector2Int(13, 16), new Vector2Int(0, 0), true);
 
-        AreaData rLeftAreaData = new AreaData(new Vector2Int(7, 16), new Vector2Int(0, 12), false);
-        AreaData rRightAreaData = new AreaData(new Vector2Int(14, 16), new Vector2Int(7, 12), false);
+        AreaData rLeftAreaData = new AreaData(new Vector2Int(6, 15), new Vector2Int(0, 12), false);
+        AreaData rRightAreaData = new AreaData(new Vector2Int(13, 15), new Vector2Int(7, 12), false);
 
-        public Func<Grid[,]> OnReturnGridRequested;
+        Func<Grid[,]> OnReturnGridRequested;
+        Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
+
         [SerializeField] SpawnAreaDrawer _spawnRect;
         [SerializeField] TowerCondition _storedTowerCondition;
 
-        private void Start()
+        private void Awake()
         {
             GridStorage gridStorage = GetComponent<GridStorage>();
             if (gridStorage == null) return;
 
             OnReturnGridRequested = gridStorage.ReturnGridArray;
+            OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
         }
 
         // 상대 진형에 오브젝트 못 심게 막아버리기
@@ -116,30 +119,50 @@ namespace WPP.GRID
             // 이후에 스폰될 때 초기화된 데이터를 불러와서 사용하면 될 듯
         }
 
-        public void OnBuildingPlanted(RectInt rectInt)
+        // position으로 처리할 수 있게 코드를 짜주자
+        // gridStorage를 통해서 위치를 그리드 좌표로 반환해서 적용시켜보자
+
+        public void OnBuildingPlanted(Vector3 pos, OffsetFromCenter offset)
         {
-            AreaData data = ReturnFillData(rectInt, true);
+            Vector2Int index = OnConvertV3ToIndexRequested(pos);
+
+            Grid[,] grids = OnReturnGridRequested();
+            ResetPass(grids, index, false);
+
+            AreaData data = ReturnFillData(index, offset, true);
             ResetArea(OnReturnGridRequested(), data); // filldata는 다시 만들어줘야 할 듯?
         }
 
-        public void OnBuildingReleased(RectInt rectInt)
+        public void OnBuildingReleased(Vector3 pos, OffsetFromCenter offset)
         {
-            AreaData data = ReturnFillData(rectInt, false);
-            ResetArea(OnReturnGridRequested(), data);
+            Vector2Int index = OnConvertV3ToIndexRequested(pos);
+
+            Grid[,] grids = OnReturnGridRequested();
+            ResetPass(grids, index, true);
+
+            AreaData data = ReturnFillData(index, offset, false);
+            ResetArea(grids, data); // filldata는 다시 만들어줘야 할 듯?
         }
 
-        AreaData ReturnFillData(RectInt rectInt, bool nowFill)
+        AreaData ReturnFillData(Vector2Int index, OffsetFromCenter rect, bool nowFill)
         {
-            AreaData data = new AreaData(rectInt.max, rectInt.min, nowFill);
+            Vector2Int topRightIndex = new Vector2Int(index.x + rect._right, index.y + rect._top);
+            Vector2Int bottomLeftIndex = new Vector2Int(index.x - rect._left, index.y - rect._down);
+            AreaData data = new AreaData(topRightIndex, bottomLeftIndex, nowFill);
             return data;
+        }
+
+        void ResetPass(Grid[,] grids, Vector2Int index, bool canPass)
+        {
+            grids[index.x, index.y].CanPass = canPass;
         }
 
         void ResetArea(Grid[,] grids, AreaData data)
         {
             // 만약 그리드의 사이즈가 맞지 않는다면 더 이상 진행하면 안 될듯?
-            for (int x = data.BottomLeft.x; x < data.TopRight.x; x++)
+            for (int x = data.BottomLeft.x; x <= data.TopRight.x; x++)
             {
-                for (int y = data.BottomLeft.y; y < data.TopRight.y; y++)
+                for (int y = data.BottomLeft.y; y <= data.TopRight.y; y++)
                 {
                     grids[x, y].IsFill = data.NowFill;
                 }
@@ -154,7 +177,7 @@ namespace WPP.GRID
 
             if (myLandFormation == LandFormation.C) // 내 진형 기준으로 반대편 진형을 초기화 해줘야함
             {
-                ResetArea(grids, rFillData);
+                ResetArea(grids, rAreaData);
                 _spawnRect.Initialize(rNoDestroyDrawingData);
             }
             else if (myLandFormation == LandFormation.R)

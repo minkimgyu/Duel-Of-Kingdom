@@ -35,6 +35,9 @@ namespace WPP.GRID
         public bool IsWall { get { return CheckAllPieceIsBlock(); } }
         public bool CanPlant { get { return CheckAllPieceIsBlock() == false && _isFill == false; } } // 타일이 IsBlock이거나 _canPlant가 false인 경우
 
+        bool _canPass = true; // 못 지나다니는 구역
+        public bool CanPass { set { _canPass = value; } }
+
         bool _isFill; // 비어있다면 건물이나 유닛을 올릴 수 있음
         public bool IsFill { get { return _isFill; } set { _isFill = value; } }
 
@@ -78,10 +81,20 @@ namespace WPP.GRID
 
         Grid[,] _gridArray;
 
+        public Vector2Int ConvertPositionToIndex(Vector2 pos)
+        {
+            return new Vector2Int(Mathf.RoundToInt(pos.x) - _bottomLeft.x, Mathf.RoundToInt(pos.y) - _bottomLeft.y);
+        }
+
+        public Vector2Int ConvertPositionToIndex(Vector3 pos) 
+        {
+            return new Vector2Int(Mathf.RoundToInt(pos.x) - _bottomLeft.x, Mathf.RoundToInt(pos.z) - _bottomLeft.y);
+        }
+
         public PathFindingParameter ReturnPathFindingValue() { return new PathFindingParameter(_gridArray, _bottomLeft, _topRight); }
 
-        public Grid[,] ReturnGridArray() { return _gridArray; }
-        public RectInt ReturnGridRect() { return new RectInt(_bottomLeft.x, _bottomLeft.y, _width - 1, _height - 1); } // _height는 해자 길이 포함해야해서 -1 안 함
+        public Grid[,] ReturnGridArray() { return _gridArray; } // 이건 index 기반 그리드
+        public RectInt ReturnGridRect() { return new RectInt(_bottomLeft.x, _bottomLeft.y, _width - 1, _height - 1); } // 이건 position
 
         // Start is called before the first frame update
         void Awake()

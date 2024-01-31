@@ -6,14 +6,10 @@ using System;
 
 namespace WPP.GRID
 {
+    [Serializable]
     public struct OffsetFromCenter
     {
-        int _top, _down, _left, _right;
-
-        public int Top { get { return _top; } }
-        public int Down { get { return _down; } }
-        public int Left { get { return _left; } }
-        public int Right { get { return _right; } }
+        public int _top, _down, _left, _right;
 
         public OffsetFromCenter(int top, int down, int left, int right)
         {
@@ -28,8 +24,10 @@ namespace WPP.GRID
     public class GridSelecter : MonoBehaviour
     {
         [SerializeField] SpawnAreaDrawer _spawnRect;
-        public Func<Grid[,]> OnReturnGridRequested;
-        public Func<RectInt> OnReturnGridRectRequested;
+        Func<Grid[,]> OnReturnGridRequested;
+        Func<RectInt> OnReturnGridRectRequested;
+        Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
+        Func<Vector2, Vector2Int> OnConvertV2ToIndexRequested;
 
         RectInt _rectSize;
         Vector2Int _centerOffset;
@@ -38,22 +36,27 @@ namespace WPP.GRID
         [SerializeField] Vector2Int maxV2;
 
         Vector3 _spawnPoint;
+        int _layer;
+        float _maxDistance = 50;
 
         private void Start()
         {
+            _layer = LayerMask.GetMask("Tile");
+
             GridStorage gridStorage = GetComponent<GridStorage>();
             if (gridStorage == null) return;
             
             OnReturnGridRequested = gridStorage.ReturnGridArray;
             OnReturnGridRectRequested = gridStorage.ReturnGridRect;
 
-            //RectInt rect = OnReturnGridRectRequested();
+            OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
+            OnConvertV2ToIndexRequested = gridStorage.ConvertPositionToIndex;
 
             Initialize();
             DrawArea(_rectSize);
         }
 
-        public Vector3 ReturnSpawnPoint() { return new Vector3(_spawnPoint.x, 0, _spawnPoint.z); }
+        public Vector3 ReturnSpawnPoint() { return new Vector3(_spawnPoint.x, 1, _spawnPoint.z); }
 
         int ReturnCenterOffset(int length) { return Mathf.FloorToInt((float)length / 2); }
 
@@ -104,10 +107,10 @@ namespace WPP.GRID
             RectInt gridWorldPos = OnReturnGridRectRequested();
 
             return new RectInt(
-                gridWorldPos.min.x + offset.Left, 
-                gridWorldPos.min.y + offset.Down, 
-                gridWorldPos.width - offset.Left - offset.Right,
-                gridWorldPos.height - offset.Top - offset.Down);
+                gridWorldPos.min.x + offset._left, 
+                gridWorldPos.min.y + offset._down, 
+                gridWorldPos.width - offset._left - offset._right,
+                gridWorldPos.height - offset._top - offset._down);
         }
 
         Vector3 ReturnClampedPos(Vector3 pos)
@@ -118,49 +121,33 @@ namespace WPP.GRID
             return new Vector3(clampedX, 1.1f, clampedZ);
         }
 
-        Vector2Int ReturnIndexOfGrid(Vector2 pos)
-        {
-            RectInt gridWorldPos = OnReturnGridRectRequested();
-            return new Vector2Int((int)pos.x - gridWorldPos.min.x, (int)pos.y - gridWorldPos.min.y);
-        }
-
-        Vector2Int ReturnIndexOfGrid(Vector3 pos)
-        {
-            RectInt gridWorldPos = OnReturnGridRectRequested();
-            return new Vector2Int((int)pos.x - gridWorldPos.min.x, (int)pos.z - gridWorldPos.min.y);
-        }
-
-        private void Update()
+        public void SelectGrid()
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            RectInt gridWorldPos = OnReturnGridRectRequested();
+
+            if (Physics.Raycast(ray, out hit, _maxDistance, _layer))
             {
                 Vector3 clampedPos = ReturnClampedPos(hit.transform.position);
-                //_spawnRect.Move(new Vector3(clampedPos.x - 0.5f, 1.1f, clampedPos.z - 0.5f), new Vector3(-_centerOffset.x, 0, -_centerOffset.y));
+                Vector2Int indexOfGrid = OnConvertV3ToIndexRequested(clampedPos);
 
-                Vector2Int indexOfGrid = ReturnIndexOfGrid(clampedPos);
+                OffsetFromCenter offset = ReturnSpawnRectOffset();
 
-                int leftX = _centerOffset.x;
-                int downY = _centerOffset.y;
-
-                int rightX = _rectSize.width - leftX - 1;
-                int topY = _rectSize.height - downY - 1;
-
-                int minXIndex = indexOfGrid.x - leftX;
-                int minYIndex = indexOfGrid.y - downY;
+                int minXIndex = indexOfGrid.x - offset._left;
+                int minYIndex = indexOfGrid.y - offset._down;
                 minV2 = new Vector2Int(minXIndex, minYIndex);
 
-                int maxXIndex = indexOfGrid.x + rightX;
-                int maxYIndex = indexOfGrid.y + topY;
+                int maxXIndex = indexOfGrid.x + offset._right;
+                int maxYIndex = indexOfGrid.y + offset._top;
                 maxV2 = new Vector2Int(maxXIndex, maxYIndex);
 
                 // 그리드의 최대 최소 값 인덱스
                 RectInt clampedRange = ReturnClampedRange();
 
-                Vector2Int downLeft = ReturnIndexOfGrid(clampedRange.min);
-                Vector2Int topRight = ReturnIndexOfGrid(clampedRange.max);
+                Vector2Int downLeft = OnConvertV2ToIndexRequested(clampedRange.min);
+                Vector2Int topRight = OnConvertV2ToIndexRequested(clampedRange.max);
 
                 // 우선 가장 먼저 마우스 포인터 주변 인덱스를 조사해서 그 부분이 Filled 되어있는지 판단해보기
                 // 그렇다면 아래 코드 실행해주기
@@ -174,7 +161,7 @@ namespace WPP.GRID
                     for (int j = minXIndex; j <= maxXIndex; j++)
                     {
                         bool exitThisLine = false;
-                        for (int z = i - downY; z <= i + topY; z++)
+                        for (int z = i - offset._down; z <= i + offset._top; z++)
                         {
                             if (grids[j, z].CanPlant == false)
                             {
@@ -190,13 +177,7 @@ namespace WPP.GRID
                         }
                     }
 
-                    if(thisRectIsBlock == false)
-                    {
-                        points.Add(new Vector3(clampedPos.x, 1.1f, i - 20));
-
-                        //Vector3 changedPos = new Vector3(clampedPos.x - 0.5f, 1.1f, i - 20 - 0.5f);
-                        //_spawnRect.Move(changedPos, new Vector3(-_centerOffset.x, 0, -_centerOffset.y));
-                    }
+                    if (thisRectIsBlock == false) points.Add(new Vector3(clampedPos.x, 1.1f, i + gridWorldPos.yMin));
                 }
 
                 float storedDistance = 0;
@@ -213,7 +194,7 @@ namespace WPP.GRID
                     else
                     {
                         float tmpDistance = Vector3.Distance(clampedPos, points[i]);
-                        if(tmpDistance < storedDistance)
+                        if (tmpDistance < storedDistance)
                         {
                             storedDistance = tmpDistance;
                             selectedIndex = i;
@@ -221,12 +202,19 @@ namespace WPP.GRID
                     }
                 }
 
+                //Debug.Log(points[selectedIndex]);
+                //Debug.Log(selectedIndex);
                 _spawnPoint = points[selectedIndex];
 
                 Vector3 changedPos = points[selectedIndex] + new Vector3(-0.5f, 0, -0.5f);
                 _spawnRect.Move(changedPos, new Vector3(-_centerOffset.x, 0, -_centerOffset.y));
             }
         }
+
+        //private void Update()
+        //{
+ 
+        //}
 
         // 가장 먼저 그리드 사이즈를 받아서 마우스가 이동할 수 있는 최소, 최대 좌표를 구해보자
         // 먼저 오브젝트로 마우스 이동 입력을 받아보는 걸로 시작하고 이동은 int 범위로만 하는 걸로 하자

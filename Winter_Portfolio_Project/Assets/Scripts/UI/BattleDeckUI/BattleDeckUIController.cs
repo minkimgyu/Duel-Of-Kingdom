@@ -14,6 +14,7 @@ namespace WPP.Battle.UI
         [SerializeField] private RectTransform[] _cards;
         [SerializeField] private TextMeshProUGUI[] _cardTexts;
         [SerializeField] private TextMeshProUGUI _next;
+        [SerializeField] private TextMeshProUGUI _cooldown;
         [Space]
         [SerializeField] private float _selectedCardOffset = 50f;
         [SerializeField] private float _selectedCardScale = 1.2f;
@@ -115,6 +116,10 @@ namespace WPP.Battle.UI
 
         private void Update()
         {
+            if(_deckSystem.LeftCooldown > 0f)
+                _cooldown.text = _deckSystem.LeftCooldown.ToString("F1");
+            else _cooldown.text = "";
+
             if(Input.GetMouseButtonDown(1))
             {
                 if(_isPlacingCard)

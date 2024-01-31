@@ -130,6 +130,8 @@ namespace WPP.Battle
             _drawCooldown = cooldown;
         }
 
+        public float LeftCooldown => Mathf.Clamp(_drawCooldown - (Time.time - _lastDrawTime), 0, _drawCooldown);
+
         private float _lastDrawTime = -99f;
         private void Update()
         {

@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using WPP.DeckManagement;
+using WPP.DeckManagement.UI;
 
 namespace WPP.Battle.UI
 {
@@ -13,9 +14,11 @@ namespace WPP.Battle.UI
         [SerializeField] private DeckSystem _deckSystem;
         [SerializeField] private ElixirSystem _elixirSystem;
         [Header("Card")]
-        [SerializeField] private RectTransform[] _cards;
-        [SerializeField] private TextMeshProUGUI[] _cardTexts;
-        [SerializeField] private TextMeshProUGUI[] _cardElixir;
+        [SerializeField] private CardUI[] _cards;
+        //[SerializeField] private RectTransform[] _cards;
+        //[SerializeField] private TextMeshProUGUI[] _cardTexts;
+        //[SerializeField] private TextMeshProUGUI[] _cardElixir;
+
         [SerializeField] private TextMeshProUGUI _next;
         [SerializeField] private TextMeshProUGUI _nextElixir;
         [SerializeField] private TextMeshProUGUI _cooldown;
@@ -42,7 +45,7 @@ namespace WPP.Battle.UI
         {
             var hand = _deckSystem.Hand;
 
-            for (int i = 0; i < _cardTexts.Length; i++)
+            for (int i = 0; i < _cards.Length; i++)
             {
                 if (hand[i].id == null)
                 {
@@ -53,8 +56,7 @@ namespace WPP.Battle.UI
                     if (_isPlacingCard && i == _selectedCardIndex) continue;
 
                     _cards[i].gameObject.SetActive(true);
-                    _cardTexts[i].text = hand[i].id;
-                    _cardElixir[i].text = hand[i].cost.ToString();
+                    _cards[i].SetCard(hand[i].id, hand[i].cost);
                 }
             }
 
@@ -86,15 +88,16 @@ namespace WPP.Battle.UI
         {
             for(int i = 0; i < _cards.Length; ++i)
             {
+                var transform = _cards[i].GetComponent<RectTransform>();
                 if (i == _selectedCardIndex)
                 {
-                    _cards[i].anchoredPosition = Vector2.up * _selectedCardOffset;
-                    _cards[i].localScale = Vector3.one * _selectedCardScale;
+                    transform.anchoredPosition = Vector2.up * _selectedCardOffset;
+                    transform.localScale = Vector3.one * _selectedCardScale;
                 }
                 else
                 {
-                    _cards[i].anchoredPosition = Vector2.zero;
-                    _cards[i].localScale = Vector3.one;
+                    transform.anchoredPosition = Vector2.zero;
+                    transform.localScale = Vector3.one;
                 }
             }
         }

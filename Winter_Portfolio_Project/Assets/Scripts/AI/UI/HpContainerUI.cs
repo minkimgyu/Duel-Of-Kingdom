@@ -42,7 +42,7 @@ namespace WPP.AI.UI
 
         public override void OnDestroyRequested()
         {
-            DOTween.KillAll();
+            DOTween.Kill(_content);
             base.OnDestroyRequested();
         }
     }

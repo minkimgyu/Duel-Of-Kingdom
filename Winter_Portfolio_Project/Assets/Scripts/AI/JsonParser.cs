@@ -36,8 +36,8 @@ namespace WPP.JSON
             stats.Add(new UnitStat(6, 1, "bat", 81, new CaptureTag[] { CaptureTag.Building, CaptureTag.GroundUnit, CaptureTag.AirUnit }, 81, 1.3f, 1.6f, 10f));
             stats.Add(new UnitStat(7, 1, "mega_minion", 837, new CaptureTag[] { CaptureTag.Building, CaptureTag.GroundUnit, CaptureTag.AirUnit }, 311, 1.5f, 1.6f, 10f));
 
-            OffsetFromCenter normalOffset = new OffsetFromCenter(1, 1, 1, 1);
-            OffsetFromCenter kingTowerOffset = new OffsetFromCenter(1, 2, 2, 1);
+            OffsetRect normalOffset = new OffsetRect(1, 1, 1, 1);
+            OffsetRect kingTowerOffset = new OffsetRect(1, 2, 2, 1);
 
             stats.Add(new LivingOutAttackBuildingStat(8, 1, "cannon", 896, normalOffset, new CaptureTag[] { CaptureTag.GroundUnit }, 212, 0.9f, 15f, 20f, 30));
 

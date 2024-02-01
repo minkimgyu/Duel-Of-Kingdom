@@ -68,9 +68,9 @@ namespace WPP.AI.STAT
     [Serializable]
     public class BuildingStat : BaseStat
     {
-        public OffsetFromCenter _filltOffset;
+        public OffsetRect _filltOffset;
 
-        public BuildingStat(int id, int level, string name, float hp, OffsetFromCenter fillOffset) : base(id, level, name, hp)
+        public BuildingStat(int id, int level, string name, float hp, OffsetRect fillOffset) : base(id, level, name, hp)
         {
             _filltOffset = fillOffset;
         }
@@ -85,7 +85,7 @@ namespace WPP.AI.STAT
         public float _range; // 범위
         public float _captureRange; // 탐지 범위
 
-        public AttackBuildingStat(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) : base(id, level, name, hp, fillOffset)
+        public AttackBuildingStat(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) : base(id, level, name, hp, fillOffset)
         {
             _damage = damage;
             _targetTag = targetTag;
@@ -103,7 +103,7 @@ namespace WPP.AI.STAT
     {
         public float _lifeTime; // 생존 시간
 
-        public LivingOutAttackBuildingStat(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) : base(id, level, name, hp, fillOffset, targetTag, damage, hitSpeed, range, captureRange)
+        public LivingOutAttackBuildingStat(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) : base(id, level, name, hp, fillOffset, targetTag, damage, hitSpeed, range, captureRange)
         {
             _lifeTime = lifeTime;
         }
@@ -120,7 +120,7 @@ namespace WPP.AI.STAT
         public float _spawnDelay; // 스폰 딜레이
         public SerializableVector3[] _spawnOffset; // 스폰 오프셋
 
-        public LivingOutSpawnBuildingStat(int id, int level, string name, float hp, OffsetFromCenter fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) : base(id, level, name, hp, fillOffset)
+        public LivingOutSpawnBuildingStat(int id, int level, string name, float hp, OffsetRect fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) : base(id, level, name, hp, fillOffset)
         {
             _lifeTime = lifeTime;
             _spawnUnitId = spawnUnitId;

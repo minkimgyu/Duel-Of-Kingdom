@@ -164,11 +164,12 @@ namespace WPP.AI.BTUtility
 
         float minDistance = 0.8f; //  y 좌표 때문에 그런 듯
         int _nowIndexOfPath;
-        List<Vector3> _path; // 데이터가 존재하지 않는다면 처음에 한번 돌려줘서 초기화 해줘야함
+        List<Vector3> _path = new List<Vector3>(); // 데이터가 존재하지 않는다면 처음에 한번 돌려줘서 초기화 해줘야함
 
         protected Action<List<Vector3>> OnResetPathRequested;
+        bool _ignoreWall;
 
-        public FollowPath(MoveComponent moveComponent, ViewComponent viewComponent, CaptureComponent captureComponent, PathFinder pathFinder, Action<List<Vector3>> onResetPathRequested)
+        public FollowPath(MoveComponent moveComponent, ViewComponent viewComponent, CaptureComponent captureComponent, PathFinder pathFinder, Action<List<Vector3>> onResetPathRequested, bool ignoreWall)
         {
             _captureComponent = captureComponent;
             _pathFinder = pathFinder;
@@ -176,6 +177,8 @@ namespace WPP.AI.BTUtility
             _viewComponent = viewComponent;
 
             OnResetPathRequested = onResetPathRequested;
+            _ignoreWall = ignoreWall;
+
         }
 
         bool IsTargetPositionChanged()
@@ -203,7 +206,7 @@ namespace WPP.AI.BTUtility
             ITarget target = _captureComponent.ReturnTarget();
             if (target == null) return;
 
-            List<Vector3> newPath = _pathFinder.ReturnPath(_captureComponent.transform.position, target.ReturnPosition());
+            List<Vector3> newPath = _pathFinder.ReturnPath(_captureComponent.transform.position, target.ReturnPosition(), _ignoreWall);
 
             _nowIndexOfPath = 0;
             _path = newPath;
@@ -228,14 +231,21 @@ namespace WPP.AI.BTUtility
             _viewComponent.View(_path[_nowIndexOfPath]);
         }
 
+        bool IsPathBlock() { return _pathFinder.IsPathBlock(_path); }
+
         public override NodeState Evaluate()
         {
             // 타겟이 없으면 리턴
             ITarget target = _captureComponent.ReturnTarget();
             if (target == null) return NodeState.FAILURE;
 
+            // 경로가 막혀있는 경우
+            bool nowBlock = IsPathBlock();
+            if (nowBlock) ResetPath();
+
+            // 타겟의 위치가 바뀐 경우
             bool nowChanged = IsTargetPositionChanged();
-            if (nowChanged) ResetPath();
+            if (nowBlock == false && nowChanged) ResetPath(); // 경로가 막혀있지 않지만 타겟의 위치가 바뀌거나 초기의 경우
 
             MoveAlongPath();
 
@@ -350,16 +360,18 @@ namespace WPP.AI.BTUtility
     public class Spawn : Node
     {
         int _unitId;
-        int _playerId;
+        int _ownershipId;
+        int _clientId;
         Transform _spawnPoint;
         Vector3[] _offsets;
         Quaternion _rotation;
-        Action<int, int, Vector3, Vector3[], Quaternion> OnSpawnRequested;
+        Func<int, int, int, Vector3, Vector3[], Quaternion, Entity[]> OnSpawnRequested;
 
-        public Spawn(int unitId, int playerId, Transform spawnPoint, Vector3[] offsets, Quaternion rotation)
+        public Spawn(int unitId, int ownershipId, int clientId, Transform spawnPoint, Vector3[] offsets, Quaternion rotation)
         {
             _unitId = unitId;
-            _playerId = playerId;
+            _ownershipId = ownershipId;
+            _clientId = clientId;
             _spawnPoint = spawnPoint;
             _offsets = offsets;
             _rotation = rotation;
@@ -375,7 +387,7 @@ namespace WPP.AI.BTUtility
 
         public override NodeState Evaluate()
         {
-            OnSpawnRequested?.Invoke(_unitId, _playerId, _spawnPoint.position, _offsets, _rotation);
+            OnSpawnRequested?.Invoke(_unitId, _ownershipId, _clientId, _spawnPoint.position, _offsets, _rotation);
             return NodeState.SUCCESS;
         }
     }

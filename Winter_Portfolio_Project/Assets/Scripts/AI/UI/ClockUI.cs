@@ -19,5 +19,11 @@ namespace WPP.AI.UI
             LookCamera();
             _content.DOFillAmount(1, _duration).onComplete = OnDestroyRequested;
         }
+
+        public override void OnDestroyRequested()
+        {
+            DOTween.Kill(_content);
+            base.OnDestroyRequested();
+        }
     }
 }

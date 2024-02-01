@@ -6,16 +6,34 @@ namespace WPP.AI.TARGET
 {
     public interface ITarget
     {
-        public int PlayerId { get; set; } // 현재 대상의 소유권을 가지고 있는 플레이어의 id;
+        /// <summary>
+        /// 객체를 스폰시킨 소유권자의 Id
+        /// </summary>
+        public int OwnershipId { get; set; }
 
-        public float ReturnColliderSize(); // 콜라이더의 길이를 반환한다.
+        /// <summary>
+        /// 콜라이더의 길이를 반환한다.
+        /// </summary>
+        public float ReturnColliderSize();
 
-        public string ReturnName(); // 오브젝트의 이름을 반환한다. 
+        /// <summary>
+        /// 오브젝트의 이름을 반환한다. 
+        /// </summary>
+        public string ReturnName(); 
 
-        public string ReturnTag(); // 오브젝트의 태그를 반환한다.
+        /// <summary>
+        /// 오브젝트의 태그를 반환한다.
+        /// </summary>
+        public string ReturnTag();
 
-        public Vector3 ReturnPosition(); // 타겟의 위치를 반환한다.
+        /// <summary>
+        /// 타겟의 위치를 반환한다.
+        /// </summary>
+        public Vector3 ReturnPosition();
 
-        public IDamagable ReturnDamagable(); // 타겟에 데미지를 적용시킬 인터페이스를 반환한다.
+        /// <summary>
+        /// 타겟에 데미지를 적용시킬 인터페이스를 반환한다.
+        /// </summary>
+        public IDamagable ReturnDamagable();
     }
 }

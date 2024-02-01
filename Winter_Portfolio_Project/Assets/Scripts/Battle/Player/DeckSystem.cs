@@ -26,6 +26,7 @@ namespace WPP.Battle
                 {
                     Card card = new Card();
                     card.id = "card_" + i.ToString();
+                    card.cost = UnityEngine.Random.Range(1, 4);
 
                     _cards.Add(card.id, card);
                 }
@@ -44,6 +45,7 @@ namespace WPP.Battle
         public event Action OnHandChange;
         public event Action<Card> OnCardUsed;
 
+        [SerializeField] private ElixirSystem _elixirSystem;
         [SerializeField] private float _defaultDrawCooldown = 2f;
         private Deck _deck;
 
@@ -111,6 +113,14 @@ namespace WPP.Battle
                 Debug.Log("Empty card");
                 return;
             }
+
+            if (_hand[index].cost > _elixirSystem.ElixirCount)
+            {
+                Debug.Log("Not enough elixir");
+                return;
+            }
+            _elixirSystem.SpendElixir(_hand[index].cost);
+
             var usedCard = _hand[index];
             _cardQueue.Enqueue(usedCard);
             _hand[index] = Card.Empty;

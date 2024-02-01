@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using WPP.DeckManagement;
 
 namespace WPP.Battle.UI
@@ -10,15 +11,22 @@ namespace WPP.Battle.UI
     public class BattleDeckUIController : MonoBehaviour
     {
         [SerializeField] private DeckSystem _deckSystem;
-        [Space]
+        [SerializeField] private ElixirSystem _elixirSystem;
+        [Header("Card")]
         [SerializeField] private RectTransform[] _cards;
         [SerializeField] private TextMeshProUGUI[] _cardTexts;
+        [SerializeField] private TextMeshProUGUI[] _cardElixir;
         [SerializeField] private TextMeshProUGUI _next;
+        [SerializeField] private TextMeshProUGUI _nextElixir;
         [SerializeField] private TextMeshProUGUI _cooldown;
         [Space]
         [SerializeField] private float _selectedCardOffset = 50f;
         [SerializeField] private float _selectedCardScale = 1.2f;
-        
+        [Header("Elixir")]
+        [SerializeField] private Slider _elixirSlider;
+        [SerializeField] private TextMeshProUGUI _elixirText;
+
+
         private int _selectedCardIndex = -1;
         private bool _isPlacingCard = false;
 
@@ -26,6 +34,8 @@ namespace WPP.Battle.UI
         {
             _deckSystem.OnHandChange += OnCardDrawn;
             _deckSystem.OnCardUsed += (_) => { DeselectCard(); };
+
+            _elixirSystem.OnElixirCountChange += SetElixirBar;
         }
 
         private void OnCardDrawn()
@@ -44,10 +54,12 @@ namespace WPP.Battle.UI
 
                     _cards[i].gameObject.SetActive(true);
                     _cardTexts[i].text = hand[i].id;
+                    _cardElixir[i].text = hand[i].cost.ToString();
                 }
             }
 
             _next.text = _deckSystem.Next.id;
+            _nextElixir.text = _deckSystem.Next.cost.ToString();
         }
 
         public void SelectCard(int index)
@@ -102,6 +114,12 @@ namespace WPP.Battle.UI
 
             UpdateCardTransform();
         }
+        
+        private void SetElixirBar(int count)
+        {
+            _elixirSlider.value = count;
+            _elixirText.text = count.ToString();
+        }
 
         // Test Purpose
         private void Start()
@@ -112,6 +130,7 @@ namespace WPP.Battle.UI
                 deck.SetCard(i, "card_" + i.ToString());
             }
             _deckSystem.Init(deck);
+            _elixirSystem.StartRegen();
         }
 
         private void Update()

@@ -32,7 +32,7 @@ namespace WPP.AI.GRID
 
         // Trasform으로 타워, 집과 같은 오브젝트를 저장해두기
 
-        public bool IsWall { get { return CheckAllPieceIsBlock(); } }
+        public bool IsWall { get { return CheckAllPieceIsBlock() || _canPass == false; } }
         public bool CanPlant { get { return CheckAllPieceIsBlock() == false && _isFill == false; } } // 타일이 IsBlock이거나 _canPlant가 false인 경우
 
         bool _canPass = true; // 못 지나다니는 구역

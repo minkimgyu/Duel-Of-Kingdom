@@ -12,7 +12,7 @@ namespace WPP.AI.BUILDING
     {
         // Natural --> Active State로 전환됨
 
-        public override void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
+        public override void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
         {
             base.Initialize(id, level, name, hp, fillOffset, targetTag, damage, hitSpeed, range, captureRange);
 
@@ -25,6 +25,12 @@ namespace WPP.AI.BUILDING
             };
 
             InitializeFSM(attackStates, ActionState.Neutral);
+        }
+
+        public override void Die()
+        {
+            // 여기에 게임 종료 시퀀스 넣어주기
+            base.Die();
         }
     }
 }

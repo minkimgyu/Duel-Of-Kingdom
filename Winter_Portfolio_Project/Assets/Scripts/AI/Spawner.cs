@@ -17,18 +17,16 @@ namespace WPP.AI.SPAWNER
         [SerializeField] List<Entity> _entityPrefabs;
         List<BaseStat> _stats;
 
-        [SerializeField] int _myPlayerId;
-
         JsonParser _jsonParser;
 
-        private void Awake()
+        void Awake()
         {
             _jsonParser = GetComponent<JsonParser>();
             _stats = _jsonParser.Load();
         }
 
         // 공통되는 부분
-        Entity ReturnEntity(int entityId, int playerId, Vector3 pos, Quaternion quaternion)
+        Entity ReturnEntity(int entityId, int ownershipId, int clientId, Vector3 pos, Quaternion quaternion)
         {
             Entity entity = _entityPrefabs.Find(x => x.Id == entityId);
             if (entity == null) return null;
@@ -38,34 +36,36 @@ namespace WPP.AI.SPAWNER
             HpContainerUI hpContainer = Instantiate(_hpContainerUIPrefab);
 
             spawnedEntity.AttachHpBar(hpContainer);
-            spawnedEntity.ResetPlayerId(playerId);
+            spawnedEntity.ResetPlayerId(ownershipId, clientId);
             // 여기에 대기 시간을 추가해준다.
 
             return spawnedEntity;
         }
 
         // 여기 부분에서 시계 모양 아이콘 생성시켜서 준비 시간 보여주기
-        void Instantiate(int entityId, int playerId, Vector3 pos, Quaternion quaternion)
+        Entity Instantiate(int entityId, int ownershipId, int clientId, Vector3 pos, Quaternion quaternion)
         {
             BaseStat stat = _stats.Find(x => x._id == entityId);
-            if (stat == null) return;
+            if (stat == null) return null;
 
-            Entity entity = ReturnEntity(entityId, playerId, pos, quaternion);
-            if (entity == null) return;
+            Entity entity = ReturnEntity(entityId, ownershipId, clientId, pos, quaternion);
+            if (entity == null) return null;
 
             stat.Initialize(entity);
+            return entity;
         }
 
-        void Instantiate(int entityId, int playerId, Vector3 pos, Quaternion quaternion, float duration)
+        Entity Instantiate(int entityId, int ownershipId, int clientId, Vector3 pos, Quaternion quaternion, float duration)
         {
             BaseStat stat = _stats.Find(x => x._id == entityId);
-            if (stat == null) return;
+            if (stat == null) return null;
 
-            Entity entity = ReturnEntity(entityId, playerId, pos, quaternion);
-            if (entity == null) return;
+            Entity entity = ReturnEntity(entityId, ownershipId, clientId, pos, quaternion);
+            if (entity == null) return null;
 
             entity.ResetDelayAfterSpawn(duration);
             stat.Initialize(entity);
+            return entity;
         }
 
         void SpawnClockUI(Vector3 pos, float duration)
@@ -74,65 +74,69 @@ namespace WPP.AI.SPAWNER
             clockUI.Initialize(pos, duration);
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos)
+        public Entity Spawn(int entityId, int ownershipId, int clientId, Vector3 pos)
         {
-            Instantiate(entityId, playerId, pos, Quaternion.identity);
+            return Instantiate(entityId, ownershipId, clientId, pos, Quaternion.identity);
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos, LandFormation myFormation)
+        public Entity Spawn(int entityId, int ownershipId, int clientId, Vector3 pos, LandFormation myFormation)
         {
             if (LandFormation.C == myFormation)
             {
                 Quaternion reverse = Quaternion.Euler(new Vector3(0, 180, 0));
-                Instantiate(entityId, playerId, pos, reverse);
+                return Instantiate(entityId, ownershipId, clientId, pos, reverse);
             }
             else
             {
-                Instantiate(entityId, playerId, pos, Quaternion.identity);
+                return Instantiate(entityId, ownershipId, clientId, pos, Quaternion.identity);
             }
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos, float duration)
+        public Entity Spawn(int entityId, int ownershipId, int clientId, Vector3 pos, float duration)
         {
-            Instantiate(entityId, playerId, pos, Quaternion.identity, duration);
             SpawnClockUI(pos, duration);
+            return Instantiate(entityId, ownershipId, clientId, pos, Quaternion.identity, duration);
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos, float duration, Quaternion quaternion)
+        public Entity Spawn(int entityId, int ownershipId, int clientId, Vector3 pos, float duration, Quaternion quaternion)
         {
-            Instantiate(entityId, playerId, pos, quaternion, duration);
             SpawnClockUI(pos, duration);
+            return Instantiate(entityId, ownershipId, clientId, pos, quaternion, duration);
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos, float duration, LandFormation myFormation)
+        public Entity[] Spawn(int[] entityIds, int playerId, int clientId, Vector3 pos, Vector3[] offsets, float duration)
         {
-            if (LandFormation.C == myFormation)
-            {
-                Quaternion reverse = Quaternion.Euler(new Vector3(0, 180, 0));
-                Instantiate(entityId, playerId, pos, reverse, duration);
-            }
-            else
-            {
-                Instantiate(entityId, playerId, pos, Quaternion.identity, duration);
-            }
-
-            SpawnClockUI(pos, duration);
-        }
-
-        public void Spawn(int[] entityIds, int playerId, Vector3 pos, Vector3[] offsets, float duration)
-        {
-            if (entityIds.Length != offsets.Length) return;
+            if (entityIds.Length != offsets.Length) return null;
+            Entity[] entities = new Entity[entityIds.Length];
 
             for (int i = 0; i < entityIds.Length; i++)
-                Instantiate(entityIds[i], playerId, pos + offsets[i], Quaternion.identity, duration);
+                entities[i] = Instantiate(entityIds[i], playerId, clientId, pos + offsets[i], Quaternion.identity, duration);
 
             SpawnClockUI(pos, duration);
+
+            return entities;
         }
 
-        public void Spawn(int entityId, int playerId, Vector3 pos, Vector3[] offsets, Quaternion quaternion)
+        public Entity[] Spawn(int[] entityIds, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, float duration, Quaternion quaternion)
         {
+            if (entityIds.Length != offsets.Length) return null;
+            Entity[] entities = new Entity[entityIds.Length];
+
+            for (int i = 0; i < entityIds.Length; i++)
+                entities[i] = Instantiate(entityIds[i], ownershipId, clientId, pos + offsets[i], quaternion, duration);
+
+            SpawnClockUI(pos, duration);
+            return entities;
+        }
+
+        public Entity[] Spawn(int entityId, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, Quaternion quaternion)
+        {
+            Entity[] entities = new Entity[offsets.Length];
+
             for (int i = 0; i < offsets.Length; i++)
-                Instantiate(entityId, playerId, pos + offsets[i], quaternion);
+                entities[i] = Instantiate(entityId, ownershipId, clientId, pos + offsets[i], quaternion);
+
+            return entities;
         }
     }
 }

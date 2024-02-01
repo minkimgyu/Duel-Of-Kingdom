@@ -41,10 +41,10 @@ namespace WPP.AI.CAPTURE
             KingTower[] kingTowers = FindObjectsOfType<KingTower>();
 
             for (int i = 0; i < princessTowers.Length; i++)
-                if(princessTowers[i].PlayerId != _playerId) _targets.Add(princessTowers[i]);
+                if(princessTowers[i].OwnershipId != _playerId) _targets.Add(princessTowers[i]);
 
             for (int i = 0; i < kingTowers.Length; i++)
-                if (kingTowers[i].PlayerId != _playerId) _targets.Add(kingTowers[i]);
+                if (kingTowers[i].OwnershipId != _playerId) _targets.Add(kingTowers[i]);
         }
 
         public void Initialize(CaptureTag[] tagsToCapture, int playerId, float range)
@@ -110,7 +110,7 @@ namespace WPP.AI.CAPTURE
                     else continue;
                 }
 
-                if (_targets[i].PlayerId == _playerId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
+                if (_targets[i].OwnershipId == _playerId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
 
                 if (i == 0)
                 {

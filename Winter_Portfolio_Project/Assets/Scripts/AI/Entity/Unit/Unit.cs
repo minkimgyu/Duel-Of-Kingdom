@@ -15,10 +15,22 @@ namespace WPP.AI.UNIT
 {
     abstract public class Unit : EntityAI
     {
+        public enum Type
+        {
+            AirUnit,
+            GroundUnit,
+        }
+
         // 기본적인 겹치는 기능은 여기서 구현
         // 이동성을 가짐
 
         // Ready --> Active State로 전환됨
+
+        /// <summary>
+        /// 벽을 무시할건지 확인.
+        /// 공중 유닛의 경우 성립
+        /// </summary>
+        protected bool IgnoreWall { get { return CompareTag(Type.AirUnit.ToString()); } }
 
         protected MoveComponent _moveComponent;
         protected ViewComponent _viewComponent;
@@ -36,6 +48,7 @@ namespace WPP.AI.UNIT
             _captureComponent = GetComponentInChildren<CaptureComponent>();
 
             _capsuleCollider = GetComponent<CapsuleCollider>();
+
             base.InitializeComponent();
         }
 
@@ -109,7 +122,7 @@ namespace WPP.AI.UNIT
             // 여기서 컴포넌트를 가져와서 초기화해준다.
             // 추가로 BT도 초기화해준다.
            
-            _captureComponent.Initialize(targetTag, PlayerId, captureRange); // 이런 식으로 세부 변수를 할당해준다.
+            _captureComponent.Initialize(targetTag, OwnershipId, captureRange); // 이런 식으로 세부 변수를 할당해준다.
 
             Dictionary<ActionState, BaseState> attackStates = new Dictionary<ActionState, BaseState>()
             {
@@ -171,7 +184,7 @@ namespace WPP.AI.UNIT
                                                 )
                                             }
                                         ),
-                                        new FollowPath(_moveComponent, _viewComponent, _captureComponent, pathFinder, ResetPosListForDrawingGizmo)
+                                        new FollowPath(_moveComponent, _viewComponent, _captureComponent, pathFinder, ResetPosListForDrawingGizmo, IgnoreWall)
                                     }
                                 )
                             }

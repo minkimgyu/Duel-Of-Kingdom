@@ -9,20 +9,30 @@ namespace WPP.AI
 {
     public class AISceneExample : MonoBehaviour
     {
-        [SerializeField] FillComponent _gridFiller;
-        [SerializeField] SpawnAreaDrawer _spawnRect;
-
-        [SerializeField] SelectComponent _gridSelecter;
-
         [SerializeField] Spawner _spawner;
 
+        [SerializeField] GridController _gridController;
+        [SerializeField] LandFormation _landFormation;
+
+        /// <summary>
+        /// 플레이어1 ID
+        /// </summary>
         [SerializeField] int _player1Id = 1;
+
+        /// <summary>
+        /// 플레이어2 ID
+        /// </summary>
         [SerializeField] int _player2Id = 2;
 
-        [SerializeField] int _spawnId = 1;
+        /// <summary>
+        /// 현재 클라이언트를 조작하고 있는 플레이어 ID
+        /// </summary>
+        [SerializeField] int _clientId = 2;
 
         private void Start()
         {
+            // 여기서 본인 지형 초기화
+            _gridController.Initialize(_landFormation);
             SpawnTower();
         }
 
@@ -30,26 +40,21 @@ namespace WPP.AI
         {
             // 스폰은 position 이용해서 하고 이걸 기반으로 그리드를 찾는 방식을 적용해보자
             // 그리드는 position을 반올림해서 찾자
-            _spawner.Spawn(10, _player1Id, new Vector3(10, 1, 6), LandFormation.C);
-            _spawner.Spawn(10, _player1Id, new Vector3(-1, 1, 6), LandFormation.C);
-            _spawner.Spawn(11, _player1Id, new Vector3(4.51f, 1, 9.51f), LandFormation.C);
+            Entity cRightTower = _spawner.Spawn(10, _player1Id, _clientId, new Vector3(10, 1, 6), LandFormation.C);
+            cRightTower.IsLeft(false);
 
-            _spawner.Spawn(10, _player2Id, new Vector3(10, 1, -14), LandFormation.R);
-            _spawner.Spawn(10, _player2Id, new Vector3(-1, 1, -14), LandFormation.R);
-            _spawner.Spawn(11, _player2Id, new Vector3(4.51f, 1, -17.49f), LandFormation.R);
-        }
+            Entity cLeftTower = _spawner.Spawn(10, _player1Id, _clientId, new Vector3(-1, 1, 6), LandFormation.C);
+            cLeftTower.IsLeft(true);
 
-        void SpawnEntity(int id, float duration)
-        {
-            Vector3 spawnPos = _gridSelecter.ReturnSpawnPoint();
-            //Debug.Log(spawnPos);
-            _spawner.Spawn(id, _spawnId, spawnPos, duration);
-        }
+            _spawner.Spawn(11, _player1Id, _clientId, new Vector3(4.51f, 1, 9.51f), LandFormation.C);
 
-        void SpawnEntity(int[] ids, Vector3[] offsets, float duration)
-        {
-            Vector3 spawnPos = _gridSelecter.ReturnSpawnPoint();
-            _spawner.Spawn(ids, _spawnId, spawnPos, offsets, duration);
+            Entity rRightTower = _spawner.Spawn(10, _player2Id, _clientId, new Vector3(10, 1, -14), LandFormation.R);
+            rRightTower.IsLeft(false);
+
+            Entity rLeftTower = _spawner.Spawn(10, _player2Id, _clientId, new Vector3(-1, 1, -14), LandFormation.R);
+            rLeftTower.IsLeft(true);
+
+            _spawner.Spawn(11, _player2Id, _clientId, new Vector3(4.51f, 1, -17.49f), LandFormation.R);
         }
 
         private void Update()
@@ -57,73 +62,48 @@ namespace WPP.AI
             //_gridSelecter를 이용해서 여기서 Update 돌려서 범위 구해주기
             // 그 위치에 Entity 스폰 적용해보기
 
-            _gridSelecter.SelectGrid();
-
-            if (Input.GetKeyDown(KeyCode.Alpha1))
+            if (Input.GetKeyDown(KeyCode.A))
             {
-                SpawnEntity(1, 1.5f);
+                OffsetRect offsetRect1 = new OffsetRect(0, 0, 0, 0);
+                OffsetRect offsetRect2 = new OffsetRect(1, 1, 1, 1);
+
+                _gridController.FSM.OnSelect(offsetRect1);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                int id = 1;
+                float duration = 3f;
+
+                _gridController.FSM.OnPlant(id, _player2Id, _clientId, duration);
+            }
+            else if(Input.GetKeyDown(KeyCode.D))
             {
                 int[] ids = new int[3] { 0, 1, 2 };
-                Vector3[] offsets = new Vector3[3] 
-                { 
-                    new Vector3(1, 0, -1),
-                    new Vector3(0, 0, 1),
-                    new Vector3(-1, 0, -1),
-                };
+                Vector3[] offsets = new Vector3[3] { new Vector3(1, 0, -1), new Vector3(0, 0, 1), new Vector3(-1, 0, -1) };
+                float duration = 3f;
 
-                SpawnEntity(ids, offsets, 1.5f);
+                _gridController.FSM.OnPlant(ids, _player2Id, _clientId, offsets, duration);
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            else if (Input.GetKeyDown(KeyCode.F))
             {
-                SpawnEntity(9, 2.5f);
+                _gridController.FSM.OnCancelSelect();
             }
 
-            //if (Input.GetKeyDown(KeyCode.A))
-            //{
-            //    _gridFiller.OnLandFormationAssigned(LandFormation.C);
-            //    _spawnRect.Erase();
 
-            //    _spawnRect.Draw();
-            //}
-            //else if (Input.GetKeyDown(KeyCode.S))
-            //{
-            //    _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.LeftDestroy);
-            //    _spawnRect.Erase();
+            else if (Input.GetKeyDown(KeyCode.I))
+            {
+                int id = 9;
+                float duration = 1.5f;
 
-            //    _spawnRect.Draw();
-            //}
-            //else if (Input.GetKeyDown(KeyCode.D))
-            //{
-            //    _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.RightDestroy);
-            //    _spawnRect.Erase();
+                _gridController.FSM.OnPlant(id, _player2Id, _clientId, duration);
+            }
+            else if (Input.GetKeyDown(KeyCode.O))
+            {
+                int id = 4;
+                float duration = 1.5f;
 
-            //    _spawnRect.Draw();
-            //}
-
-
-            //if (Input.GetKeyDown(KeyCode.H))
-            //{
-            //    _gridFiller.OnLandFormationAssigned(LandFormation.R);
-            //    _spawnRect.Erase();
-
-            //    _spawnRect.Draw();
-            //}
-            //else if (Input.GetKeyDown(KeyCode.J))
-            //{
-            //    _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.LeftDestroy);
-            //    _spawnRect.Erase();
-
-            //    _spawnRect.Draw();
-            //}
-            //else if (Input.GetKeyDown(KeyCode.K))
-            //{
-            //    _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.RightDestroy);
-            //    _spawnRect.Erase();
-
-            //    _spawnRect.Draw();
-            //}
+                _gridController.FSM.OnPlant(id, _player2Id, _clientId, duration);
+            }
         }
     }
 }

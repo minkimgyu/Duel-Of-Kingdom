@@ -14,10 +14,9 @@ namespace WPP.AI.GRID.STATE
             _gridController = gridController;
         }
 
-        public override void OnSelectRequested(OffsetFromCenter offsetFromCenter)
+        public override void OnSelectRequested(OffsetRect offsetFromCenter)
         {
-            _gridController.SelectComponent.ResetRect(offsetFromCenter); // 여기서 그려줌
-            _gridController.FSM.SetState(GridController.ControlState.Select);
+            _gridController.FSM.SetState(GridController.ControlState.Select, "SendRectOffset", offsetFromCenter);
         }
     }
 }

@@ -25,7 +25,14 @@ namespace WPP.AI
 
         public float HP { get; set; }
         public bool IsDie { get; set; }
-        public int PlayerId { get; set; }
+        public int OwnershipId { get; set; }
+
+        /// <summary>
+        /// 현재 클라이언트를 조작하는 플레이어의 Id
+        /// </summary>
+        protected int _clientId;
+
+        protected bool IsMyEntity { get { return OwnershipId == _clientId; } } // 내 소유의 Entity일 경우
 
         Action<int, float, Transform> OnHpInitializeRequested;
         Action<float, float> OnHpChangeRequested;
@@ -47,16 +54,19 @@ namespace WPP.AI
         {
             OnHpInitializeRequested(_level, HP, transform);
         }
-
-        // 여기서 Initialize 함수를 virtual로 여러 개 만들어서 하위 클래스에서 이를 활용할 수 있게끔 제작하기
-
-        public virtual void ResetPlayerId(int playerId) { PlayerId = playerId; }
+        
         public virtual void ResetDelayAfterSpawn(float delayDuration) { }
 
+        public virtual void IsLeft(bool isLeft) { }
+
         public virtual void Initialize(int id, int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) { }
+        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
+        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) { }
+        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) { }
+
+        // 여기서 Initialize 함수를 virtual로 여러 개 만들어서 하위 클래스에서 이를 활용할 수 있게끔 제작하기
+        // 객체를 스폰시킨 소유권자의 Id, 현재 클라이언트를 조작하는 플레이어의 Id
+        public void ResetPlayerId(int ownershipId, int clientId) { OwnershipId = ownershipId; _clientId = clientId; }
 
         public virtual void GetDamage(float damage)
         {
@@ -146,7 +156,7 @@ namespace WPP.AI
         public override void GetDamage(float damage)
         {
             base.GetDamage(damage);
-            _fsm.OnDamage();
+            _fsm.OnActive();
         }
 
         // Update is called once per frame

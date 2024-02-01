@@ -21,7 +21,7 @@ namespace WPP.AI.ACTION.STATE
             // 체력 표시는 보여주게끔 하기
         }
 
-        public override void OnDamageRequested()
+        public override void OnActiveRequested()
         {
             // 체력 바 보여주기
             _entityAI.OnVisibleChangeRequested?.Invoke(true);

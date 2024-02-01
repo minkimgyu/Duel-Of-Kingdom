@@ -41,7 +41,7 @@ namespace WPP.AI.BUILDING
             base.InitializeComponent();
         }
 
-        public override void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
+        public override void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
         {
             _id = id;
             _level = level;
@@ -57,7 +57,7 @@ namespace WPP.AI.BUILDING
 
             InitializeComponent();
 
-            _captureComponent.Initialize(targetTag, PlayerId, captureRange); // 이런 식으로 세부 변수를 할당해준다.
+            _captureComponent.Initialize(targetTag, OwnershipId, captureRange); // 이런 식으로 세부 변수를 할당해준다.
         }
 
         protected override void InitializeBT()
@@ -105,7 +105,7 @@ namespace WPP.AI.BUILDING
 
         public override void ResetDelayAfterSpawn(float delayDuration) { _delayDuration = delayDuration; }
 
-        public override void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime)
+        public override void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime)
         {
             base.Initialize(id, level, name, hp, fillOffset, targetTag, damage, hitSpeed, range, captureRange);
             _lifeTime = lifeTime; // 라이프 타임 초기화
@@ -143,7 +143,7 @@ namespace WPP.AI.BUILDING
         protected float _spawnDelay; // 다음 스폰까지 딜레이
         protected Vector3[] _spawnOffsets; // 스폰 오프셋
 
-        public override void Initialize(int id, int level, string name, float hp, OffsetFromCenter fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets)
+        public override void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets)
         {
             _id = id;
             _level = level;
@@ -190,7 +190,7 @@ namespace WPP.AI.BUILDING
                     new List<Node>()
                     {
                         new Delay(_spawnDelay),
-                        new Spawn(_spawnUnitId, PlayerId, _spawnPoint, _spawnOffsets, transform.rotation)
+                        new Spawn(_spawnUnitId, OwnershipId, _clientId, _spawnPoint, _spawnOffsets, transform.rotation)
                     }
                 )
             };
@@ -203,20 +203,20 @@ namespace WPP.AI.BUILDING
     abstract public class Building : EntityAI
     {
         protected BoxCollider _boxCollider;
-        protected OffsetFromCenter _fillOffset = new OffsetFromCenter(1, 1, 1, 1);
+        protected OffsetRect _fillOffset = new OffsetRect(1, 1, 1, 1);
 
         // 기본 능력치
         protected float _lifeTime; // 생존 시간
         //
-        Action<Vector3, OffsetFromCenter> OnPlantRequested;
-        Action<Vector3, OffsetFromCenter> OnReleaseRequested;
+        Action<Vector3, OffsetRect, bool> OnPlantRequested;
+        Action<Vector3, OffsetRect, bool> OnReleaseRequested;
 
         void InitializeFillerAction()
         {
             GameObject grid = GameObject.FindWithTag("Grid");
             if (grid == null) return;
 
-            FillComponent filler = grid.GetComponent<FillComponent>();
+            GridFillComponent filler = grid.GetComponent<GridFillComponent>();
             if (filler == null) return;
 
             OnPlantRequested = filler.OnBuildingPlanted;
@@ -231,19 +231,19 @@ namespace WPP.AI.BUILDING
             // 여기에서 GridFiller 참조해서 현재 스폰된 위치 기반으로 그리드 인덱스 찾아서 막아주기
             // 만약 타워가 터진다면 그리드 참조해서 다시 풀어주기
             InitializeFillerAction();
-            OnPlantRequested(transform.position, _fillOffset);
+            OnPlantRequested(transform.position, _fillOffset, IsMyEntity);
 
             InitializeBT(); // 여기서 초기화 진행
         }
 
         private void OnDestroy()
         {
-            OnReleaseRequested(transform.position, _fillOffset);
+            OnReleaseRequested(transform.position, _fillOffset, IsMyEntity);
         }
 
         public override float ReturnColliderSize()
         {
-            return (_boxCollider.size.x / 2) * (transform.localScale.x + transform.localScale.z) / 2;
+            return ((_boxCollider.size.x / 2) * (transform.localScale.x + transform.localScale.z) / 2);
         }
     }
 }

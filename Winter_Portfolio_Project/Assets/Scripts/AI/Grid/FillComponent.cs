@@ -4,11 +4,11 @@ using UnityEngine;
 using System;
 using WPP.DRAWING;
 
-namespace WPP.GRID
+namespace WPP.AI.GRID
 {
     // 모노 비헤이비어 상속시켜서 Grid 변경시켜주는 방식으로 사용
     // 유닛이 심길 수 있는 위치를 반환해주는 클레스를 하나 더 만들어보기
-    public class GridFiller : MonoBehaviour
+    public class FillComponent : MonoBehaviour
     {
         // 블루팀 레드팀의 경우를 나눠서 적용해야함 --> 그러니깐 4개가 나오겠지
 
@@ -38,57 +38,57 @@ namespace WPP.GRID
         }
 
         DrawingData rNoDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 0), new Vector3(0, 0, 17), new Vector3(14, 0, 17), new Vector3(14, 0, 0) },
+            new Vector3[] { new Vector3(-2, 0, 0), new Vector3(-2, 0, 17), new Vector3(16, 0, 17), new Vector3(16, 0, 0) },
             new int[] { 0, 1, 2, 0, 2, 3}
         );
 
         DrawingData rAllDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 0), new Vector3(0, 0, 12), new Vector3(14, 0, 12), new Vector3(14, 0, 0) },
+            new Vector3[] { new Vector3(-2, 0, 0), new Vector3(-2, 0, 12), new Vector3(16, 0, 12), new Vector3(16, 0, 0) },
             new int[] { 0, 1, 2, 0, 2, 3 }
         );
 
         DrawingData rLeftDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 0), new Vector3(0, 0, 12), new Vector3(7, 0, 12), new Vector3(7, 0, 17), new Vector3(14, 0, 17), new Vector3(14, 0, 12), new Vector3(14, 0, 0) },
+            new Vector3[] { new Vector3(-2, 0, 0), new Vector3(-2, 0, 12), new Vector3(7, 0, 12), new Vector3(7, 0, 17), new Vector3(16, 0, 17), new Vector3(16, 0, 12), new Vector3(16, 0, 0) },
             new int[] { 0, 1, 6, 1, 5, 6, 5, 2, 3, 5, 3, 4 }
         );
 
         DrawingData rRightDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 0), new Vector3(0, 0, 12), new Vector3(0, 0, 17), new Vector3(7, 0, 17), new Vector3(7, 0, 12), new Vector3(14, 0, 12), new Vector3(14, 0, 0) },
+            new Vector3[] { new Vector3(-2, 0, 0), new Vector3(-2, 0, 12), new Vector3(-2, 0, 17), new Vector3(7, 0, 17), new Vector3(7, 0, 12), new Vector3(16, 0, 12), new Vector3(16, 0, 0) },
             new int[] { 0, 1, 6, 1, 5, 6, 1, 3, 4, 1, 2, 3 }
         );
 
 
 
         DrawingData cNoDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 33), new Vector3(14, 0, 33), new Vector3(14, 0, 16), new Vector3(0, 0, 16) },
+            new Vector3[] { new Vector3(-2, 0, 33), new Vector3(16, 0, 33), new Vector3(16, 0, 16), new Vector3(-2, 0, 16) },
             new int[] { 0, 1, 3, 3, 1, 2 }
         );
 
         DrawingData cAllDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 33), new Vector3(14, 0, 33), new Vector3(14, 0, 21), new Vector3(0, 0, 21) },
+            new Vector3[] { new Vector3(-2, 0, 33), new Vector3(16, 0, 33), new Vector3(16, 0, 21), new Vector3(-2, 0, 21) },
             new int[] { 0, 1, 3, 3, 1, 2 }
         );
 
         DrawingData cLeftDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 33), new Vector3(14, 0, 33), new Vector3(14, 0, 21), new Vector3(14, 0, 16), new Vector3(7, 0, 16), new Vector3(7, 0, 21), new Vector3(0, 0, 21) },
+            new Vector3[] { new Vector3(-2, 0, 33), new Vector3(16, 0, 33), new Vector3(16, 0, 21), new Vector3(16, 0, 16), new Vector3(7, 0, 16), new Vector3(7, 0, 21), new Vector3(-2, 0, 21) },
             new int[] { 0, 1, 6, 6, 1, 2, 5, 2, 4, 4, 2, 3 }
         );
 
         DrawingData cRightDestroyDrawingData = new DrawingData(
-            new Vector3[] { new Vector3(0, 0, 33), new Vector3(14, 0, 33), new Vector3(14, 0, 21), new Vector3(7, 0, 21), new Vector3(7, 0, 16), new Vector3(0, 0, 16), new Vector3(0, 0, 21) },
+            new Vector3[] { new Vector3(-2, 0, 33), new Vector3(16, 0, 33), new Vector3(16, 0, 21), new Vector3(7, 0, 21), new Vector3(7, 0, 16), new Vector3(-2, 0, 16), new Vector3(-2, 0, 21) },
             new int[] { 0, 1, 6, 6, 1, 2, 5, 6, 3, 5, 3, 4 }
         );
 
 
-        AreaData cAreaData = new AreaData(new Vector2Int(13, 32), new Vector2Int(0, 16), true);
+        AreaData cAreaData = new AreaData(new Vector2Int(17, 32), new Vector2Int(0, 16), true);
 
-        AreaData cLeftAreaData = new AreaData(new Vector2Int(6, 20), new Vector2Int(0, 16), false);
-        AreaData cRightAreaData = new AreaData(new Vector2Int(13, 20), new Vector2Int(7, 16), false);
+        AreaData cLeftAreaData = new AreaData(new Vector2Int(8, 20), new Vector2Int(0, 16), false);
+        AreaData cRightAreaData = new AreaData(new Vector2Int(17, 20), new Vector2Int(9, 16), false);
 
-        AreaData rAreaData = new AreaData(new Vector2Int(13, 16), new Vector2Int(0, 0), true);
+        AreaData rAreaData = new AreaData(new Vector2Int(17, 16), new Vector2Int(0, 0), true);
 
-        AreaData rLeftAreaData = new AreaData(new Vector2Int(6, 15), new Vector2Int(0, 12), false);
-        AreaData rRightAreaData = new AreaData(new Vector2Int(13, 15), new Vector2Int(7, 12), false);
+        AreaData rLeftAreaData = new AreaData(new Vector2Int(8, 15), new Vector2Int(0, 12), false);
+        AreaData rRightAreaData = new AreaData(new Vector2Int(17, 15), new Vector2Int(9, 12), false);
 
         Func<Grid[,]> OnReturnGridRequested;
         Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
@@ -96,11 +96,8 @@ namespace WPP.GRID
         [SerializeField] SpawnAreaDrawer _spawnRect;
         [SerializeField] TowerCondition _storedTowerCondition;
 
-        private void Awake()
+        public void Initialize(GridStorage gridStorage)
         {
-            GridStorage gridStorage = GetComponent<GridStorage>();
-            if (gridStorage == null) return;
-
             OnReturnGridRequested = gridStorage.ReturnGridArray;
             OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
         }

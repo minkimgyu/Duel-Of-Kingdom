@@ -48,6 +48,7 @@ namespace WPP.DRAWING
         {
             _vertices = drawingData.Vertices;
             _orders = drawingData.Orders;
+            Erase(); // 초기화와 함께 지워주기
         }
 
         public void Draw()
@@ -74,7 +75,7 @@ namespace WPP.DRAWING
         }
 
         // 모든 점, 선을 지워주기
-        public void Erase()
+        void Erase()
         {
             _meshFilter.mesh = new Mesh(); // mesh 초기화
             _lineRenderer.positionCount = 0;

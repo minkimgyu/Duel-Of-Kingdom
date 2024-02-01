@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using WPP.GRID;
+using WPP.AI.GRID;
 using WPP.DRAWING;
 using WPP.AI.SPAWNER;
 
@@ -9,10 +9,10 @@ namespace WPP.AI
 {
     public class AISceneExample : MonoBehaviour
     {
-        [SerializeField] GridFiller _gridFiller;
+        [SerializeField] FillComponent _gridFiller;
         [SerializeField] SpawnAreaDrawer _spawnRect;
 
-        [SerializeField] GridSelecter _gridSelecter;
+        [SerializeField] SelectComponent _gridSelecter;
 
         [SerializeField] Spawner _spawner;
 
@@ -80,50 +80,50 @@ namespace WPP.AI
                 SpawnEntity(9, 2.5f);
             }
 
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                _gridFiller.OnLandFormationAssigned(LandFormation.C);
-                _spawnRect.Erase();
+            //if (Input.GetKeyDown(KeyCode.A))
+            //{
+            //    _gridFiller.OnLandFormationAssigned(LandFormation.C);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
-            else if (Input.GetKeyDown(KeyCode.S))
-            {
-                _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.LeftDestroy);
-                _spawnRect.Erase();
+            //    _spawnRect.Draw();
+            //}
+            //else if (Input.GetKeyDown(KeyCode.S))
+            //{
+            //    _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.LeftDestroy);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.RightDestroy);
-                _spawnRect.Erase();
+            //    _spawnRect.Draw();
+            //}
+            //else if (Input.GetKeyDown(KeyCode.D))
+            //{
+            //    _gridFiller.OnTowerConditionChanged(LandFormation.C, TowerCondition.RightDestroy);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
+            //    _spawnRect.Draw();
+            //}
 
 
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                _gridFiller.OnLandFormationAssigned(LandFormation.R);
-                _spawnRect.Erase();
+            //if (Input.GetKeyDown(KeyCode.H))
+            //{
+            //    _gridFiller.OnLandFormationAssigned(LandFormation.R);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
-            else if (Input.GetKeyDown(KeyCode.J))
-            {
-                _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.LeftDestroy);
-                _spawnRect.Erase();
+            //    _spawnRect.Draw();
+            //}
+            //else if (Input.GetKeyDown(KeyCode.J))
+            //{
+            //    _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.LeftDestroy);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
-            else if (Input.GetKeyDown(KeyCode.K))
-            {
-                _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.RightDestroy);
-                _spawnRect.Erase();
+            //    _spawnRect.Draw();
+            //}
+            //else if (Input.GetKeyDown(KeyCode.K))
+            //{
+            //    _gridFiller.OnTowerConditionChanged(LandFormation.R, TowerCondition.RightDestroy);
+            //    _spawnRect.Erase();
 
-                _spawnRect.Draw();
-            }
+            //    _spawnRect.Draw();
+            //}
         }
     }
 }

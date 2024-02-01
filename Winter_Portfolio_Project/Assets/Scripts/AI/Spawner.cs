@@ -4,7 +4,7 @@ using UnityEngine;
 using WPP.JSON;
 using WPP.AI.STAT;
 using WPP.AI.UI;
-using WPP.GRID;
+using WPP.AI.GRID;
 using System;
 
 namespace WPP.AI.SPAWNER

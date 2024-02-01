@@ -1,12 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WPP.AI.GRID;
 
 namespace WPP.AI.FSM
 {
     abstract public class State : BaseState
     {
         public override void CheckStateChange() { }
+
+        public override void OnPlantRequested() { }
+        public override void OnCancelSelectRequested() { }
+        public override void OnSelectRequested(OffsetFromCenter offsetFromCenter) { }
+
 
         public override void OnDamageRequested() { }
         public override void OnAttackRequested() { }
@@ -23,6 +29,10 @@ namespace WPP.AI.FSM
     abstract public class BaseState
     {
         public abstract void CheckStateChange();
+
+        public abstract void OnPlantRequested();
+        public abstract void OnCancelSelectRequested();
+        public abstract void OnSelectRequested(OffsetFromCenter offsetFromCenter);
 
         public abstract void OnDamageRequested();
         public abstract void OnAttackRequested();
@@ -75,6 +85,24 @@ namespace WPP.AI.FSM
         {
             if (_currentState == null) return;
             _currentState.OnCancelAttackRequested();
+        }
+
+        public void OnSelect(OffsetFromCenter offsetFromCenter)
+        {
+            if (_currentState == null) return;
+            _currentState.OnSelectRequested(offsetFromCenter);
+        }
+
+        public void OnCancelSelect()
+        {
+            if (_currentState == null) return;
+            _currentState.OnCancelSelectRequested();
+        }
+
+        public void OnPlant()
+        {
+            if (_currentState == null) return;
+            _currentState.OnPlantRequested();
         }
 
         public bool RevertToPreviousState()

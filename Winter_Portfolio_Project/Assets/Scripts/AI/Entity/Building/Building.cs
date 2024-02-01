@@ -6,7 +6,7 @@ using WPP.AI.STAT;
 using WPP.AI.ATTACK;
 using WPP.AI.CAPTURE;
 using WPP.AI.BTUtility;
-using WPP.GRID;
+using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
 using System;
@@ -216,7 +216,7 @@ namespace WPP.AI.BUILDING
             GameObject grid = GameObject.FindWithTag("Grid");
             if (grid == null) return;
 
-            GridFiller filler = grid.GetComponent<GridFiller>();
+            FillComponent filler = grid.GetComponent<FillComponent>();
             if (filler == null) return;
 
             OnPlantRequested = filler.OnBuildingPlanted;

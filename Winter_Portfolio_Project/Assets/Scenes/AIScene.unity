@@ -41575,6 +41575,7 @@ GameObject:
   - component: {fileID: 1735078942}
   - component: {fileID: 1735078943}
   - component: {fileID: 1735078944}
+  - component: {fileID: 1735078945}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Grid
@@ -41674,6 +41675,18 @@ MonoBehaviour:
   _spawnRect: {fileID: 1307909760}
   minV2: {x: 0, y: 0}
   maxV2: {x: 0, y: 0}
+--- !u!114 &1735078945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735078938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dad02e942e5d50944bc04b4983971198, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1735859339
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46818,6 +46831,7 @@ MonoBehaviour:
   - {fileID: 5101062435765762110, guid: 2e67d1fd05fcf8f49b8fd5e80f836100, type: 3}
   - {fileID: 6359415894939427762, guid: 280915dc225551c4780aaadb77e043be, type: 3}
   - {fileID: 8401401061194717960, guid: 206addee58a5fb24c9bd5e5c678b0ff7, type: 3}
+  _myPlayerId: 0
 --- !u!1001 &1923585790
 PrefabInstance:
   m_ObjectHideFlags: 0

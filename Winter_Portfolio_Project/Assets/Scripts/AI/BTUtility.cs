@@ -8,7 +8,7 @@ using WPP.AI.CAPTURE;
 using WPP.AI.TIMER;
 using WPP.AI.SPAWNER;
 using System;
-using WPP.GRID;
+using WPP.AI.GRID;
 
 namespace WPP.AI.BTUtility
 {

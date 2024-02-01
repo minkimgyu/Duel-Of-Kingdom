@@ -7,7 +7,7 @@ using Tree = BehaviorTree.Tree;
 using WPP.AI.ATTACK;
 using WPP.AI.BTUtility;
 using WPP.AI.CAPTURE;
-using WPP.GRID;
+using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
 

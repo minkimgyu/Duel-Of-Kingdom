@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System.IO;
 using WPP.AI.STAT;
 using WPP.AI.CAPTURE;
-using WPP.GRID;
+using WPP.AI.GRID;
 
 namespace WPP.JSON
 {

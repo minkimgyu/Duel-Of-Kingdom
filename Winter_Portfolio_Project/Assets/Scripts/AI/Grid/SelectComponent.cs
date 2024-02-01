@@ -4,7 +4,7 @@ using UnityEngine;
 using WPP.DRAWING;
 using System;
 
-namespace WPP.GRID
+namespace WPP.AI.GRID
 {
     [Serializable]
     public struct OffsetFromCenter
@@ -20,8 +20,7 @@ namespace WPP.GRID
         }
     }
 
-
-    public class GridSelecter : MonoBehaviour
+    public class SelectComponent : MonoBehaviour
     {
         [SerializeField] SpawnAreaDrawer _spawnRect;
         Func<Grid[,]> OnReturnGridRequested;
@@ -29,7 +28,7 @@ namespace WPP.GRID
         Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
         Func<Vector2, Vector2Int> OnConvertV2ToIndexRequested;
 
-        RectInt _rectSize;
+        OffsetFromCenter _rectSize;
         Vector2Int _centerOffset;
 
         [SerializeField] Vector2Int minV2;
@@ -39,34 +38,30 @@ namespace WPP.GRID
         int _layer;
         float _maxDistance = 50;
 
-        private void Start()
+        public void Initialize(GridStorage gridStorage)
         {
             _layer = LayerMask.GetMask("Tile");
 
-            GridStorage gridStorage = GetComponent<GridStorage>();
-            if (gridStorage == null) return;
-            
             OnReturnGridRequested = gridStorage.ReturnGridArray;
             OnReturnGridRectRequested = gridStorage.ReturnGridRect;
 
             OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
             OnConvertV2ToIndexRequested = gridStorage.ConvertPositionToIndex;
 
-            Initialize();
-            DrawArea(_rectSize);
+            //DrawArea(_rectSize);
         }
 
         public Vector3 ReturnSpawnPoint() { return new Vector3(_spawnPoint.x, 1, _spawnPoint.z); }
 
         int ReturnCenterOffset(int length) { return Mathf.FloorToInt((float)length / 2); }
 
-        void DrawArea(RectInt rectInt)
+        void DrawArea()
         {
             Vector3[] verties = new Vector3[] { 
-                new Vector3(0, 0, 0), 
-                new Vector3(0, 0, rectInt.max.y), 
-                new Vector3(rectInt.max.x, 0, rectInt.max.y), 
-                new Vector3(rectInt.max.x, 0, 0) 
+                new Vector3(-_rectSize._left, 0, -_rectSize._down),
+                new Vector3(-_rectSize._left, 0, _rectSize._top),
+                new Vector3(_rectSize._right, 0, _rectSize._top),
+                new Vector3(_rectSize._right, 0, -_rectSize._down)
             };
             int[] orders = new int[] { 0, 1, 2, 0, 2, 3 };
 
@@ -75,42 +70,25 @@ namespace WPP.GRID
             _spawnRect.Draw();
         }
 
-        public void Initialize()
+        public void ResetRect(OffsetFromCenter offsetFromCenter)
         {
-            int width = 3;
-            int height = 3;
+            int width = offsetFromCenter._left + offsetFromCenter._right + 1;
+            int height = offsetFromCenter._top + offsetFromCenter._down + 1;
 
-            _rectSize = new RectInt(Vector2Int.zero, new Vector2Int(width, height));
+            _rectSize = offsetFromCenter;
             _centerOffset = new Vector2Int(ReturnCenterOffset(width), ReturnCenterOffset(height));
-        }
-
-        public void Initialize(RectInt rectInt)
-        {
-            _rectSize = rectInt;
-            _centerOffset = new Vector2Int(ReturnCenterOffset(_rectSize.width), ReturnCenterOffset(_rectSize.height));
-        }
-
-        OffsetFromCenter ReturnSpawnRectOffset()
-        {
-            int leftX = _centerOffset.x;
-            int downY = _centerOffset.y;
-
-            int rightX = _rectSize.width - leftX - 1;
-            int topY = _rectSize.height - downY - 1;
-
-            return new OffsetFromCenter(topY, downY, leftX, rightX);
+            DrawArea();
         }
 
         RectInt ReturnClampedRange()
         {
-            OffsetFromCenter offset = ReturnSpawnRectOffset();
             RectInt gridWorldPos = OnReturnGridRectRequested();
 
             return new RectInt(
-                gridWorldPos.min.x + offset._left, 
-                gridWorldPos.min.y + offset._down, 
-                gridWorldPos.width - offset._left - offset._right,
-                gridWorldPos.height - offset._top - offset._down);
+                gridWorldPos.min.x + _rectSize._left, 
+                gridWorldPos.min.y + _rectSize._down, 
+                gridWorldPos.width - _rectSize._left - _rectSize._right,
+                gridWorldPos.height - _rectSize._top - _rectSize._down);
         }
 
         Vector3 ReturnClampedPos(Vector3 pos)
@@ -133,14 +111,12 @@ namespace WPP.GRID
                 Vector3 clampedPos = ReturnClampedPos(hit.transform.position);
                 Vector2Int indexOfGrid = OnConvertV3ToIndexRequested(clampedPos);
 
-                OffsetFromCenter offset = ReturnSpawnRectOffset();
-
-                int minXIndex = indexOfGrid.x - offset._left;
-                int minYIndex = indexOfGrid.y - offset._down;
+                int minXIndex = indexOfGrid.x - _rectSize._left;
+                int minYIndex = indexOfGrid.y - _rectSize._down;
                 minV2 = new Vector2Int(minXIndex, minYIndex);
 
-                int maxXIndex = indexOfGrid.x + offset._right;
-                int maxYIndex = indexOfGrid.y + offset._top;
+                int maxXIndex = indexOfGrid.x + _rectSize._right;
+                int maxYIndex = indexOfGrid.y + _rectSize._top;
                 maxV2 = new Vector2Int(maxXIndex, maxYIndex);
 
                 // 그리드의 최대 최소 값 인덱스
@@ -161,7 +137,7 @@ namespace WPP.GRID
                     for (int j = minXIndex; j <= maxXIndex; j++)
                     {
                         bool exitThisLine = false;
-                        for (int z = i - offset._down; z <= i + offset._top; z++)
+                        for (int z = i - _rectSize._down; z <= i + _rectSize._top; z++)
                         {
                             if (grids[j, z].CanPlant == false)
                             {

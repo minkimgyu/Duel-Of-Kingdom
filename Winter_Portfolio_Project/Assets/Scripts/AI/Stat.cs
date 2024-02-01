@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WPP.AI.CAPTURE;
-using WPP.GRID;
+using WPP.AI.GRID;
 using System;
 
 namespace WPP.AI.STAT

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace WPP.GRID
+namespace WPP.AI.GRID
 {
     [System.Serializable]
     public class Grid
@@ -70,10 +70,6 @@ namespace WPP.GRID
     public class GridStorage : MonoBehaviour
     {
         [SerializeField] TilePiece[] pieces;
-
-        //[SerializeField] int topRightTileIndex;
-        //[SerializeField] int bottomLeftTileIndex;
-
         [SerializeField] Vector2Int _bottomLeft, _topRight;
 
         [SerializeField] int _width;
@@ -97,7 +93,7 @@ namespace WPP.GRID
         public RectInt ReturnGridRect() { return new RectInt(_bottomLeft.x, _bottomLeft.y, _width - 1, _height - 1); } // 이건 position
 
         // Start is called before the first frame update
-        void Awake()
+        public void Initialize()
         {
             pieces = GetComponentsInChildren<TilePiece>();
             // 루프 돌려서 가장 왼쪽 아래, 오른쪽 위 오브젝트 구하기

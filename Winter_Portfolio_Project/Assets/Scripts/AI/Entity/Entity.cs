@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using WPP.AI.TARGET;
 using WPP.AI.CAPTURE;
-using WPP.GRID;
+using WPP.AI.GRID;
 using WPP.AI.STAT;
 using WPP.AI.UI;
 using WPP.AI.FSM;
@@ -109,7 +109,6 @@ namespace WPP.AI
             return _name;
         }
     }
-
 
     // AI 적용을 위한 BT를 가지고 있음
     abstract public class EntityAI : Entity

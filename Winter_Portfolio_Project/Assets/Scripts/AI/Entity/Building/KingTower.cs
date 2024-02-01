@@ -4,7 +4,7 @@ using UnityEngine;
 using WPP.AI.ACTION.STATE;
 using WPP.AI.CAPTURE;
 using WPP.AI.FSM;
-using WPP.GRID;
+using WPP.AI.GRID;
 
 namespace WPP.AI.BUILDING
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-namespace WPP.GRID
+namespace WPP.AI.GRID
 {
     public struct PathFindingParameter
     {

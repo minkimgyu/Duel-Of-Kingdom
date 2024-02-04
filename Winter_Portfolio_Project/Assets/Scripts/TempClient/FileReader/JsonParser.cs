@@ -1,4 +1,4 @@
-﻿#define DEBUG
+﻿#undef DEBUG
 
 using System;
 using System.Collections.Generic;
@@ -23,8 +23,9 @@ namespace WPP.FileReader
         private static JsonParser _instance;
         private string _cardCollectionPath;
         private string _accountPath;
-        private string _decksPath;
         private string _towersPath;
+        private string _decksPath;
+        private string _cardInstancesPath;
         private string _jsonData;
 
         public static JsonParser Instance()
@@ -41,13 +42,16 @@ namespace WPP.FileReader
 #if DEBUG
             _cardCollectionPath = "Assets\\GameFiles\\card_collection.json";
             _accountPath = "Assets\\GameFiles\\account.json";
-            _decksPath = "Assets\\GameFiles\\decks.json";
             _towersPath = "Assets\\GameFiles\\towers.json";
+            _decksPath = "Assets\\GameFiles\\decks.json";
+            _cardInstancesPath = "Assets\\GameFiles\\cards.json";
+
 #else
             _cardCollectionPath = Application.persistentDataPath + "/card_collection.json";
             _accountPath = Application.persistentDataPath + "/account.json";
-            _decksPath = Application.persistentDataPath + "/decks.json";
             _towersPath = Application.persistentDataPath + "/towers.json";
+            _decksPath = Application.persistentDataPath + "/decks.json";
+            _cardInstancesPath = Application.persistentDataPath + "/cards.json";
 #endif
         }
 
@@ -74,6 +78,13 @@ namespace WPP.FileReader
         {
             _jsonData = File.ReadAllText(_decksPath);
             ClientData.Instance().decks = JsonConvert.DeserializeObject<DecksData>(_jsonData);
+            return;
+        }
+
+        public void LoadCardInstances()
+        {
+            _jsonData = File.ReadAllText(_cardInstancesPath);
+            ClientData.Instance().cards = JsonConvert.DeserializeObject<CardsData>(_jsonData);
             return;
         }
     }

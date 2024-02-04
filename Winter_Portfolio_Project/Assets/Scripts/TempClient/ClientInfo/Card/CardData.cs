@@ -64,6 +64,7 @@ namespace WPP.ClientInfo.Card
         {
             this.id = id;
             unit = CardCollection.Instance().FindCard(id).unit;
+            this.type = type;
             this.rarity = rarity;
             this.needElixir = needElixir;
             this.gridSize = gridSize;

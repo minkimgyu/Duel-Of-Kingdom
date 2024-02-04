@@ -16,6 +16,7 @@ namespace WPP.ClientInfo
         public AccountData account { get; set; }
         public TowersData towers { get; set; }
         public DecksData decks { get; set; }
+        public CardsData cards { get; set; }
 
         public int player_id_in_game;
         public static ClientData Instance()
@@ -31,6 +32,7 @@ namespace WPP.ClientInfo
             account = new AccountData();
             towers = new TowersData();
             decks = new DecksData();
+            cards = new CardsData();
             player_id_in_game = -1;
         }
     }

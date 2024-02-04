@@ -18,8 +18,6 @@ namespace WPP.Network
 
         private byte[] _receivedPacket;
         public ByteBuffer buffer { get; set; }
-
-        public Queue<byte[]> packetQueue { get; set; }
         public IPEndPoint peerSockPublicEP { get; set; }
         public IPEndPoint peerSockPrivateEP { get; set; }
 
@@ -38,8 +36,6 @@ namespace WPP.Network
 
             _receivedPacket = new byte[4096];
             buffer = null;
-
-            packetQueue = new Queue<byte[]>();
         }
 
         public void InitializeClientSock()
@@ -184,7 +180,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                packetQueue.Enqueue(dataToHandle);
+                PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
 
                 serverStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromServerCallbck, null);
                 return;
@@ -210,7 +206,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                packetQueue.Enqueue(dataToHandle);
+                PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
 
                 serverStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromServerCallbck, null);
                 return;
@@ -299,7 +295,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                packetQueue.Enqueue(dataToHandle);
+                PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
 
                 P2Pstream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromPeerCallbck, null);
                 return;

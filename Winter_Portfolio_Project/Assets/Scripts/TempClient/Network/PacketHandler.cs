@@ -1,4 +1,4 @@
-#define DEBUG
+#undef DEBUG
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +16,7 @@ using System.IO;
 using System;
 using WPP.FileReader;
 using Unity.VisualScripting;
+using WPP.ClientInfo.Card;
 
 namespace WPP.Network
 {
@@ -24,6 +25,8 @@ namespace WPP.Network
         private static PacketHandler _instance;
         private delegate void HandleFunc(ref ByteBuffer buffer);
         private Dictionary<int, HandleFunc> packetHandler;
+        public Queue<byte[]> packetQueue { get; set; }
+        public Queue<ByteBuffer> inGamePacketQueue { get; set; }
 
         private int _packetLength;
         private bool _isSegmentated;
@@ -40,6 +43,8 @@ namespace WPP.Network
         public PacketHandler() {
             _packetLength = 0;
             _isSegmentated = false;
+            packetQueue = new Queue<byte[]>();
+            inGamePacketQueue = new Queue<ByteBuffer>();
         }
         public void InitializePacketHandler()
         {
@@ -60,6 +65,7 @@ namespace WPP.Network
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_KT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_LPT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_RPT, DamageTower);
+            packetHandler.Add((int)Peer_PacketTagPackages.SPAWN_CARD, SpawnCard);
         }
 
         public void HandlePacket(byte[] packet)
@@ -193,6 +199,20 @@ namespace WPP.Network
             File.WriteAllText(decksFilePath, decksString);
             JsonParser.Instance().LoadDecks();
 
+            string cardInstancesString = buffer.ReadString(true);
+            ClientData.Instance().cards = JsonConvert.DeserializeObject<CardsData>(cardInstancesString);
+#if DEBUG
+            string cardInstancessFilePath = "Assets\\GameFiles\\cards.json";
+#else
+            string cardInstancessFilePath = Application.persistentDataPath + "/cards.json";
+#endif
+            if (File.Exists(cardInstancessFilePath))
+            {
+                File.Delete(cardInstancessFilePath);
+            }
+            File.WriteAllText(cardInstancessFilePath, cardInstancesString);
+            JsonParser.Instance().LoadCardInstances();
+
             SceneManager.LoadScene("Lobby");
             Debug.Log("login completed");
         }
@@ -232,8 +252,14 @@ namespace WPP.Network
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
                 Debug.Log("Connected with public IP");
             }
-            SceneManager.LoadScene("BattleSystemExample");
+            else
+            {
+                Debug.Log("Connected with private IP");
+            }
 
+            // 상대에게 게임 전 덱 정보를 줄지 아니면 실시간으로 정보를 전송할지 고려해야함
+
+            SceneManager.LoadScene("BattleSystemExample");
             Debug.Log("entered game");
         }
 
@@ -267,8 +293,23 @@ namespace WPP.Network
 
         public void HandleTurnOn(ref ByteBuffer buffer)
         {
+            if(inGamePacketQueue.Count > 0)
+            {
+                ByteBuffer inGameBuffer = inGamePacketQueue.Dequeue();
+                int card_id = inGameBuffer.ReadInteger(true);
+                //Vector3 spawnLocation = buffer.ReadVector3(true);
+
+                // spawn with spawner class
+                Debug.Log($"spawn {card_id}");
+            }
+
             Debug.Log("turn on");
         }
+        public void SpawnCard(ref ByteBuffer buffer)
+        {
+            inGamePacketQueue.Enqueue(buffer);
+        }
     }
+
 }
 

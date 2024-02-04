@@ -40,6 +40,7 @@ namespace WPP.Network
     { 
         DAMAGE_KT = 30,
         DAMAGE_LPT,
-        DAMAGE_RPT
+        DAMAGE_RPT,
+        SPAWN_CARD,
     }
 }

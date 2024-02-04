@@ -21,9 +21,9 @@ namespace WPP
 
         void Update()
         {
-            if (ClientTCP.Instance().packetQueue.Count > 0)
+            if (PacketHandler.Instance().packetQueue.Count > 0)
             {
-                PacketHandler.Instance().HandlePacket(ClientTCP.Instance().packetQueue.Dequeue());
+                PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
             }
         }
 

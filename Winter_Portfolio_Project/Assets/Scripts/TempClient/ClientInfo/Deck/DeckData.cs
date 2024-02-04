@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WPP.ClientInfo.CardData;
+using WPP.ClientInfo.Card;
 
 namespace WPP.ClientInfo.Deck
 {
-    public class Deck
+    public class DeckData
     {
         public int id { get; set; }
-        public List<Card> cards { get; set; }
+        public List<CardData> cards { get; set; }
 
-        public Deck(int id)
+        public DeckData(int id)
         {
             this.id = id;
-            cards = new List<Card>();
+            cards = new List<CardData>();
         }
 
-        public void AddCard(Card card)
+        public void AddCard(CardData card)
         {
             if (cards.Count > Constants.MAXIMUM_CARDS_IN_DECK)
                 return;

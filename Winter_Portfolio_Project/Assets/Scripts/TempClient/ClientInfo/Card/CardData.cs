@@ -1,9 +1,10 @@
 ﻿using System;
 using UnityEngine;
+using WPP.Collection;
 using WPP.FileReader;
 using WPP.Units;
 
-namespace WPP.ClientInfo.CardData
+namespace WPP.ClientInfo.Card
 {
     public enum CardType
     {
@@ -43,12 +44,12 @@ namespace WPP.ClientInfo.CardData
     }
 
     [Serializable]
-    public class Card
+    public class CardData
     {
         public int id;
         public int unit_id;
 
-        public Unit unit;
+        public UnitData unit;
 
         public CardType type;
 
@@ -58,11 +59,11 @@ namespace WPP.ClientInfo.CardData
 
         public GridSize gridSize;
 
-        public Card() { }
-        public Card(int id, int unit_id, CardType type, CardRarity rarity, int needElixir, GridSize gridSize)
+        public CardData() { }
+        public CardData(int id, CardType type, CardRarity rarity, int needElixir, GridSize gridSize)
         {
             this.id = id;
-            unit = JsonParser.Instance().FindUnit(id);
+            unit = CardCollection.Instance().FindCard(id).unit;
             this.rarity = rarity;
             this.needElixir = needElixir;
             this.gridSize = gridSize;

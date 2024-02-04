@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace WPP.Units
 {
-    public class Unit
+    public class UnitData
     {
         public int id;
         public string name;
         public int level;
 
-        public Unit(int id, string name, int level) 
+        public UnitData(int id, string name, int level) 
         {
           this.id = id;
           this.name = name;

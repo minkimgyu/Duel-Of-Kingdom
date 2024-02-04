@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WPP.Units
 {
-    class Spell : Unit
+    class SpellData : UnitData
     {
-        public Spell(int id, string name, int level)
+        public SpellData(int id, string name, int level)
             : base(id, name, level) { }
     }
 }

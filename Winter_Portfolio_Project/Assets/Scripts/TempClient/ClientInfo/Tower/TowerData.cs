@@ -8,24 +8,19 @@ namespace WPP.ClientInfo.Tower
 {
     public enum TowerType
     {
-        kingTower = 1,
-        princessTower
+        king_tower = 1,
+        left_princess_tower,
+        right_princess_tower,
     }
-    public enum TowerStatus
-    {
-        NOT_DESTROYED = 1,
-        DESTROYED
-    }
-    public class Tower
+
+    public class TowerData
     {
         public TowerType type { get; set; }
-
-        public TowerStatus status { get; set; }
         public int level { get; set; }
         public int hp { get; set; }
 
-        public Tower() {}
-        public Tower(TowerType type, int level, int hp) {
+        public TowerData() {}
+        public TowerData(TowerType type, int level, int hp) {
             this.type = type;
             this.level = level;
             this.hp = hp;

@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WPP.Units
 {
-    class AttackBuilding : Unit
+    class SpawnBuildingData : UnitData
     {
         public float hitpoints;
-        public float damage;
         public float life_time;
-        public float hit_speed;
-        public float range;
+        public int spawn_unit_id;
+        public int spawn_unit_count;
 
-        public AttackBuilding(int id, string name, int level)
+        public SpawnBuildingData(int id, string name, int level)
             : base(id, name, level)
         {
             hitpoints = 0.0f;
-            damage = 0.0f;
             life_time = 0.0f;
-            hit_speed = 0.0f;
-            range = 0.0f;
+            spawn_unit_id = 0;
+            spawn_unit_count = 0;
         }
     }
 }

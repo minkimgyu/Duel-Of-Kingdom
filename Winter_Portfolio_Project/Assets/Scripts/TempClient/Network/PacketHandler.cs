@@ -1,7 +1,5 @@
-#undef DEBUG
-#define BUILD
+#define DEBUG
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,6 +14,8 @@ using WPP.Battle;
 using WPP.Battle.Example;
 using System.IO;
 using System;
+using WPP.FileReader;
+using Unity.VisualScripting;
 
 namespace WPP.Network
 {
@@ -24,7 +24,9 @@ namespace WPP.Network
         private static PacketHandler _instance;
         private delegate void HandleFunc(ref ByteBuffer buffer);
         private Dictionary<int, HandleFunc> packetHandler;
-        private int packetLength;
+
+        private int _packetLength;
+        private bool _isSegmentated;
 
         public static PacketHandler Instance()
         {
@@ -33,6 +35,11 @@ namespace WPP.Network
                 _instance = new PacketHandler();
             }
             return _instance;
+        }
+
+        public PacketHandler() {
+            _packetLength = 0;
+            _isSegmentated = false;
         }
         public void InitializePacketHandler()
         {
@@ -47,7 +54,9 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_ALERT_OVER_TIME, HandleOverTime);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_END_GAME, HandleEndGame);
 
-            packetHandler.Add((int)Peer_PacketTagPackages.TEST, TestConnection);
+            packetHandler.Add((int)Server_PacketTagPackages.HOLE_PUNCHING, HandleHolePunching);
+            packetHandler.Add((int)Server_PacketTagPackages.TURN_ON, HandleTurnOn);
+
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_KT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_LPT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_RPT, DamageTower);
@@ -58,54 +67,54 @@ namespace WPP.Network
             if (packet.Length == 0)
                 return;
 
-            byte[] buffer = (byte[])packet.Clone();
-
             if (ClientTCP.Instance().buffer == null)
             {
                 ClientTCP.Instance().buffer = new ByteBuffer();
             }
 
+            // packet 복사
             ClientTCP.Instance().buffer.WriteBytes(packet);
 
-            packetLength = ClientTCP.Instance().buffer.Count();
-
-            if (packetLength <= 0)
+            if (_isSegmentated == false)
             {
-                ClientTCP.Instance().buffer.Clear();
+                _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
+            }
+
+            // 처음으로 패킷이 분할되어 왔을 경우
+            if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmentated == false)
+            {
+                _isSegmentated = true;
                 return;
             }
 
-            if(ClientTCP.Instance().buffer.Count() > 4)
+            if (_isSegmentated == true)
             {
-                int dataLength = ClientTCP.Instance().buffer.ReadInteger(true);
-                byte[] data = new byte[dataLength];
-                int remainingDataLength = dataLength - 4;
-
-                // 패킷이 분할되어 왔을 경우
-                if (remainingDataLength >= 4096)
+                // 패킷을 다 받았다면
+                if (_packetLength == ClientTCP.Instance().buffer.Count() + 4)
                 {
-                    byte[] fullPacket = ClientTCP.Instance().buffer.ReadBytes(ClientTCP.Instance().buffer.Count(), true);
-                    Array.Copy(fullPacket, 0, data, 0, fullPacket.Length);
-                    remainingDataLength -= fullPacket.Length;
-                    while (remainingDataLength > 0)
-                    {
-                        fullPacket = ClientTCP.Instance().packetToHandle.Dequeue();
-                        Array.Copy(fullPacket, 0, data, dataLength - remainingDataLength - 4, fullPacket.Length);
-                        remainingDataLength -= fullPacket.Length;
-                    }
+                    _isSegmentated = false;
+                    HandleData(ClientTCP.Instance().buffer.ToArray());
+                    _packetLength = 0;
+                    ClientTCP.Instance().buffer.Dispose();
+                    ClientTCP.Instance().buffer = null;
                 }
-                else
-                {
-                    data = ClientTCP.Instance().buffer.ReadBytes(dataLength - 4, true);
-                }
-                HandleData(data);
             }
+            else
+            {
+                HandleData(ClientTCP.Instance().buffer.ToArray());
+                _packetLength = 0;
+                ClientTCP.Instance().buffer.Dispose();
+                ClientTCP.Instance().buffer = null;
+            }
+            return;
         }
 
         public void HandleData(byte[] data)
         {
             ByteBuffer buffer = new ByteBuffer();
             buffer.WriteBytes(data);
+            // skip size
+            buffer.ReadInteger(true);
             int packetTag = buffer.ReadInteger(true);
 
             if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
@@ -118,8 +127,8 @@ namespace WPP.Network
         {
             string cardCollectionString = buffer.ReadString(true);
 #if DEBUG
-            string jsonFilePath = "Assets\\GameFile\\card_collection.json";
-#elif BUILD
+            string jsonFilePath = "Assets\\GameFiles\\card_collection.json";
+#else
             string jsonFilePath = Application.persistentDataPath + "/card_collection.json";
 #endif
             if (File.Exists(jsonFilePath))
@@ -127,22 +136,26 @@ namespace WPP.Network
                 File.Delete(jsonFilePath);
             }
             File.WriteAllText(jsonFilePath, cardCollectionString);
+            JsonParser.Instance().LoadCardCollection();
         }
+
         public void HandleRegisterAcception(ref ByteBuffer buffer)
         {
             Debug.Log("register completed");
         }
+
         public void HandleRegisterRejection(ref ByteBuffer buffer)
         {
             Debug.Log("register failed");
         }
+
         public void HandleLoginAcception(ref ByteBuffer buffer)
         {
             string accountString = buffer.ReadString(true);
-            ClientData.Instance().account = JsonConvert.DeserializeObject<ClientAccount>(accountString);
+            ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(accountString);
 #if DEBUG
-            string accountFilePath = "Assets\\GameFile\\account.json";
-#elif BUILD
+            string accountFilePath = "Assets\\GameFiles\\account.json";
+#else
             string accountFilePath = Application.persistentDataPath + "/account.json";
 #endif
             if (File.Exists(accountFilePath))
@@ -150,12 +163,13 @@ namespace WPP.Network
                 File.Delete(accountFilePath);
             }
             File.WriteAllText(accountFilePath, accountString);
+            JsonParser.Instance().LoadAccount();
 
             string towersString = buffer.ReadString(true);
-            ClientData.Instance().towers = JsonConvert.DeserializeObject<Towers>(towersString);
+            ClientData.Instance().towers = JsonConvert.DeserializeObject<TowersData>(towersString);
 #if DEBUG
-            string towersFilePath = "Assets\\GameFile\\towers.json";
-#elif BUILD
+            string towersFilePath = "Assets\\GameFiles\\towers.json";
+#else
             string towersFilePath = Application.persistentDataPath + "/towers.json";
 #endif
             if (File.Exists(towersFilePath))
@@ -163,12 +177,13 @@ namespace WPP.Network
                 File.Delete(towersFilePath);
             }
             File.WriteAllText(towersFilePath, towersString);
+            JsonParser.Instance().LoadTowers();
 
             string decksString = buffer.ReadString(true);
-            ClientData.Instance().decks = JsonConvert.DeserializeObject<Decks>(decksString);
+            ClientData.Instance().decks = JsonConvert.DeserializeObject<DecksData>(decksString);
 #if DEBUG
-            string decksFilePath = "Assets\\GameFile\\decks.json";
-#elif BUILD
+            string decksFilePath = "Assets\\GameFiles\\decks.json";
+#else
             string decksFilePath = Application.persistentDataPath + "/decks.json";
 #endif
             if (File.Exists(decksFilePath))
@@ -176,10 +191,12 @@ namespace WPP.Network
                 File.Delete(decksFilePath);
             }
             File.WriteAllText(decksFilePath, decksString);
+            JsonParser.Instance().LoadDecks();
 
             SceneManager.LoadScene("Lobby");
             Debug.Log("login completed");
         }
+
         public void HandleLoginRejection(ref ByteBuffer buffer)
         {
             Debug.Log("login failed");
@@ -187,18 +204,36 @@ namespace WPP.Network
 
         public void HandleEnterGame(ref ByteBuffer buffer)
         {
+            // set room_id
             int roomID = buffer.ReadInteger(true);
             Debug.Log("roomID: " + roomID);
             GameRoom.Instance().roomID = roomID;
 
-            IPEndPoint opponentAddress = buffer.ReadEndPoint(true);
-            Debug.Log("myAddress: " + ClientTCP.Instance().clntSock.Client.LocalEndPoint);
-            Debug.Log("opponentAddress: " + opponentAddress);
-            GameRoom.Instance().opponentAddress = opponentAddress;
+            // set opponent player's IP address
+            IPEndPoint opponentPrivateEP = buffer.ReadEndPoint(true);
+            IPEndPoint opponentPublicEP = buffer.ReadEndPoint(true);
+            Debug.Log("my private ep: " + ClientTCP.Instance().peerSockPrivateEP);
+            Debug.Log("my public ep: " + ClientTCP.Instance().peerSockPublicEP);
+            Debug.Log("opponent's private ep: " + opponentPrivateEP);
+            Debug.Log("opponent's public ep: " + opponentPublicEP);
+            GameRoom.Instance().opponentPrivateEP = opponentPrivateEP;
+            GameRoom.Instance().opponentPublicEP = opponentPublicEP;
 
-            ClientTCP.Instance().ConnectPeer(opponentAddress);
+            // set player_id
+            int player_id_in_game = buffer.ReadInteger(true);
+            ClientData.Instance().player_id_in_game = player_id_in_game;
 
+            // Ensure that existing holePunchingStream is closed before starting a new connection
+            ClientTCP.Instance().CloseHolePunchingConnection();
+
+            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
+            if(ClientTCP.Instance().peerSock == null)
+            {
+                ClientTCP.Instance().ConnectPeer(opponentPublicEP);
+                Debug.Log("Connected with public IP");
+            }
             SceneManager.LoadScene("BattleSystemExample");
+
             Debug.Log("entered game");
         }
 
@@ -210,18 +245,29 @@ namespace WPP.Network
 
         public void HandleEndGame(ref ByteBuffer buffer)
         {
+            ClientData.Instance().player_id_in_game = -1;
+            ClientTCP.Instance().ClosePeerConnection();
+            // initialize new peer socket for next matching
+            ClientTCP.Instance().InitializePeerSock();
             SceneManager.LoadScene("Lobby");
-        }
-
-        public void TestConnection(ref ByteBuffer buffer)
-        {
-            Debug.Log("test completed");
         }
 
         public void DamageTower(ref ByteBuffer buffer)
         {
             int towerID = buffer.ReadInteger(true);
             BattleUIExample.Instance().DamageTower(towerID);
+        }
+
+        public void HandleHolePunching(ref ByteBuffer buffer)
+        {
+            IPEndPoint externalEP = buffer.ReadEndPoint(true);
+            Debug.Log("my public ip: " + externalEP);
+            ClientTCP.Instance().peerSockPublicEP = externalEP;
+        }
+
+        public void HandleTurnOn(ref ByteBuffer buffer)
+        {
+            Debug.Log("turn on");
         }
     }
 }

@@ -18,6 +18,9 @@ namespace WPP.Network
         S_ALERT_OVER_TIME,
 
         S_REQUEST_END_GAME,
+
+        HOLE_PUNCHING,
+        TURN_ON,
     }
 
     public enum Client_PacketTagPackages
@@ -26,14 +29,16 @@ namespace WPP.Network
         C_REQUEST_LOGIN,
         C_REQUEST_ENTER_ROOM,
 
-        C_ALERT_WIN,
-        C_ALERT_LOOSE
+        C_DESTROY_OPPONENT_KING_TOWER,
+        C_DESTROY_OPPONENT_LEFT_TOWER,
+        C_DESTROY_OPPONENT_RIGHT_TOWER,
+
+        HOLE_PUNCHING,
     }
 
     public enum Peer_PacketTagPackages
     { 
-        TEST = 10,
-        DAMAGE_KT,
+        DAMAGE_KT = 30,
         DAMAGE_LPT,
         DAMAGE_RPT
     }

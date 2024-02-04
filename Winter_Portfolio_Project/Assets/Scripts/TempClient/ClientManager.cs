@@ -13,22 +13,20 @@ namespace WPP
 {
     public class ClientManager : MonoBehaviour
     {
-        [SerializeField] private string _serverIP;
-        [SerializeField] private int _serverPort;
-
         void Awake()
         {
-            ClientTCP.Instance().ConnectServer(IPAddress.Parse(_serverIP), _serverPort);
+            ClientTCP.Instance().ConnectServer();
             PacketHandler.Instance().InitializePacketHandler();
         }
 
         void Update()
         {
-            if (ClientTCP.Instance().packetToHandle.Count > 0)
+            if (ClientTCP.Instance().packetQueue.Count > 0)
             {
-                PacketHandler.Instance().HandlePacket(ClientTCP.Instance().packetToHandle.Dequeue());
+                PacketHandler.Instance().HandlePacket(ClientTCP.Instance().packetQueue.Dequeue());
             }
         }
+
     }
 }
 

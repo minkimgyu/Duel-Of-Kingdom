@@ -12,7 +12,8 @@ namespace WPP.RoomInfo
     {
         private static GameRoom _instance;
         public int roomID { get; set; }
-        public EndPoint opponentAddress { get; set; }
+        public EndPoint opponentPrivateEP { get; set; }
+        public EndPoint opponentPublicEP { get; set; }
         public static GameRoom Instance()
         {
             if( _instance == null)

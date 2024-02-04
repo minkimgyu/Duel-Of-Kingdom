@@ -31,6 +31,7 @@ namespace WPP
             if (!password.Equals(repeatPassword))
             {
                 Debug.Log("password is not same");
+                return;
             }
             ByteBuffer buffer = new ByteBuffer();
             buffer.WriteString(username);

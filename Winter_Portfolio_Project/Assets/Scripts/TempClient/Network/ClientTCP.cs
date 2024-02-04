@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace WPP.Network
@@ -14,12 +13,15 @@ namespace WPP.Network
         public TcpClient clntSock { get; set; }
         public TcpClient peerSock { get; set; }
         public NetworkStream serverStream { get; set; }
+        public NetworkStream holePunchingStream { get; set; }
         public NetworkStream P2Pstream { get; set; }
 
         private byte[] _receivedPacket;
         public ByteBuffer buffer { get; set; }
 
-        public Queue<byte[]> packetToHandle { get; set; }
+        public Queue<byte[]> packetQueue { get; set; }
+        public IPEndPoint peerSockPublicEP { get; set; }
+        public IPEndPoint peerSockPrivateEP { get; set; }
 
         public static ClientTCP Instance()
         {
@@ -31,21 +33,38 @@ namespace WPP.Network
         }
         public ClientTCP()
         {
-            clntSock = new TcpClient();
-            clntSock.NoDelay = true;
-            clntSock.ReceiveBufferSize = 4096;
-            clntSock.SendBufferSize = 4096;
-
-            peerSock = new TcpClient(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0));
-            peerSock.NoDelay = true;
-            peerSock.ReceiveBufferSize = 4096;
-            peerSock.SendBufferSize = 4096;
+            InitializeClientSock();
+            InitializePeerSock();
 
             _receivedPacket = new byte[4096];
             buffer = null;
 
-            packetToHandle = new Queue<byte[]>();
+            packetQueue = new Queue<byte[]>();
         }
+
+        public void InitializeClientSock()
+        {
+            clntSock = new TcpClient();
+            clntSock.NoDelay = true;
+            clntSock.ReceiveBufferSize = 4096;
+            clntSock.SendBufferSize = 4096;
+        }
+
+        public void InitializePeerSock()
+        {
+            try
+            {
+                peerSock = new TcpClient(new IPEndPoint(IPAddress.Any, 0));
+                peerSock.NoDelay = true;
+                peerSock.ReceiveBufferSize = 4096;
+                peerSock.SendBufferSize = 4096;
+            }
+            catch(Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
+      
         public void SendDataToServer(Client_PacketTagPackages tag, byte[] data = null)
         {
             try
@@ -69,10 +88,14 @@ namespace WPP.Network
             }
         }
 
-        public void ConnectServer(IPAddress serverIP, int serverPort)
+        public void ConnectServer()
         {
-            clntSock.BeginConnect(serverIP, serverPort, ConnectServerCallBack, null);
+            clntSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBack, null);
+
+            // for hole punching
+            peerSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBackForHolePunching, null);
         }
+
         private void ConnectServerCallBack(IAsyncResult result)
         {
             clntSock.EndConnect(result);
@@ -96,6 +119,82 @@ namespace WPP.Network
                 return;
             }
         }
+
+        public void SendDataToServerForHolePunching(Client_PacketTagPackages tag, byte[] data = null)
+        {
+            try
+            {
+                ByteBuffer buffer = new ByteBuffer();
+                // write packet length
+                if (data != null)
+                    buffer.WriteInteger(data.Length + 8);
+                else
+                    buffer.WriteInteger(8);
+                // write packet tag
+                buffer.WriteInteger((int)tag);
+
+                if (data != null)
+                    buffer.WriteBytes(data);
+                holePunchingStream.BeginWrite(buffer.ToArray(), 0, buffer.Count(), null, null);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+        }
+
+        private void ConnectServerCallBackForHolePunching(IAsyncResult result)
+        {
+            peerSock.EndConnect(result);
+
+            if (peerSock.Connected == false)
+            {
+                Debug.Log("Connection Error");
+                return;
+            }
+
+            try
+            {
+                holePunchingStream = peerSock.GetStream();
+                Debug.Log("Connected to server");
+                peerSockPrivateEP = peerSock.Client.LocalEndPoint as IPEndPoint;
+
+                SendDataToServerForHolePunching(Client_PacketTagPackages.HOLE_PUNCHING);
+                holePunchingStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceiveFromServerCallbckForHolePunching, null);
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+                return;
+            }
+        }
+
+        private void ReceiveFromServerCallbckForHolePunching(IAsyncResult result)
+        {
+            try
+            {
+                int bytesReceived = serverStream.EndRead(result);
+
+                if (bytesReceived <= 0)
+                {
+                    CloseServerConnection();
+                    return;
+                }
+
+                byte[] dataToHandle = new byte[bytesReceived];
+                Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
+
+                packetQueue.Enqueue(dataToHandle);
+
+                serverStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromServerCallbck, null);
+                return;
+            }
+            catch (Exception e)
+            {
+                Debug.Log(e.ToString());
+            }
+        }
+
         private void ReceivFromServerCallbck(IAsyncResult result)
         {
             try
@@ -111,7 +210,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                packetToHandle.Enqueue(dataToHandle);
+                packetQueue.Enqueue(dataToHandle);
 
                 serverStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromServerCallbck, null);
                 return;
@@ -147,7 +246,16 @@ namespace WPP.Network
 
         public void ConnectPeer(IPEndPoint ep)
         {
-            peerSock.BeginConnect(ep.Address, ep.Port, ConnectPeerCallBack, null);
+            try
+            {
+                // BeginConnect for a new connection
+                peerSock = new TcpClient(peerSockPrivateEP);
+                peerSock.BeginConnect(ep.Address, ep.Port, ConnectPeerCallBack, null);
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Error connecting peer: {e.Message}");
+            }
         }
 
         private void ConnectPeerCallBack(IAsyncResult result)
@@ -183,13 +291,15 @@ namespace WPP.Network
                 if (bytesReceived <= 0)
                 {
                     ClosePeerConnection();
+                    // initialize new peer socket for next matching
+                    ClientTCP.Instance().InitializePeerSock();
                     return;
                 }
 
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                packetToHandle.Enqueue(dataToHandle);
+                packetQueue.Enqueue(dataToHandle);
 
                 P2Pstream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromPeerCallbck, null);
                 return;
@@ -200,23 +310,46 @@ namespace WPP.Network
             }
         }
 
-
         private void CloseServerConnection()
         {
-            Console.WriteLine("{0} closed connection", clntSock.Client.RemoteEndPoint);
+            Debug.Log($"{clntSock.Client.RemoteEndPoint} server closed connection");
             serverStream.Close();
+            serverStream = null;
             clntSock.Close();
             clntSock = null;
             return;
         }
-        private void ClosePeerConnection()
+
+        public void ClosePeerConnection()
         {
-            Console.WriteLine("{0} closed connection", peerSock.Client.RemoteEndPoint);
+            if (peerSock == null || P2Pstream == null)
+                return;
+            Debug.Log($"{peerSock.Client.RemoteEndPoint} peer closed connection");
             P2Pstream.Close();
+            P2Pstream = null;
             peerSock.Close();
             peerSock = null;
             return;
         }
 
+        public void CloseHolePunchingConnection()
+        {
+            if (holePunchingStream == null)
+                return;
+
+            Debug.Log($"{peerSock.Client.LocalEndPoint} closed connection");
+
+            try
+            {
+                holePunchingStream.Close();
+                holePunchingStream = null;
+                peerSock.Close();
+                peerSock = null;
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Error closing holePunchingStream: {e.Message}");
+            }
+        }
     }
 }

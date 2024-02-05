@@ -101,23 +101,23 @@ namespace WPP.Battle
             OnHandChange?.Invoke();
         }
 
-        public void UseCard(int index)
+        public bool UseCard(int index)
         {
             if(index < 0 || index >= _hand.Length)
             {
                 Debug.LogError("Invalid index");
-                return;
+                return false;
             }
             if (_hand[index] == Card.Empty)
             {
                 Debug.Log("Empty card");
-                return;
+                return false; 
             }
 
             if (_hand[index].cost > _elixirSystem.ElixirCount)
             {
                 Debug.Log("Not enough elixir");
-                return;
+                return false;
             }
             _elixirSystem.SpendElixir(_hand[index].cost);
 
@@ -128,6 +128,8 @@ namespace WPP.Battle
             QueueDrawCard(index);
             OnHandChange?.Invoke();
             OnCardUsed?.Invoke(usedCard);
+
+            return true;
         }
 
         private void QueueDrawCard(int index)

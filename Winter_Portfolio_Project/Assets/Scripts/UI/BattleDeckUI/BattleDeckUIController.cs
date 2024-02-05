@@ -150,6 +150,11 @@ namespace WPP.Battle.UI
                     fsm.TransitionTo(State.Selecting);
                     return;
                 }
+                if(Input.GetMouseButtonDown(1)) 
+                { 
+                    fsm.TransitionTo(State.Idle);
+                    return;
+                }
 
                 if (Input.GetMouseButtonDown(0))
                 {

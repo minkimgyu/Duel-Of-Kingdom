@@ -145,17 +145,19 @@ namespace WPP.DeckManagement.UI
     
         public void SetCards(Deck deck)
         {
+            // TODO: Set card cost
+            int cost = 5;
             for (int i = 0; i < deck.CardId.Count; i++)
             {
-                _deckCardUIs[i].SetCard(deck.CardId[i], deck.GetCardLevel(i) / 10f);
-                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i], deck.GetCardLevel(i) / 10f);
+                _deckCardUIs[i].SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
+                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
 
             }
 
             for (int i = 0; i < _cardCollection.Count; i++)
             {
-                _collectionCardUIs[i].SetCard(_cardCollection[i].id, 0);
-                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id, 0);
+                _collectionCardUIs[i].SetCard(_cardCollection[i].id, cost, 0);
+                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id, cost, 0);
             }
 
             StringBuilder sb = new StringBuilder();

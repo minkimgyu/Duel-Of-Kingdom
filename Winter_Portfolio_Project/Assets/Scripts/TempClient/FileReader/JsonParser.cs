@@ -39,12 +39,12 @@ namespace WPP.FileReader
 
         public JsonParser() 
         {
-#if DEBUG
-            _cardCollectionPath = "Assets\\GameFiles\\card_collection.json";
-            _accountPath = "Assets\\GameFiles\\account.json";
-            _towersPath = "Assets\\GameFiles\\towers.json";
-            _decksPath = "Assets\\GameFiles\\decks.json";
-            _cardInstancesPath = "Assets\\GameFiles\\cards.json";
+#if UNITY_EDITOR
+            _cardCollectionPath = "Assets\\GameFile\\card_collection.json";
+            _accountPath = "Assets\\GameFile\\account.json";
+            _towersPath = "Assets\\GameFile\\towers.json";
+            _decksPath = "Assets\\GameFile\\decks.json";
+            _cardInstancesPath = "Assets\\GameFile\\cards.json";
 
 #else
             _cardCollectionPath = Application.persistentDataPath + "/card_collection.json";

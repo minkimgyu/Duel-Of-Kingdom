@@ -28,6 +28,7 @@ namespace WPP.DeckManagement
 
         public string GetCardId(int index) => cardId[index];
         public int GetCardLevel(int index) => cardLevel[index];
+        public int GetCardLevel(string id) => cardLevel[cardId.IndexOf(id)];
 
         public void SetCard(int index, string id) => cardId[index] = id;
         public void SetCard(int index, Card card) => SetCard(index, card.id);

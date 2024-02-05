@@ -9,8 +9,9 @@ namespace WPP.DeckManagement.UI
     public class CardUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _cardName;
+        [SerializeField] private TextMeshProUGUI _cardCost;
         [SerializeField] private Button _button;
-
+        [Header("Optional")]
         [SerializeField] private RectTransform _levelBar;
 
         private DeckUIController _controller;
@@ -25,20 +26,23 @@ namespace WPP.DeckManagement.UI
             _gridIndex = gridIndex;
         }
 
-        public void SetCard(string id, float lvProgress)
+        public void SetCard(string id, int cost, float lvProgress = 0)
         {
             if (string.IsNullOrEmpty(id))
             {
                 _cardName.text = "Empty";
                 _button.interactable = false;
+                _cardCost.text = "";
             }
             else
             {
                 _cardName.text = id;
                 _button.interactable = true;
+                _cardCost.text = cost.ToString();
             }
 
-            SetLevelBar(lvProgress);
+            if(_levelBar != null)
+                SetLevelBar(lvProgress);
         }
 
         public void TogglePopup()

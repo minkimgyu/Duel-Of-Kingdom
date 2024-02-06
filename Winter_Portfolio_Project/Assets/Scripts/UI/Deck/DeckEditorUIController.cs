@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace WPP.DeckManagement.UI
 {
-    public class DeckUIController : MonoBehaviour
+    public class DeckEditorUIController : MonoBehaviour
     {
         [SerializeField] private DeckEditor _deckEditor;
         [Header("Deck UI")]
@@ -32,21 +32,11 @@ namespace WPP.DeckManagement.UI
         private List<GameObject> _deckPopups;
         private List<GameObject> _collectionPopups;
 
+        /*
         private void Awake()
         {
             LoadCards();
         }
-        private void Start()
-        {
-            _deckEditor.OnDeckChanged += SetCards;
-            _deckEditor.OnDeckChanged += SetCardLevel;
-            _deckEditor.OnDeckChanged += SetTotalPoint;
-
-            InitializeGrid();
-            _deckEditor.LoadDeck();
-            _deckEditor.SelectDeck(0);
-        }
-
         public void LoadCards()
         {
             _cardCollection = new List<Card>();
@@ -57,8 +47,23 @@ namespace WPP.DeckManagement.UI
                 _cardCollection.Add(card);
             }
         }
+        */
 
-        public void InitializeGrid()
+        private void Awake()
+        {
+            _deckEditor.OnDeckChanged += SetCards;
+            _deckEditor.OnDeckChanged += SetCardLevel;
+            _deckEditor.OnDeckChanged += SetTotalPoint;
+        }
+
+        public void Initialize()
+        {
+            InitializeGrid();
+            _deckEditor.LoadDeck();
+            _deckEditor.SelectDeck(0);
+        }
+
+        private void InitializeGrid()
         {
             foreach(Transform child in _deckCardGrid.transform)
                 Destroy(child.gameObject);

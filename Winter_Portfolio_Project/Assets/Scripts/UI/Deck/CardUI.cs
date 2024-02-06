@@ -14,7 +14,7 @@ namespace WPP.DeckManagement.UI
         [Header("Optional")]
         [SerializeField] private RectTransform _levelBar;
 
-        private DeckUIController _controller;
+        private DeckEditorUIController _controller;
         private GameObject _popup;
         private int _gridIndex;
 

@@ -20,12 +20,14 @@ namespace WPP.Network
         S_REQUEST_END_GAME,
 
         HOLE_PUNCHING,
+        S_REQUEST_RELAY,
         TURN_ON,
     }
 
     public enum Client_PacketTagPackages
     {
-        C_REQUEST_REGISTER_ACCOUNT = 1,
+        C_REQUEST_INITIAL_DATA = 1,
+        C_REQUEST_REGISTER_ACCOUNT,
         C_REQUEST_LOGIN,
         C_REQUEST_ENTER_ROOM,
 
@@ -33,7 +35,9 @@ namespace WPP.Network
         C_DESTROY_OPPONENT_LEFT_TOWER,
         C_DESTROY_OPPONENT_RIGHT_TOWER,
 
-        HOLE_PUNCHING,
+        C_REQUEST_HOLE_PUNCHING,
+        C_REQUEST_RELAY,
+        C_REQUEST_UPDATE_DECKS,
     }
 
     public enum Peer_PacketTagPackages

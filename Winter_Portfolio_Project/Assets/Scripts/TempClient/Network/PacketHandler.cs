@@ -70,7 +70,7 @@ namespace WPP.Network
 
         public void HandlePacket(byte[] packet)
         {
-            if (packet.Length == 0)
+            if (packet == null || packet.Length == 0)
                 return;
 
             if (ClientTCP.Instance().buffer == null)
@@ -84,7 +84,9 @@ namespace WPP.Network
             if (_isSegmentated == false)
             {
                 _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
+                Debug.Log("total packet length: " + _packetLength);
             }
+            Debug.Log("received packet length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmentated == false)
@@ -103,6 +105,7 @@ namespace WPP.Network
                     _packetLength = 0;
                     ClientTCP.Instance().buffer.Dispose();
                     ClientTCP.Instance().buffer = null;
+                    Debug.Log("received all pakcts");
                 }
             }
             else
@@ -143,6 +146,8 @@ namespace WPP.Network
             }
             File.WriteAllText(jsonFilePath, cardCollectionString);
             JsonParser.Instance().LoadCardCollection();
+
+            ClientTCP.Instance().ConnectServerForHolePunching();
         }
 
         public void HandleRegisterAcception(ref ByteBuffer buffer)
@@ -157,6 +162,7 @@ namespace WPP.Network
 
         public void HandleLoginAcception(ref ByteBuffer buffer)
         {
+            Debug.Log("Handle login");
             string accountString = buffer.ReadString(true);
             ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(accountString);
 #if DEBUG
@@ -244,20 +250,14 @@ namespace WPP.Network
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
             // Ensure that existing holePunchingStream is closed before starting a new connection
-            ClientTCP.Instance().CloseHolePunchingConnection();
 
-            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
-            if(ClientTCP.Instance().peerSock == null)
+            // try to connect with private end point
+            //ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
+            if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
             {
+                // try to connect with public end point
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
-                Debug.Log("Connected with public IP");
             }
-            else
-            {
-                Debug.Log("Connected with private IP");
-            }
-
-            // 상대에게 게임 전 덱 정보를 줄지 아니면 실시간으로 정보를 전송할지 고려해야함
 
             SceneManager.LoadScene("BattleSystemExample");
             Debug.Log("entered game");
@@ -289,6 +289,8 @@ namespace WPP.Network
             IPEndPoint externalEP = buffer.ReadEndPoint(true);
             Debug.Log("my public ip: " + externalEP);
             ClientTCP.Instance().peerSockPublicEP = externalEP;
+
+            ClientTCP.Instance().CloseHolePunchingConnection();
         }
 
         public void HandleTurnOn(ref ByteBuffer buffer)
@@ -305,6 +307,7 @@ namespace WPP.Network
 
             Debug.Log("turn on");
         }
+
         public void SpawnCard(ref ByteBuffer buffer)
         {
             inGamePacketQueue.Enqueue(buffer);

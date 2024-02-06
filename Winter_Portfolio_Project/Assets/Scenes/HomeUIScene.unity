@@ -1968,6 +1968,65 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2725322936728164349, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
   m_PrefabInstance: {fileID: 350221511}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &410716946
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 410716947}
+  - component: {fileID: 410716948}
+  m_Layer: 0
+  m_Name: DatabaseLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &410716947
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410716946}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 338.3, y: 106.59999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &410716948
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 410716946}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09404ddd2018e3549ad1f1ace1f2ab5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onCardDatabaseLoaded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1959935772}
+        m_TargetAssemblyTypeName: WPP.DeckManagement.UI.DeckEditorUIController, Assembly-CSharp
+        m_MethodName: Initialize
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &416124238
 GameObject:
   m_ObjectHideFlags: 0
@@ -8615,7 +8674,7 @@ GameObject:
   - component: {fileID: 1959935771}
   - component: {fileID: 1959935772}
   m_Layer: 0
-  m_Name: DeckUIController
+  m_Name: DeckEditorUIController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8645,7 +8704,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1959935770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 94525989d90d4764abe724f89d4f5f19, type: 3}
+  m_Script: {fileID: 11500000, guid: 19100ea9e0b0f16409d3da8fb60d0631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _deckEditor: {fileID: 1061848097}
@@ -9949,7 +10008,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 1646598518}
   - {fileID: 27363745}
-  - {fileID: 1061848096}
+  - {fileID: 410716947}
   - {fileID: 1959935771}
+  - {fileID: 1061848096}
   - {fileID: 1698102646}
   - {fileID: 2111121284}

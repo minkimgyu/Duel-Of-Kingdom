@@ -52,7 +52,7 @@ namespace WPP.Battle
             {
                 var card = new Card();
                 card.id = cardId;
-                card.cost = 2;
+                //card.cost = 2;
                 cards.Add(card);
             }
 

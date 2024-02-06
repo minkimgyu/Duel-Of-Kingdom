@@ -1,0 +1,60 @@
+using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.Events;
+using WPP.Collection;
+using WPP.FileReader;
+using WPP.Units;
+
+namespace WPP.DeckManagement
+{
+    public class CardDatabase : MonoBehaviour
+    {
+        public static IReadOnlyDictionary<string, Card> Cards => _cards;
+
+        private static Dictionary<string, Card> _cards = new();
+        private static Dictionary<string, Dictionary<int, int>> _cardId = new(); // <CardData.name, <level, CardData.id>>
+
+        [SerializeField] private UnityEvent _onCardDatabaseLoaded;
+        private void Start()
+        {
+            JsonParser.Instance().LoadDecks();
+            JsonParser.Instance().LoadCardCollection();
+            JsonParser.Instance().LoadCardInstances();
+
+            Load();
+
+            _onCardDatabaseLoaded?.Invoke();
+        }
+
+        // TODO : fill card data
+        private void Load()
+        {
+            foreach (var cardData in CardCollection.Instance().cardCollection)
+            {
+                var card = new Card();
+                
+                card.id = cardData.unit.name;
+                card.cost = cardData.needElixir;
+
+                if(_cards.TryAdd(cardData.unit.name, card))
+                {
+                    _cardId.Add(cardData.unit.name, new());
+                }
+                _cardId[cardData.unit.name][cardData.unit.level] = cardData.unit.id;
+            }
+        }
+
+        public static int GetCardID(string name, int level)
+        {
+            return _cardId[name][level];
+        }
+
+        public static Card GetCard(string name)
+        {
+            return _cards[name];
+        }
+    }
+}

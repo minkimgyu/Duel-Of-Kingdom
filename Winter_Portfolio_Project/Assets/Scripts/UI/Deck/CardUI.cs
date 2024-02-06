@@ -19,7 +19,7 @@ namespace WPP.DeckManagement.UI
         private int _gridIndex;
 
 
-        public void Initialize(DeckUIController controller, GameObject popup, int gridIndex)
+        public void Initialize(DeckEditorUIController controller, GameObject popup, int gridIndex)
         {
             _controller = controller;
             _popup = popup;

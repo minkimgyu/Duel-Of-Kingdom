@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System;
+using WPP.Collection;
 
 namespace WPP.ClientInfo.Card
 {
@@ -26,5 +27,16 @@ namespace WPP.ClientInfo.Card
             }
             return null;
         }
+
+        public CardData FindCard(string name, int level)
+        {
+            foreach (CardData card in cards)
+            {
+                if (card.unit.name == name && card.unit.level == level)
+                    return card;
+            }
+            return null;
+        }
+
     }
 }

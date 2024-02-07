@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TMPro;
 using UnityEngine;
+using WPP.Collection;
 
 namespace WPP.DeckManagement.UI
 {
-    public class DeckUIController : MonoBehaviour
+    public class DeckEditorUIController : MonoBehaviour
     {
         [SerializeField] private DeckEditor _deckEditor;
         [Header("Deck UI")]
@@ -24,7 +26,7 @@ namespace WPP.DeckManagement.UI
         [SerializeField] private GameObject _cardPrefab;
         [SerializeField] private GameObject _cardPopupPrefab;
 
-        private List<Card> _cardCollection;
+        //private List<Card> _cardCollection;
 
         private List<CardUI> _deckCardUIs;
         private List<CardUI> _collectionCardUIs;
@@ -32,21 +34,11 @@ namespace WPP.DeckManagement.UI
         private List<GameObject> _deckPopups;
         private List<GameObject> _collectionPopups;
 
+        /*
         private void Awake()
         {
             LoadCards();
         }
-        private void Start()
-        {
-            _deckEditor.OnDeckChanged += SetCards;
-            _deckEditor.OnDeckChanged += SetCardLevel;
-            _deckEditor.OnDeckChanged += SetTotalPoint;
-
-            InitializeGrid();
-            _deckEditor.LoadDeck();
-            _deckEditor.SelectDeck(0);
-        }
-
         public void LoadCards()
         {
             _cardCollection = new List<Card>();
@@ -57,8 +49,23 @@ namespace WPP.DeckManagement.UI
                 _cardCollection.Add(card);
             }
         }
+        */
 
-        public void InitializeGrid()
+        private void Awake()
+        {
+            _deckEditor.OnDeckChanged += SetCards;
+            _deckEditor.OnDeckChanged += SetCardLevel;
+            _deckEditor.OnDeckChanged += SetTotalPoint;
+        }
+
+        public void Initialize()
+        {
+            InitializeGrid();
+            _deckEditor.LoadDeck();
+            _deckEditor.SelectDeck(0);
+        }
+
+        private void InitializeGrid()
         {
             foreach(Transform child in _deckCardGrid.transform)
                 Destroy(child.gameObject);
@@ -82,7 +89,7 @@ namespace WPP.DeckManagement.UI
             _collectionCardUIs = new();
             _collectionPopups = new();
             InstatiateCard(_collectionCardGrid.transform, _collectionCardPopupGrid.transform,
-                _collectionCardUIs, _collectionPopups, _cardCollection.Count, false);
+                _collectionCardUIs, _collectionPopups, CardDatabase.Cards.Count, false);
 
             void InstatiateCard(Transform cardGrid, Transform popupGrid, List<CardUI> cardUIs, List<GameObject> popups, int count, bool isDeckCard)
             {
@@ -123,7 +130,7 @@ namespace WPP.DeckManagement.UI
 
         public void AddCardToDeck(int index)
         {
-            _deckEditor.AddCard(_cardCollection[index]);
+            _deckEditor.AddCard(CardDatabase.Cards.ElementAt(index).Value);
             TurnAllPopupsOff();
         }
 
@@ -145,33 +152,34 @@ namespace WPP.DeckManagement.UI
     
         public void SetCards(Deck deck)
         {
-            // TODO: Set card cost
-            int cost = 5;
-            for (int i = 0; i < deck.CardId.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
-                _deckCardUIs[i].SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
-                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
+                Card card;
+                if (CardDatabase.Cards.TryGetValue(deck.Cards[i].id, out Card found))
+                {
+                    card = found;
+                }
+                else
+                {
+                    card = Card.Empty;
+                }
+
+                _deckCardUIs[i].SetCard(card, deck.GetCardLevel(i) / 10f);
+                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(card, deck.GetCardLevel(i) / 10f);
 
             }
 
-            for (int i = 0; i < _cardCollection.Count; i++)
+            for (int i = 0; i < CardDatabase.Cards.Count; i++)
             {
-                _collectionCardUIs[i].SetCard(_cardCollection[i].id, cost, 0);
-                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(_cardCollection[i].id, cost, 0);
+                var card = CardDatabase.Cards.ElementAt(i).Value;
+                _collectionCardUIs[i].SetCard(card, 0);
+                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(card, 0);
             }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var id in deck.CardId)
-            {
-                sb.Append(id);
-                sb.Append(" ");
-            }
-            Debug.Log(sb.ToString());
         }
         
         public void SetCardLevel(Deck deck)
         {
-            for (int i = 0; i < deck.CardId.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
                 _deckPopups[i].GetComponentInChildren<CardPopupUI>().SetCardLevel(deck.GetCardLevel(i));
             }

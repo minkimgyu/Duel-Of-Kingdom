@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WPP.AI.GRID;
 
 namespace WPP.DeckManagement
 {
@@ -15,15 +16,17 @@ namespace WPP.DeckManagement
             Common, Rare, Epic, Legendary
         }
 
-        public string id = null;
+        public string id = "Empty"; // = CardData.unit.name
         public Type type;
         public Rarity rarity;
 
         public List<EntitySpawnData> entities = new();
 
-        public Vector2Int gridSize = Vector2Int.one;
+        public OffsetRect gridSize = new(0,0,0,0);
         public int cost = 0;
 
-        public static Card Empty = new() { id = null };
+        public static Card Empty = new() { id = "Empty" };
+
+        public bool IsEmpty() => id == "Empty";
     }
 }

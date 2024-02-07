@@ -9,41 +9,10 @@ using WPP.DeckManagement;
 
 namespace WPP.Battle
 {
-    namespace Example
-    {
-        public interface ICardDatabase
-        {
-            Card GetCard(string id);
-        }
-
-        public class ExampleCardDatabase : ICardDatabase
-        {
-            private Dictionary<string, Card> _cards = new();
-
-            public ExampleCardDatabase()
-            {
-                for(int i = 0; i < 10; ++i)
-                {
-                    Card card = new Card();
-                    card.id = "card_" + i.ToString();
-                    card.cost = UnityEngine.Random.Range(1, 4);
-
-                    _cards.Add(card.id, card);
-                }
-            }
-
-            public Card GetCard(string id)
-            {
-                return _cards[id];
-            }
-        }
-    }
-
-
     public class DeckSystem : MonoBehaviour
     {
         public event Action OnHandChange;
-        public event Action<Card> OnCardUsed;
+        public event Action<Card, int> OnCardUsed;
 
         [SerializeField] private ElixirSystem _elixirSystem;
         [SerializeField] private float _defaultDrawCooldown = 2f;
@@ -55,8 +24,6 @@ namespace WPP.Battle
         private Queue<Tuple<Card, int>> _cardsToDraw = new();
         
         private float _drawCooldown;
-
-        private ICardDatabase _cardDatabase;
 
         public Card Next
         {
@@ -76,16 +43,12 @@ namespace WPP.Battle
 
         public void Init(Deck deck)
         {
-            // TODO : Test Purpose, Remove this after implementing card database manager
-            _cardDatabase = new ExampleCardDatabase();
-
             _deck = deck;
 
             List<Card> cards = new();
 
-            foreach (string cardId in _deck.CardId)
+            foreach (var card in _deck.Cards)
             {
-                Card card = _cardDatabase.GetCard(cardId);
                 cards.Add(card);
             }
 
@@ -101,23 +64,23 @@ namespace WPP.Battle
             OnHandChange?.Invoke();
         }
 
-        public void UseCard(int index)
+        public bool UseCard(int index)
         {
             if(index < 0 || index >= _hand.Length)
             {
                 Debug.LogError("Invalid index");
-                return;
+                return false;
             }
             if (_hand[index] == Card.Empty)
             {
                 Debug.Log("Empty card");
-                return;
+                return false; 
             }
 
             if (_hand[index].cost > _elixirSystem.ElixirCount)
             {
                 Debug.Log("Not enough elixir");
-                return;
+                return false;
             }
             _elixirSystem.SpendElixir(_hand[index].cost);
 
@@ -126,9 +89,12 @@ namespace WPP.Battle
             _hand[index] = Card.Empty;
 
             QueueDrawCard(index);
+            OnCardUsed?.Invoke(usedCard, _deck.GetCardLevel(usedCard));
             OnHandChange?.Invoke();
-            OnCardUsed?.Invoke(usedCard);
+            return true;
         }
+
+        public int GetCardLevel(int index) => _deck.GetCardLevel(_hand[index]);
 
         private void QueueDrawCard(int index)
         {

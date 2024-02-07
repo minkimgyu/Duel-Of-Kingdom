@@ -15,10 +15,10 @@ namespace WPP.DeckManagement.UI
         [SerializeField] private Button _levelUp;
         [SerializeField] private Button _levelDown;
 
-        private DeckUIController _controller;
+        private DeckEditorUIController _controller;
         private int _gridIndex;
 
-        public void Initialize(DeckUIController controller, int gridIndex, bool isDeckPopup)
+        public void Initialize(DeckEditorUIController controller, int gridIndex, bool isDeckPopup)
         {
             _controller = controller;
             _gridIndex = gridIndex;

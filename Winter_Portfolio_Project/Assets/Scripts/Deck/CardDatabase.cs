@@ -41,6 +41,7 @@ namespace WPP.DeckManagement
                 
                 card.id = cardData.unit.name;
                 card.cost = cardData.needElixir;
+                card.gridSize = new(cardData.gridSize.top, cardData.gridSize.down, cardData.gridSize.left, cardData.gridSize.right);
 
                 if(_cards.TryAdd(cardData.unit.name, card))
                 {

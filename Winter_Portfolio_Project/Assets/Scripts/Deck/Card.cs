@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using WPP.AI.GRID;
 
 namespace WPP.DeckManagement
 {
@@ -21,7 +22,7 @@ namespace WPP.DeckManagement
 
         public List<EntitySpawnData> entities = new();
 
-        public Vector2Int gridSize = Vector2Int.one;
+        public OffsetRect gridSize = new(0,0,0,0);
         public int cost = 0;
 
         public static Card Empty = new() { id = "Empty" };

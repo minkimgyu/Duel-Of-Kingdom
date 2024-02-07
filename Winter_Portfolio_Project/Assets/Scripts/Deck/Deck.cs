@@ -17,7 +17,7 @@ namespace WPP.DeckManagement
             cardLevel = new(8);
             for (int i = 0; i < 8; i++)
             {
-                cardLevel.Add(1);
+                cardLevel.Add(0);
             }
         }
 

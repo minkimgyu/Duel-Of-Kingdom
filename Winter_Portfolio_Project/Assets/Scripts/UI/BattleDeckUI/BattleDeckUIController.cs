@@ -61,6 +61,7 @@ namespace WPP.Battle.UI
         {
             Deck deck = new Deck();
 
+            /*
             deck.SetCard(0, "barbarian");
             deck.SetCard(1, "bat");
             deck.SetCard(2, "dragon");
@@ -74,7 +75,7 @@ namespace WPP.Battle.UI
             {
                 deck.SetCardLevel(i, 6);
             }
-
+            */
 
             _deckSystem.Init(deck);
             _elixirSystem.StartRegen();

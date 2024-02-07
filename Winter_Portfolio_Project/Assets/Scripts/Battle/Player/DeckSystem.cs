@@ -43,16 +43,12 @@ namespace WPP.Battle
 
         public void Init(Deck deck)
         {
-            WPP.FileReader.JsonParser.Instance().LoadCardCollection();
             _deck = deck;
 
             List<Card> cards = new();
 
-            foreach (string cardId in _deck.CardId)
+            foreach (var card in _deck.Cards)
             {
-                var card = new Card();
-                card.id = cardId;
-                //card.cost = 2;
                 cards.Add(card);
             }
 
@@ -93,12 +89,12 @@ namespace WPP.Battle
             _hand[index] = Card.Empty;
 
             QueueDrawCard(index);
-            OnCardUsed?.Invoke(usedCard, _deck.GetCardLevel(usedCard.id));
+            OnCardUsed?.Invoke(usedCard, _deck.GetCardLevel(usedCard));
             OnHandChange?.Invoke();
             return true;
         }
 
-        public int GetCardLevel(int index) => _deck.GetCardLevel(_hand[index].id);
+        public int GetCardLevel(int index) => _deck.GetCardLevel(_hand[index]);
 
         private void QueueDrawCard(int index)
         {

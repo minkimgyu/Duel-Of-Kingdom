@@ -32,7 +32,7 @@ namespace WPP.DeckManagement
 
         public void SetCard(int cardIndex, Card card)
         {
-            if (IsInDeck(card.id))
+            if (IsInDeck(card))
             {
                 Debug.Log("Card is already in deck");
                 return;
@@ -41,27 +41,26 @@ namespace WPP.DeckManagement
             OnDeckChanged?.Invoke(SelectedDeck);
         }
 
-        public void AddCard(string id)
+        public void AddCard(Card card)
         {
-            if(IsInDeck(id))
+            if(IsInDeck(card))
             {
                 Debug.Log("Card is already in deck");
                 return;
             }
 
-            for (int i = 0; i < _deck[currentDeck].CardId.Count; i++)
+            for (int i = 0; i < _deck[currentDeck].Cards.Count; i++)
             {
                 if (_deck[currentDeck].IsEmpty(i))
                 {
                     _deck[currentDeck].SetCardLevel(i, 0);
-                    _deck[currentDeck].SetCard(i, id);
+                    _deck[currentDeck].SetCard(i, card);
                     OnDeckChanged?.Invoke(SelectedDeck);
                     return;
                 }
             }
             Debug.Log("Deck is full");
         }
-        public void AddCard(Card card) => AddCard(card.id);
 
         public void RemoveCard(int cardIndex)
         {
@@ -103,7 +102,7 @@ namespace WPP.DeckManagement
     
         public void ClearDeck()
         {
-            for (int i = 0; i < _deck[currentDeck].CardId.Count; i++)
+            for (int i = 0; i < _deck[currentDeck].Cards.Count; i++)
             {
                 _deck[currentDeck].SetCardLevel(i, 0);
                 _deck[currentDeck].SetEmpty(i);
@@ -116,7 +115,7 @@ namespace WPP.DeckManagement
         public int GetTotalDeckPoint(Deck deck)
         {
             int totalPoint = 0;
-            for (int i = 0; i < deck.CardId.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
                 if (!deck.IsEmpty(i))
                 {
@@ -126,11 +125,11 @@ namespace WPP.DeckManagement
             return totalPoint;
         }
 
-        public bool IsInDeck(string id)
+        public bool IsInDeck(Card card)
         {
-            for (int i = 0; i < _deck[currentDeck].CardId.Count; i++)
+            for (int i = 0; i < _deck[currentDeck].Cards.Count; i++)
             {
-                if (_deck[currentDeck].GetCardId(i) == id)
+                if (_deck[currentDeck].GetCardId(i) == card.id)
                 {
                     return true;
                 }

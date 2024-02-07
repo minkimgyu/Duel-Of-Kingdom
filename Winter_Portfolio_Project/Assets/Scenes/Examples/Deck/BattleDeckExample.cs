@@ -16,7 +16,9 @@ namespace WPP.DeckManagement.Example
             Deck deck = new Deck();
             for (int i = 0; i < 8; i++)
             {
-                deck.SetCard(i, "card_" + i.ToString());
+                Card card = new();
+                card.id = "card_" + i;
+                deck.SetCard(i, card);
             }
             _deckSystem.Init(deck);
         }

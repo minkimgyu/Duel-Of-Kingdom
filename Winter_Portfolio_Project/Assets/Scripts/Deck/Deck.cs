@@ -9,34 +9,33 @@ namespace WPP.DeckManagement
     {
         public Deck()
         {
-            cardId = new(8);
+            cards = new(8);
             for (int i = 0; i < 8; i++)
             {
-                cardId.Add(Card.Empty.id);
+                cards.Add(Card.Empty);
             }
             cardLevel = new(8);
             for (int i = 0; i < 8; i++)
             {
-                cardLevel.Add(0);
+                cardLevel.Add(1);
             }
         }
 
-        private List<string> cardId;
+        private List<Card> cards;
         private List<int> cardLevel;
 
-        public IReadOnlyList<string> CardId => cardId;
+        public IReadOnlyList<Card> Cards => cards;
 
-        public string GetCardId(int index) => cardId[index];
+        public string GetCardId(int index) => cards[index].id;
         public int GetCardLevel(int index) => cardLevel[index];
-        public int GetCardLevel(string id) => cardLevel[cardId.IndexOf(id)];
+        public int GetCardLevel(Card card) => cardLevel[cards.IndexOf(card)];
 
-        public void SetCard(int index, string id) => cardId[index] = id;
-        public void SetCard(int index, Card card) => SetCard(index, card.id);
+        public void SetCard(int index, Card card) => cards[index] = card;
 
         public void SetCardLevel(int index, int level) => cardLevel[index] = level;
 
-        public void SetEmpty(int index) => cardId[index] = Card.Empty.id;
+        public void SetEmpty(int index) => cards[index] = Card.Empty;
 
-        public bool IsEmpty(int index) => cardId[index] == Card.Empty.id;
+        public bool IsEmpty(int index) => cards[index].id == Card.Empty.id;
     }
 }

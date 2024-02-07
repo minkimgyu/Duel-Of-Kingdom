@@ -8717,6 +8717,37 @@ MonoBehaviour:
   _cardHolder: {fileID: 6822504361130168963, guid: 29fd1fed913bdda4aa63937e6842da07, type: 3}
   _cardPrefab: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
   _cardPopupPrefab: {fileID: 49880545053364226, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+--- !u!1 &2000956867
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2000956868}
+  m_Layer: 0
+  m_Name: DeckManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2000956868
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000956867}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 338.3, y: 106.59999, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2033388622
 GameObject:
   m_ObjectHideFlags: 0
@@ -10008,6 +10039,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1646598518}
   - {fileID: 27363745}
+  - {fileID: 2000956868}
   - {fileID: 410716947}
   - {fileID: 1959935771}
   - {fileID: 1061848096}

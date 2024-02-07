@@ -152,10 +152,10 @@ namespace WPP.DeckManagement.UI
     
         public void SetCards(Deck deck)
         {
-            for (int i = 0; i < deck.CardId.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
                 Card card;
-                if (CardDatabase.Cards.TryGetValue(deck.CardId[i], out Card found))
+                if (CardDatabase.Cards.TryGetValue(deck.Cards[i].id, out Card found))
                 {
                     card = found;
                 }
@@ -175,19 +175,11 @@ namespace WPP.DeckManagement.UI
                 _collectionCardUIs[i].SetCard(card, 0);
                 _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(card, 0);
             }
-
-            StringBuilder sb = new StringBuilder();
-            foreach (var id in deck.CardId)
-            {
-                sb.Append(id);
-                sb.Append(" ");
-            }
-            Debug.Log(sb.ToString());
         }
         
         public void SetCardLevel(Deck deck)
         {
-            for (int i = 0; i < deck.CardId.Count; i++)
+            for (int i = 0; i < deck.Cards.Count; i++)
             {
                 _deckPopups[i].GetComponentInChildren<CardPopupUI>().SetCardLevel(deck.GetCardLevel(i));
             }

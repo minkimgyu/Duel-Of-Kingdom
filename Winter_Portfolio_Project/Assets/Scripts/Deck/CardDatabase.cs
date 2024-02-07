@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using WPP.ClientInfo.Card;
 using WPP.Collection;
 using WPP.FileReader;
 using WPP.Units;
@@ -14,8 +15,8 @@ namespace WPP.DeckManagement
     {
         public static IReadOnlyDictionary<string, Card> Cards => _cards;
 
-        private static Dictionary<string, Card> _cards = new();
-        private static Dictionary<string, Dictionary<int, int>> _cardId = new(); // <CardData.name, <level, CardData.id>>
+        private static Dictionary<string, Card> _cards = new(); // <CardData.name (Card.id), Card>
+        private static Dictionary<string, Dictionary<int, int>> _unitDataId = new(); // <CardData.name (Card.id), <level, UnitData.id>>
 
         [SerializeField] private UnityEvent _onCardDatabaseLoaded;
         private void Start()
@@ -25,6 +26,8 @@ namespace WPP.DeckManagement
             JsonParser.Instance().LoadCardInstances();
 
             Load();
+
+            DeckManager.LoadPlayerDeck();
 
             _onCardDatabaseLoaded?.Invoke();
         }
@@ -41,20 +44,25 @@ namespace WPP.DeckManagement
 
                 if(_cards.TryAdd(cardData.unit.name, card))
                 {
-                    _cardId.Add(cardData.unit.name, new());
+                    _unitDataId.Add(cardData.unit.name, new());
                 }
-                _cardId[cardData.unit.name][cardData.unit.level] = cardData.unit.id;
+                _unitDataId[cardData.unit.name][cardData.unit.level] = cardData.unit.id;
             }
         }
 
-        public static int GetCardID(string name, int level)
+        public static int GetUnitDataID(Card card, int level)
         {
-            return _cardId[name][level];
+            return _unitDataId[card.id][level];
         }
 
         public static Card GetCard(string name)
         {
             return _cards[name];
+        }
+
+        public static Card GetCard (CardData cardData)
+        {
+            return _cards[cardData.unit.name];
         }
     }
 }

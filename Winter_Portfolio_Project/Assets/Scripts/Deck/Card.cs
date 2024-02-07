@@ -15,7 +15,7 @@ namespace WPP.DeckManagement
             Common, Rare, Epic, Legendary
         }
 
-        public string id = "Empty";
+        public string id = "Empty"; // = CardData.unit.name
         public Type type;
         public Rarity rarity;
 

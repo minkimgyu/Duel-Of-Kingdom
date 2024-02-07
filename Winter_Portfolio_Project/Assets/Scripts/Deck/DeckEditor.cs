@@ -17,10 +17,10 @@ namespace WPP.DeckManagement
 
         public void LoadDeck()
         {
-            _deck = new Deck[3];
-            for (int i = 0; i < 3; i++)
+            _deck = new Deck[DeckManager.Decks.Count];
+            for (int i = 0; i < _deck.Length; i++)
             {
-                _deck[i] = new Deck();
+                _deck[i] = DeckManager.Decks[i];
             }
         }
 

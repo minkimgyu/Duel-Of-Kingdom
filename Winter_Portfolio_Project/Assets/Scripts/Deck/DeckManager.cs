@@ -8,8 +8,10 @@ namespace WPP.DeckManagement
 {
     public static class DeckManager
     {
+        public static Deck CurrentDeck => decks[selectedDeckIndex];
         public static IReadOnlyList<Deck> Decks => decks;
         private static List<Deck> decks;
+        private static int selectedDeckIndex = 0;
 
         public static void LoadPlayerDeck()
         {
@@ -39,6 +41,11 @@ namespace WPP.DeckManagement
                 }
                 decks.Add(newDeck);
             }
+        }
+
+        public static void SelectDeck(int index)
+        {
+            selectedDeckIndex = index;
         }
     }
 }

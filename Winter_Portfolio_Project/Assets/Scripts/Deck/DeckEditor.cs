@@ -27,6 +27,8 @@ namespace WPP.DeckManagement
         public void SelectDeck(int deckIndex)
         {
             currentDeck = deckIndex;
+            DeckManager.SelectDeck(deckIndex);
+
             OnDeckChanged?.Invoke(SelectedDeck);
         }
 

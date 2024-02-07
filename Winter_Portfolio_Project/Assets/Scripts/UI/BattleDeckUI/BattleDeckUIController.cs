@@ -56,26 +56,9 @@ namespace WPP.Battle.UI
             _fsm.SetInitialState(State.Idle);
         }
 
-        // Test Purpose
         private void Start()
         {
-            Deck deck = new Deck();
-
-            /*
-            deck.SetCard(0, "barbarian");
-            deck.SetCard(1, "bat");
-            deck.SetCard(2, "dragon");
-            deck.SetCard(3, "giant");
-            deck.SetCard(4, "knight");
-            deck.SetCard(5, "mega_minion");
-            deck.SetCard(6, "shooter");
-            deck.SetCard(7, "wizard");
-
-            for (int i = 0; i < 8; i++)
-            {
-                deck.SetCardLevel(i, 6);
-            }
-            */
+            Deck deck = DeckManager.CurrentDeck;
 
             _deckSystem.Init(deck);
             _elixirSystem.StartRegen();
@@ -145,7 +128,7 @@ namespace WPP.Battle.UI
         }
 
         private bool _placedCard = false;
-        private CardData _selectedCardData;
+        //private CardData _selectedCardData;
         private void OnPlacing(Fsm<State> fsm, FsmStep step)
         {
             if (step == FsmStep.Enter)
@@ -156,7 +139,7 @@ namespace WPP.Battle.UI
                 string name = _deckSystem.Hand[_selectedCardIndex].id;
                 int level = _deckSystem.GetCardLevel(_selectedCardIndex);
                 Debug.Log("Placing Card name : " + name + ", lv : " + level);
-                _selectedCardData = CardCollection.Instance().FindCard(name, level);
+                //_selectedCardData = CardCollection.Instance().FindCard(name, level);
                 
                 //TODO
                 OffsetRect offsetRect1 = new OffsetRect(0, 0, 0, 0);
@@ -208,7 +191,7 @@ namespace WPP.Battle.UI
             float duration = 3f;
 
             _placedCard = true;
-            Debug.Log("Plant id : " + _selectedCardData.id);
+            //Debug.Log("Plant id : " + _selectedCardData.id);
             
             // temp id
             int id = UnityEngine.Random.Range(0, 8);

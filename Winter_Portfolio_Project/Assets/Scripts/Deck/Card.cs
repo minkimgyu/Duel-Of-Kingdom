@@ -15,7 +15,7 @@ namespace WPP.DeckManagement
             Common, Rare, Epic, Legendary
         }
 
-        public string id = null;
+        public string id = "Empty";
         public Type type;
         public Rarity rarity;
 
@@ -24,6 +24,8 @@ namespace WPP.DeckManagement
         public Vector2Int gridSize = Vector2Int.one;
         public int cost = 0;
 
-        public static Card Empty = new() { id = null };
+        public static Card Empty = new() { id = "Empty" };
+
+        public bool IsEmpty() => id == "Empty";
     }
 }

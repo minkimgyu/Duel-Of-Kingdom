@@ -154,17 +154,26 @@ namespace WPP.DeckManagement.UI
         {
             for (int i = 0; i < deck.CardId.Count; i++)
             {
-                // TODO : SetCardCost
-                var cost = 5;
-                _deckCardUIs[i].SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
-                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(deck.CardId[i], cost, deck.GetCardLevel(i) / 10f);
+                Card card;
+                if (CardDatabase.Cards.TryGetValue(deck.CardId[i], out Card found))
+                {
+                    card = found;
+                }
+                else
+                {
+                    card = Card.Empty;
+                }
+
+                _deckCardUIs[i].SetCard(card, deck.GetCardLevel(i) / 10f);
+                _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(card, deck.GetCardLevel(i) / 10f);
 
             }
 
             for (int i = 0; i < CardDatabase.Cards.Count; i++)
             {
                 var card = CardDatabase.Cards.ElementAt(i).Value;
-                _collectionCardUIs[i].SetCard(card.id, card.cost, 0);
+                _collectionCardUIs[i].SetCard(card, 0);
+                _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(card, 0);
             }
 
             StringBuilder sb = new StringBuilder();

@@ -229,7 +229,7 @@ namespace WPP.Battle.UI
 
             for (int i = 0; i < _cards.Length; i++)
             {
-                if (hand[i].id == null)
+                if (hand[i].IsEmpty())
                 {
                     _cards[i].gameObject.SetActive(false);
                 }
@@ -241,7 +241,7 @@ namespace WPP.Battle.UI
                         _cards[i].gameObject.SetActive(true);
                     }
 
-                    _cards[i].SetCard(hand[i].id, hand[i].cost);
+                    _cards[i].SetCard(hand[i]);
                 }
             }
 

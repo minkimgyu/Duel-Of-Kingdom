@@ -26,9 +26,9 @@ namespace WPP.DeckManagement.UI
             _gridIndex = gridIndex;
         }
 
-        public void SetCard(string id, int cost, float lvProgress = 0)
+        public void SetCard(Card card, float lvProgress = 0)
         {
-            if (string.IsNullOrEmpty(id))
+            if (card.IsEmpty())
             {
                 _cardName.text = "Empty";
                 _button.interactable = false;
@@ -36,9 +36,9 @@ namespace WPP.DeckManagement.UI
             }
             else
             {
-                _cardName.text = id;
+                _cardName.text = card.id;
                 _button.interactable = true;
-                _cardCost.text = cost.ToString();
+                _cardCost.text = card.cost.ToString();
             }
 
             if(_levelBar != null)

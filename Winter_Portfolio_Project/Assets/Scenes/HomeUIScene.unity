@@ -1979,7 +1979,7 @@ GameObject:
   - component: {fileID: 410716947}
   - component: {fileID: 410716948}
   m_Layer: 0
-  m_Name: DatabaseLoader
+  m_Name: CardDatabase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

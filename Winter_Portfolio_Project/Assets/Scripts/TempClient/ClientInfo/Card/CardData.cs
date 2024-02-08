@@ -8,7 +8,7 @@ namespace WPP.ClientInfo.Card
 {
     public enum CardType
     {
-        troop, multiple_troops, attack_building, spawn_building, spell
+        troop, attack_building, spawn_building, spell
     }
     public enum CardRarity
     {

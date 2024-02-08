@@ -1,1 +1,1 @@
-{"kingTower":{"type":1,"status":1,"level":1,"hp":2400},"leftPrincessTower":{"type":2,"status":1,"level":1,"hp":1400},"rightPrincessTower":{"type":2,"status":1,"level":1,"hp":1400},"numOfTowersDestroyed":0}
+{"kingTower":{"type":0,"status":0,"level":0,"hp":0},"leftPrincessTower":{"type":0,"status":0,"level":0,"hp":0},"rightPrincessTower":{"type":0,"status":0,"level":0,"hp":0},"numOfTowersDestroyed":0}

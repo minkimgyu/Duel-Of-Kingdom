@@ -1,5 +1,3 @@
-#undef DEBUG
-
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -165,7 +163,7 @@ namespace WPP.Network
             Debug.Log("Handle login");
             string accountString = buffer.ReadString(true);
             ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(accountString);
-#if DEBUG
+#if UNITY_EDITOR
             string accountFilePath = "Assets\\GameFiles\\account.json";
 #else
             string accountFilePath = Application.persistentDataPath + "/account.json";
@@ -179,7 +177,7 @@ namespace WPP.Network
 
             string towersString = buffer.ReadString(true);
             ClientData.Instance().towers = JsonConvert.DeserializeObject<TowersData>(towersString);
-#if DEBUG
+#if UNITY_EDITOR
             string towersFilePath = "Assets\\GameFiles\\towers.json";
 #else
             string towersFilePath = Application.persistentDataPath + "/towers.json";
@@ -193,7 +191,7 @@ namespace WPP.Network
 
             string decksString = buffer.ReadString(true);
             ClientData.Instance().decks = JsonConvert.DeserializeObject<DecksData>(decksString);
-#if DEBUG
+#if UNITY_EDITOR
             string decksFilePath = "Assets\\GameFiles\\decks.json";
 #else
             string decksFilePath = Application.persistentDataPath + "/decks.json";
@@ -207,7 +205,7 @@ namespace WPP.Network
 
             string cardInstancesString = buffer.ReadString(true);
             ClientData.Instance().cards = JsonConvert.DeserializeObject<CardsData>(cardInstancesString);
-#if DEBUG
+#if UNITY_EDITOR
             string cardInstancessFilePath = "Assets\\GameFiles\\cards.json";
 #else
             string cardInstancessFilePath = Application.persistentDataPath + "/cards.json";

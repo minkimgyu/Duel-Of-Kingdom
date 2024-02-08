@@ -90,6 +90,15 @@ namespace WPP.Network
             return;
         }
 
+        public void WriteQuaternion(Quaternion rotation)
+        {
+            buffer.AddRange(BitConverter.GetBytes(rotation.x));
+            buffer.AddRange(BitConverter.GetBytes(rotation.y));
+            buffer.AddRange(BitConverter.GetBytes(rotation.z));
+            buffer.AddRange(BitConverter.GetBytes(rotation.w));
+            return;
+        }
+
         public byte[] ReadBytes(int numOfBytesToRead, bool moveHead)
         {
             _tempBuffer = buffer.ToArray();
@@ -178,6 +187,25 @@ namespace WPP.Network
             if (moveHead)
                 readIndex += sizeof(float);
             Vector3 ret = new Vector3(x, y, z);
+            return ret;
+        }
+
+        public Quaternion ReadQuaternion(bool moveHead)
+        {
+            _tempBuffer = buffer.ToArray();
+            float x = BitConverter.ToSingle(_tempBuffer, readIndex);
+            if (moveHead)
+                readIndex += sizeof(float);
+            float y = BitConverter.ToSingle(_tempBuffer, readIndex);
+            if (moveHead)
+                readIndex += sizeof(float);
+            float z = BitConverter.ToSingle(_tempBuffer, readIndex);
+            if (moveHead)
+                readIndex += sizeof(float);
+            float w = BitConverter.ToSingle(_tempBuffer, readIndex);
+            if (moveHead)
+                readIndex += sizeof(float);
+            Quaternion ret = new Quaternion(x, y, z, w);
             return ret;
         }
     }

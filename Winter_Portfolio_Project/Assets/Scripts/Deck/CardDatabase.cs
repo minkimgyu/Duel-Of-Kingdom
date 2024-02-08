@@ -19,6 +19,18 @@ namespace WPP.DeckManagement
         private static Dictionary<string, Dictionary<int, int>> _unitDataId = new(); // <CardData.name (Card.id), <level, UnitData.id>>
 
         [SerializeField] private UnityEvent _onCardDatabaseLoaded;
+
+        private static bool isInitialized = false;
+        private void Awake()
+        {
+            if(isInitialized)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            isInitialized = true;
+        }
+        
         private void Start()
         {
             JsonParser.Instance().LoadDecks();

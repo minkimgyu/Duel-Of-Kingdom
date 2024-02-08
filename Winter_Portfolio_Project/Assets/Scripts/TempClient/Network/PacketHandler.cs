@@ -219,8 +219,7 @@ namespace WPP.Network
             File.WriteAllText(cardInstancessFilePath, cardInstancesString);
             JsonParser.Instance().LoadCardInstances();
 
-            SceneManager.LoadScene("Lobby");
-            Debug.Log("login completed");
+            SceneManager.LoadScene("HomeUIScene");
         }
 
         public void HandleLoginRejection(ref ByteBuffer buffer)
@@ -249,17 +248,15 @@ namespace WPP.Network
             int player_id_in_game = buffer.ReadInteger(true);
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
-            // Ensure that existing holePunchingStream is closed before starting a new connection
-
             // try to connect with private end point
-            //ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
+            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
             if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
             {
                 // try to connect with public end point
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
             }
 
-            SceneManager.LoadScene("BattleSystemExample");
+            SceneManager.LoadScene("EnableNetworkBattleScene");
             Debug.Log("entered game");
         }
 

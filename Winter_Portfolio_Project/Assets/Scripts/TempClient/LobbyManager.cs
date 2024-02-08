@@ -11,16 +11,17 @@ namespace WPP
 {
     public class LobbyManager : MonoBehaviour
     {
-        public Button playButton;
+        public Button battleButton;
 
         private void Awake()
         {
-            playButton.onClick.AddListener(() => PlayButtonOnClick());
+            battleButton.onClick.AddListener(() => PlayButtonOnClick());
         }
 
         public void PlayButtonOnClick()
         {
             SceneManager.LoadScene("Loading");
+
             /*
              로딩 중 게임을 종료 하였을 때의 예외처리 필요
             - 생성된 방 처리

@@ -7,9 +7,9 @@ namespace WPP.AI.ACTION.STATE
 {
     public class ActiveState : State
     {
-        EntityAI _entityAI;
+        LifeAI _entityAI;
 
-        public ActiveState(EntityAI entityAI)
+        public ActiveState(LifeAI entityAI)
         {
             _entityAI = entityAI;
         }

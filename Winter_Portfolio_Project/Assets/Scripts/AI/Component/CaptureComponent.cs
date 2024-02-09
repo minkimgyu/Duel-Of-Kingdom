@@ -21,7 +21,9 @@ namespace WPP.AI.CAPTURE
 
         List<ITarget> _targets = new List<ITarget>();
         CaptureTag[] _tagsToCapture;
-        float _playerId;
+        float _ownershipId;
+
+        ITarget _storedTarget = null;
 
         bool CheckContainTag(string tag)
         {
@@ -41,16 +43,16 @@ namespace WPP.AI.CAPTURE
             KingTower[] kingTowers = FindObjectsOfType<KingTower>();
 
             for (int i = 0; i < princessTowers.Length; i++)
-                if(princessTowers[i].OwnershipId != _playerId) _targets.Add(princessTowers[i]);
+                if(princessTowers[i].OwnershipId != _ownershipId) _targets.Add(princessTowers[i]);
 
             for (int i = 0; i < kingTowers.Length; i++)
-                if (kingTowers[i].OwnershipId != _playerId) _targets.Add(kingTowers[i]);
+                if (kingTowers[i].OwnershipId != _ownershipId) _targets.Add(kingTowers[i]);
         }
 
-        public void Initialize(CaptureTag[] tagsToCapture, int playerId, float range)
+        public void Initialize(CaptureTag[] tagsToCapture, int ownershipId, float range)
         {
             _tagsToCapture = tagsToCapture;
-            _playerId = playerId;
+            _ownershipId = ownershipId;
 
             AddTowers();
 
@@ -102,6 +104,9 @@ namespace WPP.AI.CAPTURE
             {
                 if (_targets[i].Equals(null))
                 {
+                    // 만약 저장된 타겟과 제거할 타겟이 같다면 null로 초기화해주기
+                    if (_targets[i] == _storedTarget) _storedTarget = null;
+
                     // 여기서 아이템이 존재하지 않는다면 지워주기
                     _targets.RemoveAt(i);
                     int lastIndex = _targets.Count - 1;
@@ -110,7 +115,7 @@ namespace WPP.AI.CAPTURE
                     else continue;
                 }
 
-                if (_targets[i].OwnershipId == _playerId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
+                if (_targets[i].ReturnOwnershipId() == _ownershipId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
 
                 if (i == 0)
                 {
@@ -127,8 +132,13 @@ namespace WPP.AI.CAPTURE
                 }
             }
 
-            if (indexOfTarget == -1) return null;
-            else return _targets[indexOfTarget];
+            // 저장된 타겟이 null이 아니고 프린세스, 킹 타워일 경우 해당 타겟을 다시 반환함
+            if(_storedTarget != null && IsTower(_storedTarget) == true) return _storedTarget;
+
+            if (indexOfTarget == -1) _storedTarget = null;
+            else _storedTarget = _targets[indexOfTarget];
+
+            return _storedTarget;
         }
     }
 }

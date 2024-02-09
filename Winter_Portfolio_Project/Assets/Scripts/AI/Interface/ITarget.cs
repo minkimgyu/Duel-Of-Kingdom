@@ -6,10 +6,11 @@ namespace WPP.AI.TARGET
 {
     public interface ITarget
     {
-        /// <summary>
-        /// 객체를 스폰시킨 소유권자의 Id
-        /// </summary>
-        public int OwnershipId { get; set; }
+       /// <summary>
+       /// 객체를 소유한 플레이어의 Id를 반환한다.
+       /// </summary>
+       /// <returns></returns>
+        public int ReturnOwnershipId();
 
         /// <summary>
         /// 콜라이더의 길이를 반환한다.

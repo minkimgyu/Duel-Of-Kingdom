@@ -62,7 +62,7 @@ namespace WPP.AI.STAT
         }
 
         public override void Initialize(Entity entity)
-        => entity.Initialize(_id, _level, _name, _hp, _targetTag, _damage, _hitSpeed, _range, _captureRange);
+        => entity.Initialize(_level, _name, _hp, _targetTag, _damage, _hitSpeed, _range, _captureRange);
     }
 
     [Serializable]
@@ -95,7 +95,7 @@ namespace WPP.AI.STAT
         }
 
         public override void Initialize(Entity entity)
-        => entity.Initialize(_id, _level, _name, _hp, _filltOffset, _targetTag, _damage, _hitSpeed, _range, _captureRange);
+        => entity.Initialize(_level, _name, _hp, _filltOffset, _targetTag, _damage, _hitSpeed, _range, _captureRange);
     }
 
     [Serializable]
@@ -109,7 +109,7 @@ namespace WPP.AI.STAT
         }
 
         public override void Initialize(Entity entity)
-        => entity.Initialize(_id, _level, _name, _hp, _filltOffset, _targetTag, _damage, _hitSpeed, _range, _captureRange, _lifeTime);
+        => entity.Initialize(_level, _name, _hp, _filltOffset, _targetTag, _damage, _hitSpeed, _range, _captureRange, _lifeTime);
     }
 
     [Serializable]
@@ -129,6 +129,6 @@ namespace WPP.AI.STAT
         }
 
         public override void Initialize(Entity entity)
-        => entity.Initialize(_id, _level, _name, _hp, _filltOffset, _lifeTime, _spawnUnitId, _spawnDelay, _spawnOffset);
+        => entity.Initialize(_level, _name, _hp, _filltOffset, _lifeTime, _spawnUnitId, _spawnDelay, _spawnOffset);
     }
 }

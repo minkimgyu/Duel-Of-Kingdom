@@ -17,15 +17,6 @@ namespace WPP.DRAWING
             _vertices = vertice;
             _orders = order;
         }
-
-        public void Draw(MeshFilter filter)
-        {
-            Mesh mesh = new Mesh();
-
-            mesh.vertices = _vertices;
-            mesh.triangles = _orders;
-            filter.mesh = mesh;
-        }
     }
 
     public class SpawnAreaDrawer : MonoBehaviour
@@ -44,10 +35,45 @@ namespace WPP.DRAWING
         }
 
         // 여기서 변수 초기화 해주기
+        // 여기서 원형, 사각형 모양 지정해보기
         public void Initialize(DrawingData drawingData)
         {
             _vertices = drawingData.Vertices;
             _orders = drawingData.Orders;
+        }
+
+        void ResetVertices()
+        {
+            int _steps = 50;
+            float radius = 1;
+            List<Vector3> vertices = new List<Vector3>();
+
+            for (int currentStep = 0; currentStep <= _steps; currentStep++)
+            {
+                float circumferenceProgress = (float)currentStep / _steps;
+                float currentRadian = circumferenceProgress * 2 * Mathf.PI;
+
+                float xScaled = Mathf.Cos(currentRadian);
+                float yScaled = Mathf.Sin(currentRadian);
+
+                float x = xScaled * radius;
+                float y = yScaled * radius;
+
+                vertices.Add(new Vector3(x, 0, y));
+            }
+
+
+        }
+
+        void DrawPoint()
+        {
+
+        }
+
+        public void Initialize()
+        {
+            //_vertices = drawingData.Vertices;
+            //_orders = drawingData.Orders;
         }
 
         public void Draw()
@@ -76,7 +102,7 @@ namespace WPP.DRAWING
         // 모든 점, 선을 지워주기
         public void Erase()
         {
-            _meshFilter.mesh = new Mesh(); // mesh 초기화
+            _meshFilter.mesh.Clear(); // mesh 초기화
             _lineRenderer.positionCount = 0;
         }
 

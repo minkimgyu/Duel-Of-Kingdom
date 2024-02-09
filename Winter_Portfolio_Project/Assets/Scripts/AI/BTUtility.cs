@@ -382,7 +382,7 @@ namespace WPP.AI.BTUtility
             Spawner spawner = go.GetComponent<Spawner>();
             if (spawner == null) return;
 
-            OnSpawnRequested = spawner.Spawn;
+            //OnSpawnRequested = spawner.Spawn;
         }
 
         public override NodeState Evaluate()

@@ -187,15 +187,13 @@ namespace WPP.Battle.UI
 
         void OnCardUsed(Card card, int level)
         {
-            float duration = 3f;
-
             _placedCard = true;
             //Debug.Log("Plant id : " + _selectedCardData.id);
-            
+
             // temp id
-            int id = UnityEngine.Random.Range(0, 8);
-            _gridController.FSM.OnPlant(id, 2, 2, duration);
-            //_gridController.FSM.OnPlant(_selectedCardData.id, 2, 2, duration);
+            //int id = UnityEngine.Random.Range(0, 8);
+            //_gridController.FSM.OnPlant(card);
+            _gridController.OnPlant(card, level);
 
             _fsm.TransitionTo(State.Idle);
         }

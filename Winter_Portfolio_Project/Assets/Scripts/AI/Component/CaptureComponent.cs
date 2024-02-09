@@ -94,9 +94,18 @@ namespace WPP.AI.CAPTURE
             return _targets.Count != 0;
         }
 
+        public void FixTarget(ITarget target)
+        {
+            if (IsTower(target) == false) return;
+            _storedTarget = target;
+        }
+
         // 우선 가장 가까운 대상을 리턴함
         public ITarget ReturnTarget()
         {
+            // _storedTarget이 null이 아닌 경우 해당 타겟을 리턴해준다.
+            if (_storedTarget.Equals(null) == false) return _storedTarget;
+
             float distanceBetween = 0;
             int indexOfTarget = -1;
 
@@ -104,9 +113,6 @@ namespace WPP.AI.CAPTURE
             {
                 if (_targets[i].Equals(null))
                 {
-                    // 만약 저장된 타겟과 제거할 타겟이 같다면 null로 초기화해주기
-                    if (_targets[i] == _storedTarget) _storedTarget = null;
-
                     // 여기서 아이템이 존재하지 않는다면 지워주기
                     _targets.RemoveAt(i);
                     int lastIndex = _targets.Count - 1;
@@ -132,13 +138,8 @@ namespace WPP.AI.CAPTURE
                 }
             }
 
-            // 저장된 타겟이 null이 아니고 프린세스, 킹 타워일 경우 해당 타겟을 다시 반환함
-            if(_storedTarget != null && IsTower(_storedTarget) == true) return _storedTarget;
-
-            if (indexOfTarget == -1) _storedTarget = null;
-            else _storedTarget = _targets[indexOfTarget];
-
-            return _storedTarget;
+            if (indexOfTarget == -1) return null;
+            else return _targets[indexOfTarget];
         }
     }
 }

@@ -7,9 +7,9 @@ namespace WPP.AI.ACTION.STATE
 {
     public class NeutralState : State
     {
-        EntityAI _entityAI;
+        LifeAI _entityAI;
 
-        public NeutralState(EntityAI entityAI)
+        public NeutralState(LifeAI entityAI)
         {
             _entityAI = entityAI;
         }
@@ -25,7 +25,7 @@ namespace WPP.AI.ACTION.STATE
         {
             // 체력 바 보여주기
             _entityAI.OnVisibleChangeRequested?.Invoke(true);
-            _entityAI.FSM.SetState(EntityAI.ActionState.Active);
+            _entityAI.FSM.SetState(LifeAI.ActionState.Active);
         }
     }
 }

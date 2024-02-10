@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -16,9 +17,21 @@ namespace WPP.DeckManagement
         public static IReadOnlyDictionary<string, Card> Cards => _cards;
 
         private static Dictionary<string, Card> _cards = new(); // <CardData.name (Card.id), Card>
-        private static Dictionary<string, Dictionary<int, int>> _unitDataId = new(); // <CardData.name (Card.id), <level, UnitData.id>>
+        private static Dictionary<Tuple<Card, int>, CardData> _cardDatas = new(); // <<Card, level>, CardData>
 
         [SerializeField] private UnityEvent _onCardDatabaseLoaded;
+
+        private static bool isInitialized = false;
+        private void Awake()
+        {
+            if(isInitialized)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            isInitialized = true;
+        }
+        
         private void Start()
         {
             JsonParser.Instance().LoadDecks();
@@ -37,23 +50,26 @@ namespace WPP.DeckManagement
         {
             foreach (var cardData in CardCollection.Instance().cardCollection)
             {
+                if(_cards.ContainsKey(cardData.unit.name))
+                {
+                    _cardDatas.Add(new(_cards[cardData.unit.name], cardData.unit.level), cardData);
+                    continue;
+                }
+
                 var card = new Card();
                 
                 card.id = cardData.unit.name;
                 card.cost = cardData.needElixir;
                 card.gridSize = new(cardData.gridSize.top, cardData.gridSize.down, cardData.gridSize.left, cardData.gridSize.right);
 
-                if(_cards.TryAdd(cardData.unit.name, card))
-                {
-                    _unitDataId.Add(cardData.unit.name, new());
-                }
-                _unitDataId[cardData.unit.name][cardData.unit.level] = cardData.unit.id;
+                _cards.Add(cardData.unit.name, card);
+                _cardDatas.Add(new(card, cardData.unit.level), cardData);
             }
         }
 
-        public static int GetUnitDataID(Card card, int level)
+        public static CardData GetCardData(Card card, int level)
         {
-            return _unitDataId[card.id][level];
+            return _cardDatas[new(card, level)];
         }
 
         public static Card GetCard(string name)

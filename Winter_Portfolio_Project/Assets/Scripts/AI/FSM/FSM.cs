@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WPP.AI.GRID;
+using WPP.DeckManagement;
 
 namespace WPP.AI.FSM
 {
     abstract public class State : BaseState
     {
         public override void OnTowerConditionChangeRequested() { }
-        public override void OnPlantRequested(int entityId, int ownershipId, int clientId, float duration) { }
-        public override void OnPlantRequested(int[] entityIds, int ownershipId, int clientId, Vector3[] offsets, float duration) { }
+
+        public override void OnPlantRequested(Card card, int level) { }
         public override void OnCancelSelectRequested() { }
         public override void OnSelectRequested(OffsetRect offsetFromCenter) { }
 
@@ -22,8 +23,7 @@ namespace WPP.AI.FSM
 
         public override void OnMessageRequested(string info) { }
         public override void OnMessageRequested(string info, OffsetRect offsetFromCenter) { }
-        public override void OnMessageRequested(string info, int entityId, int ownershipId, int clientId, Vector3 pos, float duration) { }
-        public override void OnMessageRequested(string info, int[] entityIds, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, float duration) { }
+        public override void OnMessageRequested(string info, Card card, int level, Vector3 pos) { }
 
         public override void CheckStateChange() { }
         public override void OnStateEnter() { }
@@ -34,8 +34,7 @@ namespace WPP.AI.FSM
     abstract public class BaseState
     {
         public abstract void OnTowerConditionChangeRequested();
-        public abstract void OnPlantRequested(int entityId, int ownershipId, int clientId, float duration);
-        public abstract void OnPlantRequested(int[] entityIds, int ownershipId, int clientId, Vector3[] offsets, float duration);
+        public abstract void OnPlantRequested(Card card, int level);
         public abstract void OnCancelSelectRequested();
         public abstract void OnSelectRequested(OffsetRect offsetFromCenter);
 
@@ -47,8 +46,7 @@ namespace WPP.AI.FSM
 
         public abstract void OnMessageRequested(string info);
         public abstract void OnMessageRequested(string info, OffsetRect offsetFromCenter);
-        public abstract void OnMessageRequested(string info, int entityId, int ownershipId, int clientId, Vector3 pos, float duration);
-        public abstract void OnMessageRequested(string info, int[] entityIds, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, float duration);
+        public abstract void OnMessageRequested(string info, Card card, int level, Vector3 pos);
 
         public abstract void CheckStateChange();
         public abstract void OnStateEnter();
@@ -115,16 +113,10 @@ namespace WPP.AI.FSM
             _currentState.OnCancelSelectRequested();
         }
 
-        public void OnPlant(int entityId, int ownershipId, int clientId, float duration)
+        public void OnPlant(Card card, int level)
         {
             if (_currentState == null) return;
-            _currentState.OnPlantRequested(entityId, ownershipId, clientId, duration);
-        }
-
-        public void OnPlant(int[] entityIds, int ownershipId, int clientId, Vector3[] offsets, float duration)
-        {
-            if (_currentState == null) return;
-            _currentState.OnPlantRequested(entityIds, ownershipId, clientId, offsets, duration);
+            _currentState.OnPlantRequested(card, level);
         }
 
         public bool RevertToPreviousState()
@@ -149,16 +141,10 @@ namespace WPP.AI.FSM
             return ChangeState(_stateDictionary[stateName], info, offsetFromCenter);
         }
 
-        public bool SetState(T stateName, string info, int entityId, int ownershipId, int clientId, Vector3 pos, float duration)
+        public bool SetState(T stateName, string info, Card card, int level, Vector3 pos)
         {
-            return ChangeState(_stateDictionary[stateName], info, entityId, ownershipId, clientId, pos, duration);
+            return ChangeState(_stateDictionary[stateName], info, card, level, pos);
         }
-
-        public bool SetState(T stateName, string info, int[] entityIds, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, float duration)
-        {
-            return ChangeState(_stateDictionary[stateName], info, entityIds, ownershipId, clientId, pos, offsets, duration);
-        }
-
         #endregion
 
 
@@ -239,7 +225,7 @@ namespace WPP.AI.FSM
             return true;
         }
 
-        bool ChangeState(BaseState state, string info, int entityId, int ownershipId, int clientId, Vector3 pos, float duration)
+        bool ChangeState(BaseState state, string info, Card card, int level, Vector3 pos)
         {
             if (_stateDictionary.ContainsValue(state) == false) return false;
 
@@ -254,32 +240,7 @@ namespace WPP.AI.FSM
             _previousState = _currentState;
 
             _currentState = state;
-            _currentState.OnMessageRequested(info, entityId, ownershipId, clientId, pos, duration);
-
-            if (_currentState != null) //새 상태의 Enter를 호출한다.
-            {
-                _currentState.OnStateEnter();
-            }
-
-            return true;
-        }
-
-        bool ChangeState(BaseState state, string info, int[] entityIds, int ownershipId, int clientId, Vector3 pos, Vector3[] offsets, float duration)
-        {
-            if (_stateDictionary.ContainsValue(state) == false) return false;
-
-            if (_currentState == state) // 같은 State로 전환하지 못하게 막기
-            {
-                return false;
-            }
-
-            if (_currentState != null) //상태가 바뀌기 전에, 이전 상태의 Exit를 호출
-                _currentState.OnStateExit();
-
-            _previousState = _currentState;
-
-            _currentState = state;
-            _currentState.OnMessageRequested(info, entityIds, ownershipId, clientId, pos, offsets, duration);
+            _currentState.OnMessageRequested(info, card, level, pos);
 
             if (_currentState != null) //새 상태의 Enter를 호출한다.
             {

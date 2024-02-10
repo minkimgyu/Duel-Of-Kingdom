@@ -4,6 +4,7 @@ using UnityEngine;
 using WPP.AI.FSM;
 using WPP.AI.GRID.STATE;
 using WPP.AI.SPAWNER;
+using WPP.DeckManagement;
 using System;
 
 namespace WPP.AI.GRID
@@ -63,9 +64,7 @@ namespace WPP.AI.GRID
 
         public void OnCancelSelect() => _fsm.OnCancelSelect();
 
-        public void OnPlant(int entityId, int playerId, int clientId, float duration) => _fsm.OnPlant(entityId, playerId, clientId, duration);
-
-        public void OnPlant(int[] entityIds, int playerId, int clientId, Vector3[] offsets, float duration) => _fsm.OnPlant(entityIds, playerId, clientId, offsets, duration);
+        public void OnPlant(Card card, int level) => _fsm.OnPlant(card, level);
 
         public void OnTowerConditionChange(TowerCondition towerCondition)
         {
@@ -83,7 +82,7 @@ namespace WPP.AI.GRID
             {
                 {ControlState.Ready, new ReadyState(this)},
                 {ControlState.Select, new SelectState(this)},
-                {ControlState.Plant, new PlantState(this, spawner.Spawn, spawner.Spawn)}
+                {ControlState.Plant, new PlantState(this, spawner)}
             };
 
             _fsm = new StateMachine<ControlState>();

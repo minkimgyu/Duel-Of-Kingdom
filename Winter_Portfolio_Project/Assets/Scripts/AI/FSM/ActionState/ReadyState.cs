@@ -11,9 +11,9 @@ namespace WPP.AI.ACTION.STATE
         Timer _timer;
         float _duration;
 
-        EntityAI _entityAI;
+        LifeAI _entityAI;
 
-        public ReadyState(EntityAI entityAI, float duration)
+        public ReadyState(LifeAI entityAI, float duration)
         {
             _entityAI = entityAI;
             _duration = duration;
@@ -22,7 +22,7 @@ namespace WPP.AI.ACTION.STATE
 
         void GoToNextState()
         {
-            _entityAI.FSM.SetState(EntityAI.ActionState.Active);
+            _entityAI.FSM.SetState(LifeAI.ActionState.Active);
         }
 
         public override void OnStateEnter()

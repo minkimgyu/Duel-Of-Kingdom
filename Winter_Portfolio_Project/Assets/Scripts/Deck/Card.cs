@@ -25,6 +25,8 @@ namespace WPP.DeckManagement
         public OffsetRect gridSize = new(0,0,0,0);
         public int cost = 0;
 
+        public float duration = 1.5f;
+
         public static Card Empty = new() { id = "Empty" };
 
         public bool IsEmpty() => id == "Empty";

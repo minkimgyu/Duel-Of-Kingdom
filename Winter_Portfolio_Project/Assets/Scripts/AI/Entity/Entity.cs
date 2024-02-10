@@ -12,27 +12,54 @@ using Tree = BehaviorTree.Tree;
 
 namespace WPP.AI
 {
-    abstract public class Entity : MonoBehaviour, IDamagable, ITarget
+    abstract public class Entity : MonoBehaviour
     {
-        protected float _maxHp;
-
-        [SerializeField] protected int _id;
-        public int Id { get { return _id; } }
+        //[SerializeField] protected int _id;
+        //public int Id { get { return _id; } }
 
         protected int _level;
-        protected string _name;
+        [SerializeField] protected string _name;
+        public string Name { get { return _name; } }
 
-
-        public float HP { get; set; }
-        public bool IsDie { get; set; }
-        public int OwnershipId { get; set; }
+        /// <summary>
+        /// 객체를 소유하고 있는 플레이어의 Id
+        /// </summary>
+        protected int _ownershipId;
+        public int OwnershipId { get { return _ownershipId; } }
 
         /// <summary>
         /// 현재 클라이언트를 조작하는 플레이어의 Id
         /// </summary>
         protected int _clientId;
 
-        protected bool IsMyEntity { get { return OwnershipId == _clientId; } } // 내 소유의 Entity일 경우
+        protected bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
+        public void ResetPlayerId(int ownershipId, int clientId) { _ownershipId = ownershipId; _clientId = clientId; }
+
+        public virtual void AttachHpBar(HpContainerUI hpContainer) { }
+        protected virtual void InitializeComponent() { }
+        public virtual void ResetDelayAfterSpawn(float delayDuration) { }
+        public virtual void IsLeft(bool isLeft) { }
+
+        public virtual void Initialize(int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
+        public virtual void Initialize(int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
+        public virtual void Initialize(int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) { }
+        public virtual void Initialize(int level, string name, float hp, OffsetRect fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) { }
+
+        // 여기서 Initialize 함수를 virtual로 여러 개 만들어서 하위 클래스에서 이를 활용할 수 있게끔 제작하기
+        // 객체를 스폰시킨 소유권자의 Id, 현재 클라이언트를 조작하는 플레이어의 Id
+    }
+
+    abstract public class Magic : Entity
+    { 
+
+    }
+
+    abstract public class Life : Entity, IDamagable, ITarget
+    {
+        protected float _maxHp;
+
+        public float HP { get; set; }
+        public bool IsDie { get; set; }
 
         Action<int, float, Transform> OnHpInitializeRequested;
         Action<float, float> OnHpChangeRequested;
@@ -40,7 +67,7 @@ namespace WPP.AI
         protected Action<bool> OnTxtVisibleRequested;
         Action OnHpDestroyRequested;
 
-        public void AttachHpBar(HpContainerUI hpContainer)
+        public override void AttachHpBar(HpContainerUI hpContainer)
         {
             OnHpInitializeRequested = hpContainer.Initialize;
             OnHpChangeRequested = hpContainer.OnHpChangeRequested;
@@ -50,23 +77,10 @@ namespace WPP.AI
             OnHpDestroyRequested = hpContainer.OnDestroyRequested;
         }
 
-        protected virtual void InitializeComponent()
+        protected override void InitializeComponent()
         {
             OnHpInitializeRequested(_level, HP, transform);
         }
-        
-        public virtual void ResetDelayAfterSpawn(float delayDuration) { }
-
-        public virtual void IsLeft(bool isLeft) { }
-
-        public virtual void Initialize(int id, int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) { }
-        public virtual void Initialize(int id, int level, string name, float hp, OffsetRect fillOffset, float lifeTime, int spawnUnitId, float spawnDelay, SerializableVector3[] spawnOffsets) { }
-
-        // 여기서 Initialize 함수를 virtual로 여러 개 만들어서 하위 클래스에서 이를 활용할 수 있게끔 제작하기
-        // 객체를 스폰시킨 소유권자의 Id, 현재 클라이언트를 조작하는 플레이어의 Id
-        public void ResetPlayerId(int ownershipId, int clientId) { OwnershipId = ownershipId; _clientId = clientId; }
 
         public virtual void GetDamage(float damage)
         {
@@ -118,10 +132,15 @@ namespace WPP.AI
         {
             return _name;
         }
+
+        public int ReturnOwnershipId()
+        {
+            return _ownershipId;
+        }
     }
 
     // AI 적용을 위한 BT를 가지고 있음
-    abstract public class EntityAI : Entity
+    abstract public class LifeAI : Life
     {
         public enum ActionState
         {

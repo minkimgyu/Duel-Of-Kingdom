@@ -41,6 +41,17 @@ namespace WPP.AI.GRID
         bool _isFill; // 비어있다면 건물이나 유닛을 올릴 수 있음
         public bool IsFill { get { return _isFill; } set { _isFill = value; } }
 
+        public bool IsFastPath 
+        { 
+            get 
+            {
+                for (int i = 0; i < tilePieces.Count; i++)
+                    if (tilePieces[i].IsFastPath == true) return true;
+
+                return false;
+            } 
+        }
+
         public Grid ParentNode;
 
         [SerializeField] List<TilePiece> tilePieces;

@@ -162,11 +162,6 @@ namespace WPP.AI.GRID
             return new List<Vector3>(); // 기본형 반환
         }
 
-        bool CheckIsWall(Grid [,] grids, int xIndex, int yIndex, bool ignoreWall)
-        {
-            return grids[xIndex, yIndex].IsWall && ignoreWall == false;
-        }
-
         void OpenListAdd(PathFindingParameter parameter, int checkX, int checkZ, List<Grid> OpenList, List<Grid> ClosedList, Grid CurNode, Grid TargetNode, bool ignoreWall)
         {
             // 상하좌우 범위를 벗어나지 않고, 벽이 아니면서, 닫힌리스트에 없다면
@@ -187,8 +182,13 @@ namespace WPP.AI.GRID
 
                 // 이웃노드에 넣고, 직선은 10, 대각선은 14비용
                 Grid NeighborNode = parameter.GridArray[checkX - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y];
-                int MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 10 : 14);
-
+                int MoveCost;
+                // 빠른 경로인 경우 다르게 초기화해줌
+                if (NeighborNode.IsFastPath)
+                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 5 : 7);
+                else
+                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 10 : 14);
+                // 여기서 타일 piece를 보고 경우가 맞다면 movecost를 일부 줄여준다.
 
                 // 이동비용이 이웃노드G보다 작거나 또는 열린리스트에 이웃노드가 없다면 G, H, ParentNode를 설정 후 열린리스트에 추가
                 if (MoveCost < NeighborNode.G || !OpenList.Contains(NeighborNode))

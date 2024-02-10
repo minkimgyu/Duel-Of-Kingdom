@@ -7,6 +7,7 @@ using WPP.ClientInfo.Account;
 using WPP.ClientInfo.Card;
 using WPP.ClientInfo.Deck;
 using WPP.ClientInfo.Tower;
+using WPP.AI.GRID;
 
 namespace WPP.ClientInfo
 {
@@ -26,6 +27,16 @@ namespace WPP.ClientInfo
                 _instance = new ClientData();
             }
             return _instance;
+        }
+
+        // 이런 식으로 지형 데이터 받아오기
+        public LandFormation LandFormation
+        {
+            get 
+            {
+                if (player_id_in_game == 0) return LandFormation.C;
+                else return LandFormation.R;
+            }
         }
 
         public ClientData() {

@@ -29,6 +29,8 @@ namespace WPP.AI.BTUtility
             ITarget target = _captureComponent.ReturnTarget();
             if (target == null) return NodeState.FAILURE;
 
+            _captureComponent.FixTarget(target); // 만약 타워인 경우 대상이 파괴되기 전까지 계속 고정시킴
+
             _attackComponent.Attack(target);
             return NodeState.SUCCESS;
         }
@@ -382,7 +384,7 @@ namespace WPP.AI.BTUtility
             Spawner spawner = go.GetComponent<Spawner>();
             if (spawner == null) return;
 
-            OnSpawnRequested = spawner.Spawn;
+            //OnSpawnRequested = spawner.Spawn;
         }
 
         public override NodeState Evaluate()

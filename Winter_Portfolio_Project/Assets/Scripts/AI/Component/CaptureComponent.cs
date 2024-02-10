@@ -21,7 +21,9 @@ namespace WPP.AI.CAPTURE
 
         List<ITarget> _targets = new List<ITarget>();
         CaptureTag[] _tagsToCapture;
-        float _playerId;
+        float _ownershipId;
+
+        ITarget _storedTarget = null;
 
         bool CheckContainTag(string tag)
         {
@@ -41,16 +43,16 @@ namespace WPP.AI.CAPTURE
             KingTower[] kingTowers = FindObjectsOfType<KingTower>();
 
             for (int i = 0; i < princessTowers.Length; i++)
-                if(princessTowers[i].OwnershipId != _playerId) _targets.Add(princessTowers[i]);
+                if(princessTowers[i].OwnershipId != _ownershipId) _targets.Add(princessTowers[i]);
 
             for (int i = 0; i < kingTowers.Length; i++)
-                if (kingTowers[i].OwnershipId != _playerId) _targets.Add(kingTowers[i]);
+                if (kingTowers[i].OwnershipId != _ownershipId) _targets.Add(kingTowers[i]);
         }
 
-        public void Initialize(CaptureTag[] tagsToCapture, int playerId, float range)
+        public void Initialize(CaptureTag[] tagsToCapture, int ownershipId, float range)
         {
             _tagsToCapture = tagsToCapture;
-            _playerId = playerId;
+            _ownershipId = ownershipId;
 
             AddTowers();
 
@@ -92,9 +94,18 @@ namespace WPP.AI.CAPTURE
             return _targets.Count != 0;
         }
 
+        public void FixTarget(ITarget target)
+        {
+            if (IsTower(target) == false) return;
+            _storedTarget = target;
+        }
+
         // 우선 가장 가까운 대상을 리턴함
         public ITarget ReturnTarget()
         {
+            // _storedTarget이 null이 아닌 경우 해당 타겟을 리턴해준다.
+            if (_storedTarget.Equals(null) == false) return _storedTarget;
+
             float distanceBetween = 0;
             int indexOfTarget = -1;
 
@@ -110,7 +121,7 @@ namespace WPP.AI.CAPTURE
                     else continue;
                 }
 
-                if (_targets[i].OwnershipId == _playerId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
+                if (_targets[i].ReturnOwnershipId() == _ownershipId) continue; // 대상과 자신의 플레이어 아이디가 같은 경우 타겟으로 삼지 않음
 
                 if (i == 0)
                 {

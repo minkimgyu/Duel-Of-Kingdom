@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WPP.AI.FSM;
+using WPP.DeckManagement;
 
 namespace WPP.AI.GRID.STATE
 {
@@ -41,19 +42,12 @@ namespace WPP.AI.GRID.STATE
             _gridController.FillComponent.EraseSpawnImpossibleRect();
         }
 
-        public override void OnCancelSelectRequested() => _gridController.FSM.SetState(GridController.ControlState.Ready); 
+        public override void OnCancelSelectRequested() => _gridController.FSM.SetState(GridController.ControlState.Ready);
 
-        // 여기서 스폰 이후 딜레이, 스폰시킬 오브젝트 id, 스폰 오프셋 등등 스폰에 필요한 변수를 받는다
-        public override void OnPlantRequested(int entityId, int ownershipId, int clientId, float duration)
+        public override void OnPlantRequested(Card card, int level)
         {
             Vector3 pos = _gridController.SelectComponent.ReturnSpawnPoint();
-            _gridController.FSM.SetState(GridController.ControlState.Plant, "GoToPlant", entityId, ownershipId, clientId, pos, duration);
-        }
-
-        public override void OnPlantRequested(int[] entityIds, int ownershipId, int clientId, Vector3[] offsets, float duration)
-        {
-            Vector3 pos = _gridController.SelectComponent.ReturnSpawnPoint();
-            _gridController.FSM.SetState(GridController.ControlState.Plant, "GoToPlant", entityIds, ownershipId, clientId, pos, offsets, duration);
+            _gridController.FSM.SetState(GridController.ControlState.Plant, "GoToPlant", card, level, pos);
         }
     }
 }

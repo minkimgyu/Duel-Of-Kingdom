@@ -31,7 +31,11 @@ namespace WPP.Collection
 
         public void InitializeFromJson(string jsonData)
         {
-            _instance = JsonConvert.DeserializeObject<CardCollection>(jsonData);
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            _instance = JsonConvert.DeserializeObject<CardCollection>(jsonData, settings);
         }
 
         public void AddCard(CardData card)

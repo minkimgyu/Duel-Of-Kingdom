@@ -5,7 +5,7 @@ namespace WPP.ClientInfo.Card
 {
     public enum SpawnType
     {
-        single_spawn = 1,
+        single_spawn,
         triple_spawn
     }
 

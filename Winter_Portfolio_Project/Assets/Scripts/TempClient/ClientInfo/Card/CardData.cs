@@ -19,7 +19,7 @@ namespace WPP.ClientInfo.Card
     public class CardData
     {
         public int id;
-        public int unit_id;
+        public int unitID;
 
         public UnitData unit;
 
@@ -37,7 +37,7 @@ namespace WPP.ClientInfo.Card
         {
             this.id = id;
             unit = CardCollection.Instance().FindCard(id).unit;
-            unit.id = unit_id;
+            unit.id = unitID;
             this.type = type;
             this.rarity = rarity;
             this.needElixir = needElixir;

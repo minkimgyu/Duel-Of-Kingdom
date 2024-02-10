@@ -15,7 +15,7 @@ namespace WPP
         public const int MAXIMUM_PLAYERS = 1000;
 
         public const int MAXIMUM_TOWERS = 3;
-        public const int MAXIMUM_CARDS = 10;
+        public const int MAXIMUM_CARDS = 12;
         public const int MAXIMUM_DECKS = 6;
         public const int MAXIMUM_CARDS_IN_DECK = 8;
 

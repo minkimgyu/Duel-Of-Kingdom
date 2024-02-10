@@ -6,7 +6,7 @@ namespace WPP.Network
 {
     public enum Server_PacketTagPackages
     {
-        S_LOAD_CARD_COLLECTION = 1,
+        S_LOAD_CARD_COLLECTION,
         S_ACCEPT_REGISTER_ACCOUNT,
         S_REJECT_REGISTER_ACCOUNT,
 
@@ -26,7 +26,7 @@ namespace WPP.Network
 
     public enum Client_PacketTagPackages
     {
-        C_REQUEST_INITIAL_DATA = 1,
+        C_REQUEST_INITIAL_DATA,
         C_REQUEST_REGISTER_ACCOUNT,
         C_REQUEST_LOGIN,
         C_REQUEST_ENTER_ROOM,

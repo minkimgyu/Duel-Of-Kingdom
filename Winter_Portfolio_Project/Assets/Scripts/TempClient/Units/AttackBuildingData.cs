@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPP.AI.CAPTURE;
 
 namespace WPP.Units
 {
@@ -14,6 +15,7 @@ namespace WPP.Units
         public float hit_speed;
         public float range;
 
+        public List<CaptureTag> target_tag;
         public AttackBuildingData(int id, string name, int level)
             : base(id, name, level)
         {
@@ -22,6 +24,7 @@ namespace WPP.Units
             life_time = 0.0f;
             hit_speed = 0.0f;
             range = 0.0f;
+            target_tag = new List<CaptureTag>();
         }
     }
 }

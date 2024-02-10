@@ -1,4 +1,4 @@
-﻿#undef DEBUG
+﻿#define UNITY_EDITOR
 
 using System;
 using System.Collections.Generic;
@@ -84,7 +84,11 @@ namespace WPP.FileReader
         public void LoadCardInstances()
         {
             _jsonData = File.ReadAllText(_cardInstancesPath);
-            ClientData.Instance().cards = JsonConvert.DeserializeObject<CardsData>(_jsonData);
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
+            ClientData.Instance().cards = JsonConvert.DeserializeObject<CardsData>(_jsonData, settings);
             return;
         }
     }

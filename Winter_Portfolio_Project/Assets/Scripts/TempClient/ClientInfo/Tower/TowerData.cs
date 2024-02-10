@@ -8,7 +8,7 @@ namespace WPP.ClientInfo.Tower
 {
     public enum TowerType
     {
-        king_tower = 1,
+        king_tower,
         left_princess_tower,
         right_princess_tower,
     }

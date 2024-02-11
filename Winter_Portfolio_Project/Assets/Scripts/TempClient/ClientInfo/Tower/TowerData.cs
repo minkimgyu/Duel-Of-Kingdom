@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPP.AI.CAPTURE;
+using WPP.Units;
 
 namespace WPP.ClientInfo.Tower
 {
@@ -14,26 +15,18 @@ namespace WPP.ClientInfo.Tower
         right_princess_tower,
     }
 
-    public class TowerData
+    class TowerData
     {
-        public TowerType type;
-        public int level;
-        public float hitpoints;
-        public float damage;
-        public float hit_speed;
-        public float range;
+        public AttackBuildingData towerUnit;
 
-        public List<CaptureTag> target_tag;
-
-        public TowerData() { }
-        public TowerData(TowerType type, int level, float hitpoints, float damage, float hit_speed, float range)
+        public TowerData()
         {
-            this.type = type;
-            this.level = level;
-            this.hitpoints = hitpoints;
-            this.damage = damage;
-            this.hit_speed = hit_speed;
-            this.range = range;
+            towerUnit = null;
+        }
+
+        public TowerData(AttackBuildingData tower)
+        {
+            towerUnit = tower;
         }
     }
 }

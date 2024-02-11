@@ -14,11 +14,11 @@ namespace WPP.Units
             public int right;
         }
 
-        public OffsetRect fillOffset;
+        public OffsetRect fill_offset;
         public BuildingData(int id, string name, int level)
         : base(id, name, level)
         {
-            fillOffset = new OffsetRect();
+            fill_offset = new OffsetRect();
         }
     }
 }

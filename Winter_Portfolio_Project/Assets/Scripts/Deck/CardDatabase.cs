@@ -38,7 +38,7 @@ namespace WPP.DeckManagement
             JsonParser.Instance().LoadCardCollection();
             JsonParser.Instance().LoadCardInstances();
 
-            Load();
+            //Load();
 
             DeckManager.LoadPlayerDeck();
 

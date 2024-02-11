@@ -11,7 +11,7 @@ using WPP.AI.GRID;
 
 namespace WPP.ClientInfo
 {
-    public class ClientData
+    class ClientData
     {
         private static ClientData _instance;
         public AccountData account { get; set; }

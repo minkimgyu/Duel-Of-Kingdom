@@ -45,7 +45,7 @@ namespace WPP.Collection
 
         public CardData FindCard(int card_id)
         {
-            foreach(CardData card in cardCollection)
+            foreach (CardData card in cardCollection)
             {
                 if (card.id == card_id)
                     return card;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPP.AI.CAPTURE;
+using WPP.Units;
 
 namespace WPP.ClientInfo.Tower
 {
@@ -13,17 +15,18 @@ namespace WPP.ClientInfo.Tower
         right_princess_tower,
     }
 
-    public class TowerData
+    class TowerData
     {
-        public TowerType type { get; set; }
-        public int level { get; set; }
-        public int hp { get; set; }
+        public AttackBuildingData towerUnit;
 
-        public TowerData() {}
-        public TowerData(TowerType type, int level, int hp) {
-            this.type = type;
-            this.level = level;
-            this.hp = hp;
+        public TowerData()
+        {
+            towerUnit = null;
+        }
+
+        public TowerData(AttackBuildingData tower)
+        {
+            towerUnit = tower;
         }
     }
 }

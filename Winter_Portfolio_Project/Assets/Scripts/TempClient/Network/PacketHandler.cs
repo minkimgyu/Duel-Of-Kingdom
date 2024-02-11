@@ -103,7 +103,7 @@ namespace WPP.Network
                     _packetLength = 0;
                     ClientTCP.Instance().buffer.Dispose();
                     ClientTCP.Instance().buffer = null;
-                    Debug.Log("received all pakcts");
+                    Debug.Log("received all packets");
                 }
             }
             else

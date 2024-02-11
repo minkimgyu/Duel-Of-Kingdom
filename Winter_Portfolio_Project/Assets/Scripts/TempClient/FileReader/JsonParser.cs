@@ -63,21 +63,33 @@ namespace WPP.FileReader
         }
         public void LoadAccount()
         {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
             _jsonData = File.ReadAllText(_accountPath);
-            ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(_jsonData);
+            ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(_jsonData, settings);
             return;
         }
         public void LoadTowers()
         {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
             _jsonData = File.ReadAllText(_towersPath);
-            ClientData.Instance().towers = JsonConvert.DeserializeObject<TowersData>(_jsonData);
+            ClientData.Instance().towers = JsonConvert.DeserializeObject<TowersData>(_jsonData, settings);
             return;
         }
 
         public void LoadDecks()
         {
+            var settings = new JsonSerializerSettings
+            {
+                TypeNameHandling = TypeNameHandling.Auto
+            };
             _jsonData = File.ReadAllText(_decksPath);
-            ClientData.Instance().decks = JsonConvert.DeserializeObject<DecksData>(_jsonData);
+            ClientData.Instance().decks = JsonConvert.DeserializeObject<DecksData>(_jsonData, settings);
             return;
         }
 

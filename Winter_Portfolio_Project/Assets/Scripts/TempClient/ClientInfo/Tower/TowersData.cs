@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace WPP.ClientInfo.Tower
 {
     [Serializable]
-    public class TowersData
+    class TowersData
     {
         public TowerData kingTower;
         public TowerData leftPrincessTower;

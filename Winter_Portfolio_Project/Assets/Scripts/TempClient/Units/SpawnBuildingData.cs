@@ -5,10 +5,11 @@ using UnityEngine;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
+using WPP.AI.CAPTURE;
 
 namespace WPP.Units
 {
-    class SpawnBuildingData : UnitData
+    class SpawnBuildingData : BuildingData
     {
         public float hitpoints;
         public float life_time;

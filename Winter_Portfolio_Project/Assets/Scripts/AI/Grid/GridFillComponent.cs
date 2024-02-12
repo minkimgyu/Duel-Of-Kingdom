@@ -93,7 +93,7 @@ namespace WPP.AI.GRID
         Func<Grid[,]> OnReturnGridRequested;
         Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
 
-        [SerializeField] SpawnAreaDrawer _spawnImpossibleRect;
+        [SerializeField] AreaDrawer _spawnImpossibleRect;
         TowerCondition _storedTowerCondition;
         LandFormation _storedLandFormation;
 

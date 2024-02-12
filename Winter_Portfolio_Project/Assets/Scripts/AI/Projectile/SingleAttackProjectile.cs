@@ -10,7 +10,8 @@ namespace WPP.AI.PROJECTILE
     {
         protected override void DoDamageTask()
         {
-            ApplyDamage(_target.ReturnDamagable(), _damage);
+            if (_target == null) return;
+            _target.ReturnDamagable().GetDamage(_damage);
         }
     }
 }

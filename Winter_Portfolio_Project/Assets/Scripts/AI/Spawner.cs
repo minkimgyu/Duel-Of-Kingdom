@@ -7,6 +7,8 @@ using WPP.AI.UI;
 using WPP.AI.GRID;
 using WPP.ClientInfo;
 using WPP.DeckManagement;
+using WPP.Collection;
+using WPP.ClientInfo.Card;
 using System;
 
 namespace WPP.AI.SPAWNER
@@ -15,6 +17,9 @@ namespace WPP.AI.SPAWNER
     {
         [SerializeField] HpContainerUI _hpContainerUIPrefab;
         [SerializeField] ClockUI _clockUIPrefab;
+
+        [SerializeField] Transform _cMagicProjectileStartPoint;
+        [SerializeField] Transform _rMagicProjectileStartPoint;
 
         [SerializeField] List<Entity> _entityPrefabs;
         List<BaseStat> _stats;
@@ -37,22 +42,42 @@ namespace WPP.AI.SPAWNER
             else return Quaternion.Euler(new Vector3(0, 0, 0));
         }
 
+        Vector3 ReturnMagicProjectileStartPoint(int playerId)
+        {
+            // playerId가 0이면 C지형으로 지정
+            // 1이면 R지형으로 지정
+            // --> 이 둘을 바탕으로 rotation 변수를 지정해준다.
+
+            if (playerId == 0) return _cMagicProjectileStartPoint.position;
+            else return _rMagicProjectileStartPoint.position;
+        }
+
         // entityId 이거를 string로 해서 받기
-        Entity ReturnEntity(string name, int ownershipId, Vector2 pos)
+        Entity ReturnEntity(string name, int ownershipId, Vector3 pos)
         {
             Entity entity = _entityPrefabs.Find(x => x.Name == name);
             if (entity == null) return null;
 
-            Quaternion rotation = ReturnQuaternionUsingLandFormation(ownershipId);
+            // 나중에 여기 변경
+            Quaternion rotation = ReturnQuaternionUsingLandFormation(1);
             Entity spawnedEntity = Instantiate(entity, pos, rotation);
 
-            HpContainerUI hpContainer = Instantiate(_hpContainerUIPrefab);
 
             int clientId = ClientData.Instance().player_id_in_game; // 본인 클라이언트 아이디를 받아와서 넣어준다.
 
-            spawnedEntity.AttachHpBar(hpContainer);
-            spawnedEntity.ResetPlayerId(ownershipId, clientId);
+            // 체력바를 붙일 수 있는 경우에만 진행
+            if(spawnedEntity.CanAttachHpBar() == true)
+            {
+                HpContainerUI hpContainer = Instantiate(_hpContainerUIPrefab);
+                spawnedEntity.AttachHpBar(hpContainer);
+            }
+
+            spawnedEntity.ResetPlayerId(ownershipId, 1);
             // 여기에 대기 시간을 추가해준다.
+
+            Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(1);
+            spawnedEntity.ResetMagicStartPosition(magicStartPosition);
+            // 여기에 화살 마법 스폰 위치를 추가해준다.
 
             return spawnedEntity;
         }
@@ -89,7 +114,16 @@ namespace WPP.AI.SPAWNER
         //    return entity;
         //}
 
-        Entity Instantiate(string name, int level, int ownershipId, Vector2 pos)
+        Entity Instantiate(string name, BaseStat stat, int ownershipId, Vector3 pos)
+        {
+            Entity entity = ReturnEntity(name, ownershipId, pos);
+            if (entity == null) return null;
+
+            stat.ResetData(entity);
+            return entity;
+        }
+
+        Entity Instantiate(string name, int level, int ownershipId, Vector3 pos)
         {
             // name과 level이 같은 경우를 찾아서 스폰
             // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
@@ -99,11 +133,11 @@ namespace WPP.AI.SPAWNER
             Entity entity = ReturnEntity(name, ownershipId, pos);
             if (entity == null) return null;
 
-            stat.Initialize(entity);
+            stat.ResetData(entity);
             return entity;
         }
 
-        Entity Instantiate(string name, int level, float duration, int ownershipId, Vector2 pos)
+        Entity Instantiate(string name, int level, float duration, int ownershipId, Vector3 pos)
         {
             // name과 level이 같은 경우를 찾아서 스폰
             // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
@@ -114,23 +148,27 @@ namespace WPP.AI.SPAWNER
             if (entity == null) return null;
 
             entity.ResetDelayAfterSpawn(duration);
-            stat.Initialize(entity);
+            stat.ResetData(entity);
             return entity;
         }
 
-        Entity Instantiate(EntitySpawnData entitySpawnData, int level, float duration, int ownershipId, Vector2 pos)
+        Entity Instantiate(Card card, int level, float duration, int ownershipId, Vector3 pos)
         {
+            CardData cardData = CardCollection.Instance().FindCard(card.id, level);
 
-            // name과 level이 같은 경우를 찾아서 스폰
-            // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
-            BaseStat stat = _stats.Find(x => x._name == entitySpawnData.entityId && x._level == level);
-            if (stat == null) return null;
+            BaseStat convertedStat = cardData.unit.ReturnConvertedData();
+            string name = cardData.unit.name;
 
-            Entity entity = ReturnEntity(entitySpawnData.entityId, ownershipId, pos);
+            //// name과 level이 같은 경우를 찾아서 스폰
+            //// 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
+            //BaseStat stat = _stats.Find(x => x._name == entitySpawnData.entityId && x._level == level);
+            //if (stat == null) return null;
+
+            Entity entity = ReturnEntity(name, ownershipId, pos);
             if (entity == null) return null;
 
             entity.ResetDelayAfterSpawn(duration);
-            stat.Initialize(entity);
+            convertedStat.ResetData(entity);
             return entity;
         }
 
@@ -143,7 +181,7 @@ namespace WPP.AI.SPAWNER
 
             for (int i = 0; i < card.entities.Count; i++)
             {
-                spawnedEntities[i] = Instantiate(card.entities[i], level, card.duration, ownershipId, pos);
+                spawnedEntities[i] = Instantiate(card, level, card.duration, ownershipId, pos);
             }
 
             return spawnedEntities;
@@ -156,6 +194,7 @@ namespace WPP.AI.SPAWNER
         /// </summary>
         public Entity Spawn(string name, int level, float duration, int ownershipId, Vector3 pos)
         {
+            SpawnClockUI(pos, duration);
             return Instantiate(name, level, duration, ownershipId, pos);
         }
 
@@ -168,6 +207,11 @@ namespace WPP.AI.SPAWNER
             return Instantiate(name, level, ownershipId, pos);
         }
 
+
+        public Entity Spawn(string name, BaseStat stat, int ownershipId, Vector3 pos)
+        {
+            return Instantiate(name, stat, ownershipId, pos);
+        }
 
 
         //public Entity Spawn(int entityId, int ownershipId, Vector3 pos)

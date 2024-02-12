@@ -9,6 +9,7 @@ using WPP.AI.BTUtility;
 using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
+using WPP.POOL;
 using System;
 
 namespace WPP.AI.BUILDING
@@ -37,6 +38,12 @@ namespace WPP.AI.BUILDING
             base.InitializeComponent();
             if (IsMyEntity) ResetMatrial(blueFlag);
             else ResetMatrial(redFlag);
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            ObjectPooler.SpawnFromPool("TowerDestroyEffect", transform.position);
         }
     }
 
@@ -149,6 +156,12 @@ namespace WPP.AI.BUILDING
             _liveOutComponent = GetComponent<LiveOutComponent>();
             base.InitializeComponent();
         }
+
+        public override void Die()
+        {
+            base.Die();
+            ObjectPooler.SpawnFromPool("LiveOutBuildingDestroyEffect", transform.position);
+        }
     }
 
     abstract public class LiveOutSpawnBuilding : Building
@@ -220,6 +233,12 @@ namespace WPP.AI.BUILDING
 
             Node rootNode = new Selector(_childNodes);
             _bt.SetUp(rootNode);
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            ObjectPooler.SpawnFromPool("LiveOutBuildingDestroyEffect", transform.position);
         }
     }
 

@@ -18,5 +18,10 @@ namespace WPP.AI.GRID.STATE
         {
             _gridController.FSM.SetState(GridController.ControlState.Select, "SendRectOffset", offsetFromCenter);
         }
+
+        public override void OnSelectRequested(float radius)
+        {
+            _gridController.FSM.SetState(GridController.ControlState.Select, "SendRectOffset", radius);
+        }
     }
 }

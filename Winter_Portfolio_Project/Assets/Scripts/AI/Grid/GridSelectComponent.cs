@@ -46,7 +46,7 @@ namespace WPP.AI.GRID
 
     public class GridSelectComponent : MonoBehaviour
     {
-        [SerializeField] SpawnAreaDrawer _spawnRect;
+        [SerializeField] AreaDrawer _spawnRect;
         Func<Grid[,]> OnReturnGridRequested;
         Func<RectInt> OnReturnGridRectRequested;
         Func<Vector3, Vector2Int> OnConvertV3ToIndexRequested;
@@ -87,11 +87,25 @@ namespace WPP.AI.GRID
             _spawnRect.Draw();
         }
 
+        void DrawArea(float radius)
+        {
+            _spawnRect.Initialize(radius);
+            _spawnRect.Draw();
+        }
+
         public void ResetRect(OffsetRect offsetFromCenter)
         {
             _rectSize = offsetFromCenter;
             _centerOffset = offsetFromCenter.ReturnCenterOffset();
             DrawArea();
+        }
+
+        public void ResetRect(float radius)
+        {
+            OffsetRect offsetFromCenter = new OffsetRect(0, 0, 0, 0); // 기본 Rect로 지정
+            _rectSize = offsetFromCenter;
+            _centerOffset = offsetFromCenter.ReturnCenterOffset();
+            DrawArea(radius);
         }
 
         RectInt ReturnClampedRange()

@@ -34,12 +34,15 @@ namespace WPP.AI
 
         protected bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
         public void ResetPlayerId(int ownershipId, int clientId) { _ownershipId = ownershipId; _clientId = clientId; }
+        public virtual void ResetMagicStartPosition(Vector3 pos) { }
 
+        abstract public bool CanAttachHpBar();
         public virtual void AttachHpBar(HpContainerUI hpContainer) { }
         protected virtual void InitializeComponent() { }
         public virtual void ResetDelayAfterSpawn(float delayDuration) { }
         public virtual void IsLeft(bool isLeft) { }
 
+        public virtual void Initialize(int level, string name, float range, float durationBeforeDestroy, float damage, float speed) { }
         public virtual void Initialize(int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
         public virtual void Initialize(int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange) { }
         public virtual void Initialize(int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime) { }
@@ -47,11 +50,6 @@ namespace WPP.AI
 
         // 여기서 Initialize 함수를 virtual로 여러 개 만들어서 하위 클래스에서 이를 활용할 수 있게끔 제작하기
         // 객체를 스폰시킨 소유권자의 Id, 현재 클라이언트를 조작하는 플레이어의 Id
-    }
-
-    abstract public class Magic : Entity
-    { 
-
     }
 
     abstract public class Life : Entity, IDamagable, ITarget
@@ -66,6 +64,8 @@ namespace WPP.AI
         public Action<bool> OnVisibleChangeRequested;
         protected Action<bool> OnTxtVisibleRequested;
         Action OnHpDestroyRequested;
+
+        public override bool CanAttachHpBar() { return true; }
 
         public override void AttachHpBar(HpContainerUI hpContainer)
         {

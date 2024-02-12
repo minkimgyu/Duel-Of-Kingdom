@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using WPP.AI.TARGET;
+using WPP.POOL;
 using System;
 
 public class Projectile : MonoBehaviour
@@ -25,7 +26,7 @@ public class Projectile : MonoBehaviour
         if (target == null || _target != target) return;
 
         ApplyDamage(_target.ReturnDamagable(), _damage);
-        Destroy(gameObject);
+        DestorySelf();
     }
 
     void Move(Vector3 targetPos)
@@ -33,8 +34,14 @@ public class Projectile : MonoBehaviour
         transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * _speed);
         if(_target.Equals(null) == true && Vector3.Distance(transform.position, _storedPosition) < 0.1f)
         {
-            Destroy(gameObject);
+            DestorySelf();
         }
+    }
+
+    void DestorySelf()
+    {
+        ObjectPooler.SpawnFromPool("ProjectileHitEffect", transform.position);
+        Destroy(gameObject);
     }
 
     // Update is called once per frame

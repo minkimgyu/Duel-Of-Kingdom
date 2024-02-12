@@ -10,6 +10,7 @@ using WPP.AI.CAPTURE;
 using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
+using WPP.POOL;
 
 namespace WPP.AI.UNIT
 {
@@ -75,6 +76,12 @@ namespace WPP.AI.UNIT
         public override float ReturnColliderSize()
         {
             return _capsuleCollider.radius * (transform.localScale.x + transform.localScale.z) / 2; // 이거는 캡슐콜라이더를 사용함 + scale의 평균 값만 적용시켜야함
+        }
+
+        public override void Die()
+        {
+            base.Die();
+            ObjectPooler.SpawnFromPool("DieEffect", transform.position);
         }
     }
 

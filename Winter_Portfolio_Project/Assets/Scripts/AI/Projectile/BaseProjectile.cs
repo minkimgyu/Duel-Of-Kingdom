@@ -12,13 +12,11 @@ namespace WPP.AI.PROJECTILE
         protected ITarget _target;
         Vector3 _storedPosition;
         protected float _damage;
-        protected Action<IDamagable, float> ApplyDamage;
 
-        public void Initialize(ITarget target, float damage, Action<IDamagable, float> applyDamage)
+        public virtual void Initialize(ITarget target, float damage)
         {
             _target = target;
             _damage = damage;
-            ApplyDamage = applyDamage;
         }
 
         private void OnTriggerEnter(Collider other)

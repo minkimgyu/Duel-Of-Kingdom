@@ -13,6 +13,7 @@ namespace WPP.AI.FSM
         public override void OnPlantRequested(Card card, int level) { }
         public override void OnCancelSelectRequested() { }
         public override void OnSelectRequested(OffsetRect offsetFromCenter) { }
+        public override void OnSelectRequested(float radius) { }
 
 
         public override void OnActiveRequested() { }
@@ -22,6 +23,7 @@ namespace WPP.AI.FSM
 
 
         public override void OnMessageRequested(string info) { }
+        public override void OnMessageRequested(string info, float radius) { }
         public override void OnMessageRequested(string info, OffsetRect offsetFromCenter) { }
         public override void OnMessageRequested(string info, Card card, int level, Vector3 pos) { }
 
@@ -37,6 +39,7 @@ namespace WPP.AI.FSM
         public abstract void OnPlantRequested(Card card, int level);
         public abstract void OnCancelSelectRequested();
         public abstract void OnSelectRequested(OffsetRect offsetFromCenter);
+        public abstract void OnSelectRequested(float radius);
 
         public abstract void OnActiveRequested();
         public abstract void OnAttackRequested();
@@ -45,6 +48,7 @@ namespace WPP.AI.FSM
 
 
         public abstract void OnMessageRequested(string info);
+        public abstract void OnMessageRequested(string info, float radius);
         public abstract void OnMessageRequested(string info, OffsetRect offsetFromCenter);
         public abstract void OnMessageRequested(string info, Card card, int level, Vector3 pos);
 
@@ -107,6 +111,12 @@ namespace WPP.AI.FSM
             _currentState.OnSelectRequested(offsetFromCenter);
         }
 
+        public void OnSelect(float radius)
+        {
+            if (_currentState == null) return;
+            _currentState.OnSelectRequested(radius);
+        }
+
         public void OnCancelSelect()
         {
             if (_currentState == null) return;
@@ -139,6 +149,11 @@ namespace WPP.AI.FSM
         public bool SetState(T stateName, string info, OffsetRect offsetFromCenter)
         {
             return ChangeState(_stateDictionary[stateName], info, offsetFromCenter);
+        }
+
+        public bool SetState(T stateName, string info, float radius)
+        {
+            return ChangeState(_stateDictionary[stateName], info, radius);
         }
 
         public bool SetState(T stateName, string info, Card card, int level, Vector3 pos)
@@ -191,6 +206,31 @@ namespace WPP.AI.FSM
 
             _currentState = state;
             _currentState.OnMessageRequested(info);
+
+            if (_currentState != null) //새 상태의 Enter를 호출한다.
+            {
+                _currentState.OnStateEnter();
+            }
+
+            return true;
+        }
+
+        bool ChangeState(BaseState state, string info, float radius)
+        {
+            if (_stateDictionary.ContainsValue(state) == false) return false;
+
+            if (_currentState == state) // 같은 State로 전환하지 못하게 막기
+            {
+                return false;
+            }
+
+            if (_currentState != null) //상태가 바뀌기 전에, 이전 상태의 Exit를 호출
+                _currentState.OnStateExit();
+
+            _previousState = _currentState;
+
+            _currentState = state;
+            _currentState.OnMessageRequested(info, radius);
 
             if (_currentState != null) //새 상태의 Enter를 호출한다.
             {

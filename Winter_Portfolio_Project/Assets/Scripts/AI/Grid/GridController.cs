@@ -61,10 +61,11 @@ namespace WPP.AI.GRID
         }
 
         public void OnSelect(OffsetRect offsetFromCenter) => _fsm.OnSelect(offsetFromCenter);
+        public void OnSelect(float radius) => _fsm.OnSelect(radius);
 
         public void OnCancelSelect() => _fsm.OnCancelSelect();
 
-        public void OnPlant(Card card, int level) => _fsm.OnPlant(card, level);
+        public void OnPlant(Card card, int level) => _fsm.OnPlant(card, 5);
 
         public void OnTowerConditionChange(TowerCondition towerCondition)
         {

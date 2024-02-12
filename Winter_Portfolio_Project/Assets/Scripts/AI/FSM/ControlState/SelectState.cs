@@ -36,6 +36,13 @@ namespace WPP.AI.GRID.STATE
             _gridController.FillComponent.DrawSpawnImpossibleRect();
         }
 
+        public override void OnMessageRequested(string info, float radius)
+        {
+            Debug.Log(info);
+            _gridController.SelectComponent.ResetRect(radius); // 여기서 그려줌
+            _gridController.FillComponent.DrawSpawnImpossibleRect();
+        }
+
         public override void OnStateExit()
         {
             _gridController.SelectComponent.EraseArea();

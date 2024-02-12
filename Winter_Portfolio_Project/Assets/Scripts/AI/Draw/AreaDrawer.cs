@@ -19,7 +19,7 @@ namespace WPP.DRAWING
         }
     }
 
-    public class SpawnAreaDrawer : MonoBehaviour
+    public class AreaDrawer : MonoBehaviour
     {
         LineRenderer _lineRenderer;
         MeshFilter _meshFilter;
@@ -42,15 +42,42 @@ namespace WPP.DRAWING
             _orders = drawingData.Orders;
         }
 
-        void ResetVertices()
+        public void Initialize(float radius, int steps = 50)
         {
-            int _steps = 50;
-            float radius = 1;
+            _vertices = ReturnCircleVertices(radius, steps);
+            _orders = ReturnCircleOrders(_vertices);
+        }
+
+        public void Initialize(float radius, float destroyAfterDelay, int steps = 50)
+        {
+            _vertices = ReturnCircleVertices(radius, steps);
+            _orders = ReturnCircleOrders(_vertices);
+            Invoke("DestroyAfterSeconds", destroyAfterDelay);
+        }
+
+        void DestroyAfterSeconds() => Destroy(gameObject);
+
+        int[] ReturnCircleOrders(Vector3[] points)
+        {
+            int triangleAmount = points.Length - 2;
+            List<int> newTriangles = new List<int>();
+            for (int i = 0; i < triangleAmount; i++)
+            {
+                newTriangles.Add(0);
+                newTriangles.Add(i + 2);
+                newTriangles.Add(i + 1);
+            }
+
+            return newTriangles.ToArray();
+        }
+
+        Vector3[] ReturnCircleVertices(float radius, int step)
+        {
             List<Vector3> vertices = new List<Vector3>();
 
-            for (int currentStep = 0; currentStep <= _steps; currentStep++)
+            for (int currentStep = 0; currentStep <= step; currentStep++)
             {
-                float circumferenceProgress = (float)currentStep / _steps;
+                float circumferenceProgress = (float)currentStep / step;
                 float currentRadian = circumferenceProgress * 2 * Mathf.PI;
 
                 float xScaled = Mathf.Cos(currentRadian);
@@ -62,41 +89,23 @@ namespace WPP.DRAWING
                 vertices.Add(new Vector3(x, 0, y));
             }
 
-
+            return vertices.ToArray();
         }
-
-        void DrawPoint()
-        {
-
-        }
-
-        public void Initialize()
-        {
-            //_vertices = drawingData.Vertices;
-            //_orders = drawingData.Orders;
-        }
-
+       
         public void Draw()
         {
             Mesh mesh = new Mesh();
 
-            Vector3[] verticesToArr = _vertices;
-
-            mesh.vertices = verticesToArr;
+            mesh.vertices = _vertices;
             mesh.triangles = _orders;
             _meshFilter.mesh = mesh;
 
-            DrawLine(verticesToArr);
+            DrawLine(_vertices);
         }
 
         public void Move(Vector3 pos)
         {
             transform.position = pos;
-        }
-
-        public void Move(Vector3 pos, Vector3 offset)
-        {
-            transform.position = pos + offset;
         }
 
         // 모든 점, 선을 지워주기

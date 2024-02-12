@@ -139,9 +139,11 @@ namespace WPP.Battle.UI
                 Card card = _deckSystem.Hand[_selectedCardIndex];
                 int level = _deckSystem.GetCardLevel(_selectedCardIndex);
                 Debug.Log("Placing Card name : " + name + ", lv : " + level);
-                //_selectedCardData = CardCollection.Instance().FindCard(card.id, level);
-                
-                OffsetRect offsetRect = card.gridSize;
+                CardData selectedCardData = CardCollection.Instance().FindCard(card.id, level);
+
+                OffsetRect offsetRect 
+                    = new OffsetRect(selectedCardData.gridSize.top, selectedCardData.gridSize.down, 
+                    selectedCardData.gridSize.left, selectedCardData.gridSize.right);
                 _gridController.FSM.OnSelect(offsetRect);
 
                 _placedCard = false;

@@ -9,6 +9,7 @@ using WPP.ClientInfo;
 using WPP.DeckManagement;
 using WPP.Collection;
 using WPP.ClientInfo.Card;
+using WPP.ClientInfo.Tower;
 using System;
 
 namespace WPP.AI.SPAWNER
@@ -22,14 +23,14 @@ namespace WPP.AI.SPAWNER
         [SerializeField] Transform _rMagicProjectileStartPoint;
 
         [SerializeField] List<Entity> _entityPrefabs;
-        List<BaseStat> _stats;
+        //List<BaseStat> _stats;
 
         JsonParser _jsonParser;
 
         void Awake()
         {
             _jsonParser = GetComponent<JsonParser>();
-            _stats = _jsonParser.Load();
+            //_stats = _jsonParser.Load();
         }
 
         Quaternion ReturnQuaternionUsingLandFormation(int playerId)
@@ -125,31 +126,43 @@ namespace WPP.AI.SPAWNER
 
         Entity Instantiate(string name, int level, int ownershipId, Vector3 pos)
         {
-            // name과 level이 같은 경우를 찾아서 스폰
-            // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
-            BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
-            if (stat == null) return null;
+            //// name과 level이 같은 경우를 찾아서 스폰
+            //// 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
+            //BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
+            //if (stat == null) return null;
 
-            Entity entity = ReturnEntity(name, ownershipId, pos);
-            if (entity == null) return null;
+            //Entity entity = ReturnEntity(name, ownershipId, pos);
+            //if (entity == null) return null;
 
-            stat.ResetData(entity);
-            return entity;
+            //stat.ResetData(entity);
+            //return entity;
+
+            return null;
         }
 
-        Entity Instantiate(string name, int level, float duration, int ownershipId, Vector3 pos)
+        void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
             // name과 level이 같은 경우를 찾아서 스폰
             // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
-            BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
-            if (stat == null) return null;
+            //BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
+            //if (stat == null) return null;
 
-            Entity entity = ReturnEntity(name, ownershipId, pos);
-            if (entity == null) return null;
+            //entity.ResetDelayAfterSpawn(duration);
+            //stat.ResetData(entity);
+            //return entity;
+            TowersData towersData = ClientData.Instance().towers;
 
-            entity.ResetDelayAfterSpawn(duration);
-            stat.ResetData(entity);
-            return entity;
+            Entity kingTower = ReturnEntity("king_tower", ownershipId, kingTowerPos);
+            if (kingTower == null) return;
+            towersData.kingTower.towerUnit.ResetData(kingTower);
+
+            Entity leftPrincessTower = ReturnEntity("princess_tower", ownershipId, leftPrincessTowerPos);
+            if (leftPrincessTower == null) return;
+            towersData.leftPrincessTower.towerUnit.ResetData(leftPrincessTower);
+
+            Entity rightPrincessTower = ReturnEntity("princess_tower", ownershipId, rightPrincessTowerPos);
+            if (rightPrincessTower == null) return;
+            towersData.rightPrincessTower.towerUnit.ResetData(rightPrincessTower);
         }
 
         Entity Instantiate(CardData cardData, float duration, int ownershipId, Vector3 pos)
@@ -192,20 +205,20 @@ namespace WPP.AI.SPAWNER
         /// 카드로 스폰시키지 않는 경우 ex) 타워
         /// duration이 있는 경우 ex) 바바리안 오두막
         /// </summary>
-        public Entity Spawn(string name, int level, float duration, int ownershipId, Vector3 pos)
-        {
-            SpawnClockUI(pos, duration);
-            return Instantiate(name, level, duration, ownershipId, pos);
-        }
+        //public Entity Spawn(string name, int level, float duration, int ownershipId, Vector3 pos)
+        //{
+        //    SpawnClockUI(pos, duration);
+        //    return Instantiate(name, level, duration, ownershipId, pos);
+        //}
 
         /// <summary>
         /// 카드로 스폰시키지 않는 경우 ex) 타워
         /// duration이 없는 경우 ex) 킹, 프린세스 타워
         /// </summary>
-        public Entity Spawn(string name, int level, int ownershipId, Vector3 pos)
-        {
-            return Instantiate(name, level, ownershipId, pos);
-        }
+        //public Entity Spawn(string name, int level, int ownershipId, Vector3 pos)
+        //{
+        //    return Instantiate(name, level, ownershipId, pos);
+        //}
 
 
         public Entity Spawn(string name, BaseStat stat, int ownershipId, Vector3 pos)
@@ -213,6 +226,10 @@ namespace WPP.AI.SPAWNER
             return Instantiate(name, stat, ownershipId, pos);
         }
 
+        public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
+        {
+            Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+        }
 
         //public Entity Spawn(int entityId, int ownershipId, Vector3 pos)
         //{

@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WPP.AI.CAPTURE;
-using WPP.Units;
+using WPP.AI.STAT;
 
 namespace WPP.ClientInfo.Tower
 {
     class TowerData
     {
-        public AttackBuildingData towerUnit;
+        public AttackBuildingStat towerUnit;
 
         public TowerData()
         {
             towerUnit = null;
         }
 
-        public TowerData(AttackBuildingData tower)
+        public TowerData(AttackBuildingStat tower)
         {
             towerUnit = tower;
         }

@@ -33,7 +33,7 @@ namespace WPP.DeckManagement
                     else
                     {
                         card = CardDatabase.GetCard(cardData);
-                        level = cardData.unit.level;
+                        level = cardData.unit._level;
                     }
 
                     newDeck.SetCard(i, card);

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using WPP.Collection;
 using WPP.FileReader;
-using WPP.Units;
+using WPP.AI.STAT;
 
 namespace WPP.ClientInfo.Card
 {
@@ -21,7 +21,7 @@ namespace WPP.ClientInfo.Card
         public int id;
         public int unitID;
 
-        public UnitData unit;
+        public LifeStat unit;
 
         public CardType type;
 
@@ -31,18 +31,5 @@ namespace WPP.ClientInfo.Card
 
         public GridSize gridSize;
         public SpawnData spawnData { get; set; }
-
-        public CardData() { }
-        public CardData(int id, CardType type, CardRarity rarity, int needElixir, GridSize gridSize, SpawnData spawnData)
-        {
-            this.id = id;
-            unit = CardCollection.Instance().FindCard(id).unit;
-            unit.id = unitID;
-            this.type = type;
-            this.rarity = rarity;
-            this.needElixir = needElixir;
-            this.gridSize = gridSize;
-            this.spawnData = spawnData;
-        }
     }
 }

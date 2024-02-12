@@ -50,20 +50,20 @@ namespace WPP.DeckManagement
         {
             foreach (var cardData in CardCollection.Instance().cardCollection)
             {
-                if(_cards.ContainsKey(cardData.unit.name))
+                if(_cards.ContainsKey(cardData.unit._name))
                 {
-                    _cardDatas.Add(new(_cards[cardData.unit.name], cardData.unit.level), cardData);
+                    _cardDatas.Add(new(_cards[cardData.unit._name], cardData.unit._level), cardData);
                     continue;
                 }
 
                 var card = new Card();
                 
-                card.id = cardData.unit.name;
+                card.id = cardData.unit._name;
                 card.cost = cardData.needElixir;
                 card.gridSize = new(cardData.gridSize.top, cardData.gridSize.down, cardData.gridSize.left, cardData.gridSize.right);
 
-                _cards.Add(cardData.unit.name, card);
-                _cardDatas.Add(new(card, cardData.unit.level), cardData);
+                _cards.Add(cardData.unit._name, card);
+                _cardDatas.Add(new(card, cardData.unit._level), cardData);
             }
         }
 
@@ -79,7 +79,7 @@ namespace WPP.DeckManagement
 
         public static Card GetCard (CardData cardData)
         {
-            return _cards[cardData.unit.name];
+            return _cards[cardData.unit._name];
         }
     }
 }

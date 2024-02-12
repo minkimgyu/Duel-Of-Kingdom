@@ -32,7 +32,7 @@ namespace WPP.ClientInfo.Card
         {
             foreach (CardData card in cards)
             {
-                if (card.unit.name == name && card.unit.level == level)
+                if (card.unit._name == name && card.unit._level == level)
                     return card;
             }
             return null;

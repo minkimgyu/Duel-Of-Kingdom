@@ -57,7 +57,7 @@ namespace WPP.Collection
         {
             foreach (CardData card in cardCollection)
             {
-                if (card.unit.name == name && card.unit.level == level)
+                if (card.unit._name == name && card.unit._level == level)
                     return card;
             }
             return null;

@@ -157,7 +157,7 @@ namespace WPP.AI.SPAWNER
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
 
             //BaseStat convertedStat = cardData.unit.ReturnConvertedData();
-            string name = cardData.unit.name;
+            string name = cardData.unit._name;
 
             //// name과 level이 같은 경우를 찾아서 스폰
             //// 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기

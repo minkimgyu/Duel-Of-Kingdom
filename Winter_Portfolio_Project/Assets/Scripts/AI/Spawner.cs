@@ -156,7 +156,7 @@ namespace WPP.AI.SPAWNER
         {
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
 
-            BaseStat convertedStat = cardData.unit.ReturnConvertedData();
+            //BaseStat convertedStat = cardData.unit.ReturnConvertedData();
             string name = cardData.unit.name;
 
             //// name과 level이 같은 경우를 찾아서 스폰
@@ -168,7 +168,7 @@ namespace WPP.AI.SPAWNER
             if (entity == null) return null;
 
             entity.ResetDelayAfterSpawn(duration);
-            convertedStat.ResetData(entity);
+            //convertedStat.ResetData(entity);
             return entity;
         }
 

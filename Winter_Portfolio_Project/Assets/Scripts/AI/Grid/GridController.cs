@@ -65,7 +65,7 @@ namespace WPP.AI.GRID
 
         public void OnCancelSelect() => _fsm.OnCancelSelect();
 
-        public void OnPlant(Card card, int level) => _fsm.OnPlant(card, 5);
+        public void OnPlant(Card card, int level) => _fsm.OnPlant(card, level);
 
         public void OnTowerConditionChange(TowerCondition towerCondition)
         {

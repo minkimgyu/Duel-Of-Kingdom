@@ -152,23 +152,15 @@ namespace WPP.AI.SPAWNER
             return entity;
         }
 
-        Entity Instantiate(Card card, int level, float duration, int ownershipId, Vector3 pos)
+        Entity Instantiate(CardData cardData, float duration, int ownershipId, Vector3 pos)
         {
-            CardData cardData = CardCollection.Instance().FindCard(card.id, level);
-
-            //BaseStat convertedStat = cardData.unit.ReturnConvertedData();
-            string name = cardData.unit._name;
-
-            //// name과 level이 같은 경우를 찾아서 스폰
-            //// 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
-            //BaseStat stat = _stats.Find(x => x._name == entitySpawnData.entityId && x._level == level);
-            //if (stat == null) return null;
-
-            Entity entity = ReturnEntity(name, ownershipId, pos);
+            Entity entity = ReturnEntity(cardData.unit._name, ownershipId, pos);
             if (entity == null) return null;
 
+            if (cardData.unit == null) return null;
+            cardData.unit.ResetData(entity);
+
             entity.ResetDelayAfterSpawn(duration);
-            //convertedStat.ResetData(entity);
             return entity;
         }
 
@@ -177,12 +169,20 @@ namespace WPP.AI.SPAWNER
         /// </summary>
         public Entity[] Spawn(Card card, int level, int ownershipId, Vector3 pos)
         {
-            Entity[] spawnedEntities = new Entity[card.entities.Count];
+            CardData cardData = CardCollection.Instance().FindCard(card.id, level);
+            float duration = cardData.duration;
 
-            for (int i = 0; i < card.entities.Count; i++)
+            int unitCount = cardData.spawnData.spawnUnitCount;
+            Vector2[] offset = cardData.spawnData.spawnOffset;
+
+            Entity[] spawnedEntities = new Entity[unitCount];
+
+            for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Instantiate(card, level, card.duration, ownershipId, pos);
+                spawnedEntities[i] = Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
             }
+
+            SpawnClockUI(pos, duration);
 
             return spawnedEntities;
         }

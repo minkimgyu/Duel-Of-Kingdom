@@ -6,6 +6,7 @@ using WPP.DRAWING;
 using WPP.AI.SPAWNER;
 using WPP.CAMERA;
 using WPP.AI.STAT;
+using WPP.ClientInfo;
 
 namespace WPP.AI
 {
@@ -61,6 +62,9 @@ namespace WPP.AI
         {
             // 스폰은 position 이용해서 하고 이걸 기반으로 그리드를 찾는 방식을 적용해보자
             // 그리드는 position을 반올림해서 찾자
+
+            //ClientData.Instance().towers
+
             //Entity cRightTower = _spawner.Spawn(10, _player1Id, _clientId, new Vector3(10, 1, 6), LandFormation.C);
             //cRightTower.IsLeft(false);
 
@@ -83,27 +87,27 @@ namespace WPP.AI
             //_gridSelecter를 이용해서 여기서 Update 돌려서 범위 구해주기
             // 그 위치에 Entity 스폰 적용해보기
 
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                OffsetRect offsetRect1 = new OffsetRect(0, 0, 0, 0);
-                //OffsetRect offsetRect2 = new OffsetRect(1, 1, 1, 1);
+            //if (Input.GetKeyDown(KeyCode.A))
+            //{
+            //    OffsetRect offsetRect1 = new OffsetRect(0, 0, 0, 0);
+            //    //OffsetRect offsetRect2 = new OffsetRect(1, 1, 1, 1);
 
-                //_gridController.OnSelect(offsetRect1);
-                _gridController.OnSelect(offsetRect1);
-            }
-            else if(Input.GetKeyDown(KeyCode.S))
-            {
-                float radius = 3f;
-                _gridController.OnSelect(radius);
-            }
-            else if (Input.GetKeyDown(KeyCode.D))
-            {
-                _gridController.OnCancelSelect();
-            }
-            else if (Input.GetKeyDown(KeyCode.F))
-            {
-                _spawner.Spawn("arrow", new ProjectileMagicStat(-1, -1, "arrow", 3, 3f, 300, 25f), 1, _arrowEndPosition.position);
-            }
+            //    //_gridController.OnSelect(offsetRect1);
+            //    _gridController.OnSelect(offsetRect1);
+            //}
+            //else if(Input.GetKeyDown(KeyCode.S))
+            //{
+            //    float radius = 3f;
+            //    _gridController.OnSelect(radius);
+            //}
+            //else if (Input.GetKeyDown(KeyCode.D))
+            //{
+            //    _gridController.OnCancelSelect();
+            //}
+            //else if (Input.GetKeyDown(KeyCode.F))
+            //{
+            //    _spawner.Spawn("arrow", new ProjectileMagicStat(-1, -1, "arrow", 3, 3f, 300, 25f), 1, _arrowEndPosition.position);
+            //}
             //else if(Input.GetKeyDown(KeyCode.D))
             //{
             //    int[] ids = new int[3] { 0, 1, 2 };

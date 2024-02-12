@@ -21,13 +21,15 @@ namespace WPP.ClientInfo.Card
         public int id;
         public int unitID;
 
-        public LifeStat unit;
+        public BaseStat unit;
 
         public CardType type;
 
         public CardRarity rarity;
 
         public int needElixir;
+
+        public float duration = 1.5f;
 
         public GridSize gridSize;
         public SpawnData spawnData { get; set; }

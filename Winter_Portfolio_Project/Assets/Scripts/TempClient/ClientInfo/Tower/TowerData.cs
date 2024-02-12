@@ -8,13 +8,6 @@ using WPP.Units;
 
 namespace WPP.ClientInfo.Tower
 {
-    public enum TowerType
-    {
-        king_tower,
-        left_princess_tower,
-        right_princess_tower,
-    }
-
     class TowerData
     {
         public AttackBuildingData towerUnit;

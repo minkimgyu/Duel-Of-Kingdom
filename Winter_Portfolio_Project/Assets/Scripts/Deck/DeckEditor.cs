@@ -55,7 +55,7 @@ namespace WPP.DeckManagement
             {
                 if (_deck[currentDeck].IsEmpty(i))
                 {
-                    _deck[currentDeck].SetCardLevel(i, 0);
+                    _deck[currentDeck].SetCardLevel(i, 1);
                     _deck[currentDeck].SetCard(i, card);
                     OnDeckChanged?.Invoke(SelectedDeck);
                     return;
@@ -92,7 +92,7 @@ namespace WPP.DeckManagement
         public void DecreaseCardLevel(int cardIndex)
         {
             int level = _deck[currentDeck].GetCardLevel(cardIndex);
-            if (level <= 0)
+            if (level <= 1)
             {
                 Debug.Log("Card is already min level");
                 return;

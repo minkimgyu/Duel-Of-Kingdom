@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -8,13 +11,14 @@ using WPP.AI.SPAWNER;
 using WPP.Battle.Fsm;
 using WPP.Collection;
 using WPP.ClientInfo.Card;
-using System;
 
 namespace WPP.Battle.UI
 {
     public class BattleDeckUIController : MonoBehaviour
     {
-        [SerializeField] private BattleManager _battleManager;
+        [Header("DeckSystem")]
+        [SerializeField] private DeckSystem _deckSystem;
+        [SerializeField] private ElixirSystem _elixirSystem;
         [Header("SpawnSystem")]
         [SerializeField] private GridController _gridController;
         [SerializeField] private Spawner _spawner;
@@ -34,7 +38,6 @@ namespace WPP.Battle.UI
         [SerializeField] private Slider _elixirSlider;
         [SerializeField] private TextMeshProUGUI _elixirText;
 
-        private BattlePlayer _player;
         private enum State
         {
             Idle,
@@ -53,40 +56,21 @@ namespace WPP.Battle.UI
             _fsm.SetInitialState(State.Idle);
         }
 
-        private void OnEnable() {
-            _player = _battleManager.Player;
-
-            _battleManager.OnStatusChange += OnStatusChange;
-
-            _player.Deck.OnHandChange += OnCardDrawn;
-            _player.Elixir.OnElixirCountChange += SetElixirBar;
-        }
-
-        private void OnDisable()
+        private void Start()
         {
-            _battleManager.OnStatusChange -= OnStatusChange;
-        }
+            Deck deck = DeckManager.CurrentDeck;
 
-        private void OnStatusChange(BattleManager.Status status)
-        {
-            Debug.Log("BattleDeckUIController OnStatusChange : " + status);
-            if(status == BattleManager.Status.Loading)
-            {
-                Init();
-            }
-        }
+            _deckSystem.Init(deck);
+            _elixirSystem.StartRegen();
 
-        public void Init()
-        {
             _fsm.OnFsmStep(FsmStep.Enter);
-            Debug.Log("BattleDeckUIController Init");
         }
         private void Update()
         {
             _fsm.OnFsmStep(FsmStep.Update);
 
-            if (_player.Deck.LeftCooldown > 0f)
-                _cooldown.text = _player.Deck.LeftCooldown.ToString("F1");
+            if (_deckSystem.LeftCooldown > 0f)
+                _cooldown.text = _deckSystem.LeftCooldown.ToString("F1");
             else _cooldown.text = "";
         }
 
@@ -150,10 +134,10 @@ namespace WPP.Battle.UI
             if (step == FsmStep.Enter)
             {
                 _cards[_selectedCardIndex].gameObject.SetActive(false);
-                _player.Deck.OnCardUsed += OnCardUsed;
+                _deckSystem.OnCardUsed += OnCardUsed;
 
-                Card card = _player.Deck.Hand[_selectedCardIndex];
-                int level = _player.Deck.GetCardLevel(_selectedCardIndex);
+                Card card = _deckSystem.Hand[_selectedCardIndex];
+                int level = _deckSystem.GetCardLevel(_selectedCardIndex);
                 Debug.Log("Placing Card name : " + name + ", lv : " + level);
                 CardData selectedCardData = CardCollection.Instance().FindCard(card.id, level);
 
@@ -180,7 +164,7 @@ namespace WPP.Battle.UI
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_player.Deck.UseCard(_selectedCardIndex))
+                    if (_deckSystem.UseCard(_selectedCardIndex))
                     {
                         return;
                     }
@@ -197,7 +181,7 @@ namespace WPP.Battle.UI
                     _cards[_selectedCardIndex].gameObject.SetActive(true);
                 }
 
-                _player.Deck.OnCardUsed -= OnCardUsed;
+                _deckSystem.OnCardUsed -= OnCardUsed;
 
                 _gridController.FSM.OnCancelSelect();
             }
@@ -216,9 +200,15 @@ namespace WPP.Battle.UI
             _fsm.TransitionTo(State.Idle);
         }
 
+        private void OnEnable()
+        {
+            _deckSystem.OnHandChange += OnCardDrawn;
+            _elixirSystem.OnElixirCountChange += SetElixirBar;
+        }
+
         private void OnCardDrawn()
         {
-            var hand = _player.Deck.Hand;
+            var hand = _deckSystem.Hand;
 
             for (int i = 0; i < _cards.Length; i++)
             {
@@ -238,8 +228,8 @@ namespace WPP.Battle.UI
                 }
             }
 
-            _next.text = _player.Deck.Next.id;
-            _nextElixir.text = _player.Deck.Next.cost.ToString();
+            _next.text = _deckSystem.Next.id;
+            _nextElixir.text = _deckSystem.Next.cost.ToString();
         }
 
         private void UpdateCardTransform()

@@ -124,9 +124,9 @@ namespace WPP.Battle
                 _cameraController.Rotate(landFormation);
 
                 // R
-                _spawner.SpawnTower(1, new Vector3(4.51f, 1, -17.49f), new Vector3(-1, 1, -14), new Vector3(10, 1, -14));
+                //_spawner.SpawnTower(1, new Vector3(4.51f, 1, -17.49f), new Vector3(-1, 1, -14), new Vector3(10, 1, -14));
                 // C
-                _spawner.SpawnTower(0, new Vector3(4.51f, 1, 9.51f), new Vector3(-1, 1, 6), new Vector3(10, 1, 6));
+                //_spawner.SpawnTower(0, new Vector3(4.51f, 1, 9.51f), new Vector3(-1, 1, 6), new Vector3(10, 1, 6));
 
                 _fsm.TransitionTo(Status.PreBattle);
             }

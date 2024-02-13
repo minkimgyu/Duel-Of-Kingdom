@@ -16,10 +16,6 @@ namespace WPP.Battle
         [SerializeField] GridController _gridController;
         [SerializeField] CameraController _cameraController;
 
-        [SerializeField] int _player1Id = 0;
-        [SerializeField] int _player2Id = 1;
-        [SerializeField] int _clientId = 1;
-
         [Header("Battle Timer")]
         [SerializeField] private BattleTimer _battleTimer;
         [SerializeField] private float _battleLength = 3f;
@@ -36,7 +32,6 @@ namespace WPP.Battle
 
         public enum Status
         {
-            Loading,
             PreBattle,
             Battle,
             Overtime,
@@ -68,13 +63,12 @@ namespace WPP.Battle
             _fsm = new Fsm<Status>();
             _fsm.OnStateTransition += (status) => { OnStatusChange?.Invoke(status); };
 
-            _fsm.Add(Status.Loading, Loading);
             _fsm.Add(Status.PreBattle, PreBattle);
             _fsm.Add(Status.Battle, Battle);
             _fsm.Add(Status.Overtime, Overtime);
             _fsm.Add(Status.Tiebreaker, Tiebreaker);
             _fsm.Add(Status.PostBattle, PostBattle);
-            _fsm.SetInitialState(Status.Loading);
+            _fsm.SetInitialState(Status.PreBattle);
         }
 
         // TODO : use this
@@ -110,11 +104,13 @@ namespace WPP.Battle
             _fsm.TransitionTo(Status.Tiebreaker);
         }
 
-        private void Loading(Fsm<Status> fsm, FsmStep step)
+        private void PreBattle(Fsm<Status> fsm, FsmStep step)
         {
-            if (step == FsmStep.Enter)
+            if(step == FsmStep.Enter)
             {
-                OnStatusChange?.Invoke(Status.Loading);
+                // Ready to Battle
+
+                OnStatusChange?.Invoke(fsm.CurrentState);
                 _player.Init();
 
                 LandFormation landFormation = ClientData.Instance().LandFormation;
@@ -122,21 +118,6 @@ namespace WPP.Battle
                 Debug.Log("LandFormation : " + landFormation);
                 _gridController.Initialize(landFormation);
                 _cameraController.Rotate(landFormation);
-
-                // R
-                //_spawner.SpawnTower(1, new Vector3(4.51f, 1, -17.49f), new Vector3(-1, 1, -14), new Vector3(10, 1, -14));
-                // C
-                //_spawner.SpawnTower(0, new Vector3(4.51f, 1, 9.51f), new Vector3(-1, 1, 6), new Vector3(10, 1, 6));
-
-                _fsm.TransitionTo(Status.PreBattle);
-            }
-        }
-
-        private void PreBattle(Fsm<Status> fsm, FsmStep step)
-        {
-            if(step == FsmStep.Enter)
-            {
-                // Ready to Battle
 
             }
             else if(step == FsmStep.Update)

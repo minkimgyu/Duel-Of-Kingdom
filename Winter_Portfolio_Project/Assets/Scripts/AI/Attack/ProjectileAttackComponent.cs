@@ -26,7 +26,7 @@ namespace WPP.AI.ATTACK
 
             BaseState ready = new ReadyState(this);
             BaseState preDelay = new DelayState(this, 2, AttackState.Fire);
-            BaseState fire = new FireState(this, 0.2f, 0.4f);
+            BaseState fire = new FireState(this, _delayBeforeApplyingTask, 0.4f);
             BaseState afterDelay = new DelayState(this, 2);
 
             attackStates.Add(AttackState.Ready, ready);

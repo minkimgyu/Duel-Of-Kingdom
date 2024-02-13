@@ -33,6 +33,8 @@ namespace WPP.AI.ATTACK
         protected bool _fix; // 공격이 나간 이후 대상을 고정시킨다.
         public bool Fix { get { return _fix; } set { _fix = value; } }
 
+        [SerializeField] protected float _delayBeforeApplyingTask = 0.2f; // 이거는 나중에 데이터베이스에 추가하던가 해야할 듯?
+
         public void CancelAttackAnimation() => _animator.SetTrigger("CancelAttack");
         public void PlayAttackAnimation() => _animator.SetTrigger("NowAttack");
 

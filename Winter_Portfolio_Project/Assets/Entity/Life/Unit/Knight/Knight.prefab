@@ -856,6 +856,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: knight
+  _ownershipId: 0
 --- !u!114 &7034825310406362967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -894,6 +895,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3597e2f2283ec843bf59ad0a646e362, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _delayBeforeApplyingTask: 0.12
 --- !u!1 &3366945607833922512
 GameObject:
   m_ObjectHideFlags: 0

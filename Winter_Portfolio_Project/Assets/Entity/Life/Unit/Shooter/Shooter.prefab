@@ -2175,6 +2175,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: shooter
+  _ownershipId: 0
 --- !u!114 &4705060368162668742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2213,6 +2214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc04ce14a0d175244921d99b1a916827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _delayBeforeApplyingTask: 0.07
   _projectile: {fileID: 2485213050937935511, guid: 2615c80a3ccc8954084ad539e76e36e2, type: 3}
   _spawnPoint: {fileID: 4522617243798219637}
 --- !u!1 &7367215600868443766

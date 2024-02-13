@@ -17,6 +17,8 @@ namespace WPP.DeckManagement.Example
             {
                 _deckEditor.AddCard(CardDatabase.Cards.Values.ToList()[i]);
             }
+
+            Debug.Log("Deck Initialized!");
         }
     }
 }

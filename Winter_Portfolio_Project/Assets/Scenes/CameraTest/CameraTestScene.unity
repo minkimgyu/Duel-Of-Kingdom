@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657844, g: 0.49641222, b: 0.57481694, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1526,7 +1526,6 @@ MonoBehaviour:
   _cameraController: {fileID: 1267205912}
   _arrowEndPosition: {fileID: 771363399}
   _player1Id: 0
-  _player2Id: 1
   _clientId: 1
 --- !u!1001 &31342011
 PrefabInstance:
@@ -82556,6 +82555,63 @@ Transform:
   - {fileID: 1923549168}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2082517687
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2082517689}
+  - component: {fileID: 2082517688}
+  m_Layer: 0
+  m_Name: ObjectPooler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2082517688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082517687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dc00b2f1c783344f96fb21d1ec224a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pools:
+  - tag: TowerDestroyEffect
+    prefab: {fileID: 5750581019094638245, guid: a8369de344d38b04aba82c67f344dd6d, type: 3}
+    size: 3
+  - tag: DieEffect
+    prefab: {fileID: 7363074943875791990, guid: cf7e88e56e409124eadda2f427f509b6, type: 3}
+    size: 3
+  - tag: LiveOutBuildingDestroyEffect
+    prefab: {fileID: 4049313826490194052, guid: 773f3158bcf61d0478d5484bf32b6cc2, type: 3}
+    size: 3
+  - tag: ProjectileHitEffect
+    prefab: {fileID: 6410996797941602066, guid: 026314ed2a92cad449e8100fbba5e5c5, type: 3}
+    size: 3
+--- !u!4 &2082517689
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2082517687}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 11, y: 1, z: 10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2085141962
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -84847,3 +84903,4 @@ SceneRoots:
   - {fileID: 654494329}
   - {fileID: 1117632789}
   - {fileID: 1419429810}
+  - {fileID: 2082517689}

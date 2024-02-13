@@ -28,7 +28,7 @@ namespace WPP
             {
                 if (PacketHandler.Instance().packetQueue.Count > 0)
                 {
-                        PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
+                    PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
                 }
             }
         }

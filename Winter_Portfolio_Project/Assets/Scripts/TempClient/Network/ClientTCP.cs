@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using WPP.DeckManagement;
 using WPP.RoomInfo;
+using WPP.ClientInfo;
 
 namespace WPP.Network
 {
@@ -19,6 +21,7 @@ namespace WPP.Network
 
         private byte[] _receivedPacket;
         public ByteBuffer buffer { get; set; }
+        public ByteBuffer inGameBuffer { get; set; }
         public IPEndPoint peerSockPublicEP { get; set; }
         public IPEndPoint peerSockPrivateEP { get; set; }
 
@@ -236,21 +239,30 @@ namespace WPP.Network
         }
 
         // functions for p2p
+
+        public ByteBuffer CreateBufferToSend(Peer_PacketTagPackages tag, byte[] data = null)
+        {
+            ByteBuffer buffer = new ByteBuffer();
+            // write packet length
+            if (data != null)
+                buffer.WriteInteger(data.Length + 8);
+            else
+                buffer.WriteInteger(8);
+            // write packet tag
+            buffer.WriteInteger((int)tag);
+
+            if (data != null)
+                buffer.WriteBytes(data);
+
+            return buffer;
+        }
+
         public void SendDataToPeer(Peer_PacketTagPackages tag, byte[] data = null)
         {
             try
             {
-                ByteBuffer buffer = new ByteBuffer();
-                // write packet length
-                if (data != null)
-                    buffer.WriteInteger(data.Length + 8);
-                else
-                    buffer.WriteInteger(8);
-                // write packet tag
-                buffer.WriteInteger((int)tag);
+                ByteBuffer buffer = CreateBufferToSend(tag, data);
 
-                if (data != null)
-                    buffer.WriteBytes(data);
                 if(P2Pstream != null)
                 {
                     P2Pstream.BeginWrite(buffer.ToArray(), 0, buffer.Count(), null, null);
@@ -326,7 +338,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
+                PacketHandler.Instance().inGamePacketQueue.Enqueue(dataToHandle);
 
                 P2Pstream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromPeerCallbck, null);
                 return;
@@ -337,6 +349,43 @@ namespace WPP.Network
             }
         }
 
+        public void SpawnCard(Card card, int level, int ownershipId, Vector3 pos)
+        {
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteString(card.id);
+            bufferToSend.WriteInteger(level);
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteVector3(pos);
+            SendDataToPeer(Peer_PacketTagPackages.SPAWN_CARD, bufferToSend.ToArray());
+
+            ByteBuffer bufferToEnqueue = new ByteBuffer();
+            bufferToEnqueue.WriteString(card.id);
+            bufferToEnqueue.WriteInteger(level);
+            bufferToEnqueue.WriteInteger(ownershipId);
+            bufferToEnqueue.WriteVector3(pos);
+            ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.SPAWN_CARD, bufferToEnqueue.ToArray());
+            PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
+        }
+
+        public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
+        {
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteVector3(kingTowerPos);
+            bufferToSend.WriteVector3(leftPrincessTowerPos);
+            bufferToSend.WriteVector3(rightPrincessTowerPos);
+            SendDataToPeer(Peer_PacketTagPackages.SPAWN_TOWER, bufferToSend.ToArray());
+
+            ByteBuffer bufferToEnqueue = new ByteBuffer();
+            bufferToEnqueue.WriteInteger(ownershipId);
+            bufferToEnqueue.WriteVector3(kingTowerPos);
+            bufferToEnqueue.WriteVector3(leftPrincessTowerPos);
+            bufferToEnqueue.WriteVector3(rightPrincessTowerPos);
+            ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.SPAWN_TOWER, bufferToEnqueue.ToArray());
+            PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
+        }
+
+        // functions to close connection
         private void CloseServerConnection()
         {
             Debug.Log($"serverStream: {clntSock.Client.RemoteEndPoint} closed connection");

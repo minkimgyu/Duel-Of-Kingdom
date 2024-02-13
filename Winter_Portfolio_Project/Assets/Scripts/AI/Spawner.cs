@@ -11,6 +11,8 @@ using WPP.Collection;
 using WPP.ClientInfo.Card;
 using WPP.ClientInfo.Tower;
 using System;
+using WPP.Network;
+using Unity.VisualScripting;
 
 namespace WPP.AI.SPAWNER
 {
@@ -26,11 +28,40 @@ namespace WPP.AI.SPAWNER
         //List<BaseStat> _stats;
 
         JsonParser _jsonParser;
+        private static Spawner _instance;
+
+        public static Spawner Instance()
+        {
+            return _instance;
+        }
 
         void Awake()
         {
             _jsonParser = GetComponent<JsonParser>();
+            _instance = this;
             //_stats = _jsonParser.Load();
+
+        }
+
+        void Start()
+        {
+            Vector3 kingTowerPos;
+            Vector3 leftPrincessTowerPos;
+            Vector3 rightPrincessTowerPos;
+            if (ClientData.Instance().player_id_in_game == 0)
+            {
+                kingTowerPos = new Vector3(4.51f, 1, 9.51f);
+                leftPrincessTowerPos = new Vector3(-1, 1, 6);
+                rightPrincessTowerPos = new Vector3(10, 1, 6);
+            }
+            else
+            {
+                kingTowerPos = new Vector3(4.51f, 1, -17.49f);
+                leftPrincessTowerPos = new Vector3(-1, 1, -14);
+                rightPrincessTowerPos = new Vector3(10, 1, -14);
+            }
+
+            SpawnTower(ClientData.Instance().player_id_in_game, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
         }
 
         Quaternion ReturnQuaternionUsingLandFormation(int playerId)
@@ -83,7 +114,7 @@ namespace WPP.AI.SPAWNER
             return spawnedEntity;
         }
 
-        void SpawnClockUI(Vector3 pos, float duration)
+        public void SpawnClockUI(Vector3 pos, float duration)
         {
             ClockUI clockUI = Instantiate(_clockUIPrefab);
             clockUI.Initialize(pos, duration);
@@ -140,7 +171,7 @@ namespace WPP.AI.SPAWNER
             return null;
         }
 
-        void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
+        public void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
             // name과 level이 같은 경우를 찾아서 스폰
             // 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
@@ -165,7 +196,7 @@ namespace WPP.AI.SPAWNER
             towersData.rightPrincessTower.towerUnit.ResetData(rightPrincessTower);
         }
 
-        Entity Instantiate(CardData cardData, float duration, int ownershipId, Vector3 pos)
+        public Entity Instantiate(CardData cardData, float duration, int ownershipId, Vector3 pos)
         {
             Entity entity = ReturnEntity(cardData.unit._name, ownershipId, pos);
             if (entity == null) return null;
@@ -190,13 +221,13 @@ namespace WPP.AI.SPAWNER
 
             Entity[] spawnedEntities = new Entity[unitCount];
 
-            for (int i = 0; i < unitCount; i++)
+/*            for (int i = 0; i < unitCount; i++)
             {
                 spawnedEntities[i] = Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
-            }
+            }*/
 
-            SpawnClockUI(pos, duration);
-
+            //SpawnClockUI(pos, duration);
+            ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
             return spawnedEntities;
         }
 
@@ -228,7 +259,8 @@ namespace WPP.AI.SPAWNER
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
-            Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            ClientTCP.Instance().SpawnTower(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            //Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
         }
 
         //public Entity Spawn(int entityId, int ownershipId, Vector3 pos)

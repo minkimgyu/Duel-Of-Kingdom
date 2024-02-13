@@ -169,9 +169,11 @@ namespace WPP.AI.BTUtility
         List<Vector3> _path = new List<Vector3>(); // 데이터가 존재하지 않는다면 처음에 한번 돌려줘서 초기화 해줘야함
 
         protected Action<List<Vector3>> OnResetPathRequested;
+
+        bool _isMyEntity;
         bool _ignoreWall;
 
-        public FollowPath(MoveComponent moveComponent, ViewComponent viewComponent, CaptureComponent captureComponent, PathFinder pathFinder, Action<List<Vector3>> onResetPathRequested, bool ignoreWall)
+        public FollowPath(MoveComponent moveComponent, ViewComponent viewComponent, CaptureComponent captureComponent, PathFinder pathFinder, Action<List<Vector3>> onResetPathRequested, bool isMyEntity, bool ignoreWall)
         {
             _captureComponent = captureComponent;
             _pathFinder = pathFinder;
@@ -179,6 +181,7 @@ namespace WPP.AI.BTUtility
             _viewComponent = viewComponent;
 
             OnResetPathRequested = onResetPathRequested;
+            _isMyEntity = isMyEntity;
             _ignoreWall = ignoreWall;
 
         }
@@ -208,7 +211,7 @@ namespace WPP.AI.BTUtility
             ITarget target = _captureComponent.ReturnTarget();
             if (target == null) return;
 
-            List<Vector3> newPath = _pathFinder.ReturnPath(_captureComponent.transform.position, target.ReturnPosition(), _ignoreWall);
+            List<Vector3> newPath = _pathFinder.ReturnPath(_captureComponent.transform.position, target.ReturnPosition(), _isMyEntity, _ignoreWall);
 
             _nowIndexOfPath = 0;
             _path = newPath;
@@ -233,7 +236,7 @@ namespace WPP.AI.BTUtility
             _viewComponent.View(_path[_nowIndexOfPath]);
         }
 
-        bool IsPathBlock() { return _pathFinder.IsPathBlock(_path); }
+        bool IsPathBlock() { return _pathFinder.IsPathBlock(_path, _isMyEntity); }
 
         public override NodeState Evaluate()
         {

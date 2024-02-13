@@ -122,20 +122,23 @@ namespace WPP.AI.GRID
         // position으로 처리할 수 있게 코드를 짜주자
         // gridStorage를 통해서 위치를 그리드 좌표로 반환해서 적용시켜보자
 
-        public void OnBuildingPlanted(Vector3 pos, OffsetRect offset, bool isMyBuilding)
+        public void OnBuildingPlanted(Vector3 pos, OffsetRect offset, bool isMyEntity)
         {
             Vector2Int index = OnConvertV3ToIndexRequested(pos);
            
             Grid[,] grids = OnReturnGridRequested();
 
             AreaData data = ReturnFillData(index, offset, true);
-            ResetArea(OnReturnGridRequested(), data); // filldata는 다시 만들어줘야 할 듯?
+            ResetArea(grids, data); // filldata는 다시 만들어줘야 할 듯?
 
-            if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
-            ResetPass(grids, index, offset, false);
+            // 여기서 바로 리턴시키지 않고 경우에 따라서 나누기
+            ResetPass(grids, index, offset, false, isMyEntity);
+
+            //if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
+            //ResetPass(grids, index, offset, false);
         }
 
-        public void OnBuildingReleased(Vector3 pos, OffsetRect offset, bool isMyBuilding)
+        public void OnBuildingReleased(Vector3 pos, OffsetRect offset, bool isMyEntity)
         {
             Vector2Int index = OnConvertV3ToIndexRequested(pos);
 
@@ -144,8 +147,11 @@ namespace WPP.AI.GRID
             AreaData data = ReturnFillData(index, offset, false);
             ResetArea(grids, data); // filldata는 다시 만들어줘야 할 듯?
 
-            if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
-            ResetPass(grids, index, offset, true);
+            // 여기서 바로 리턴시키지 않고 경우에 따라서 나누기
+            ResetPass(grids, index, offset, true, isMyEntity);
+
+            //if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
+            //ResetPass(grids, index, offset, true);
         }
 
         public void DrawSpawnImpossibleRect() => _spawnImpossibleRect.Draw();
@@ -160,10 +166,19 @@ namespace WPP.AI.GRID
             return data;
         }
 
-        void ResetPass(Grid[,] grids, Vector2Int index, OffsetRect offset, bool canPass)
+        //void ResetPass(Grid[,] grids, Vector2Int index, OffsetRect offset, bool canPass)
+        //{
+        //    for (int i = index.x - offset._left; i <= index.x + offset._left; i++) 
+        //        grids[i, index.y].CanPass = canPass;
+        //}
+
+        void ResetPass(Grid[,] grids, Vector2Int index, OffsetRect offset, bool canPass, bool isMyBuilding)
         {
-            for (int i = index.x - offset._left; i <= index.x + offset._left; i++) 
-                grids[i, index.y].CanPass = canPass;
+            for (int i = index.x - offset._left; i <= index.x + offset._left; i++)
+            {
+                if (isMyBuilding) grids[i, index.y].MyEntityCanPass = canPass;
+                else grids[i, index.y].YourEntityCanPass = canPass;
+            }
         }
 
         void ResetArea(Grid[,] grids, AreaData data)

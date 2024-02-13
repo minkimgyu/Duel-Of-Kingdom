@@ -191,7 +191,7 @@ namespace WPP.AI.UNIT
                                                 )
                                             }
                                         ),
-                                        new FollowPath(_moveComponent, _viewComponent, _captureComponent, pathFinder, ResetPosListForDrawingGizmo, IgnoreWall)
+                                        new FollowPath(_moveComponent, _viewComponent, _captureComponent, pathFinder, ResetPosListForDrawingGizmo, IsMyEntity, IgnoreWall)
                                     }
                                 )
                             }

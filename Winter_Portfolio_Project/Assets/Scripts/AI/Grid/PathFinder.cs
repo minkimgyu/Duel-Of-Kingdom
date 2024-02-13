@@ -43,7 +43,21 @@ namespace WPP.AI.GRID
             OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
         }
 
-        public bool IsPathBlock(List<Vector3> path)
+        //public bool IsPathBlock(List<Vector3> path)
+        //{
+        //    if (path.Count == 0) return false;
+
+        //    PathFindingParameter parameter = OnPathFindingRequested();
+        //    for (int i = 0; i < path.Count; i++)
+        //    {
+        //        Vector2Int index = OnConvertV3ToIndexRequested(path[i]);
+        //        if (parameter.GridArray[index.x, index.y].IsWall == true) return true;
+        //    }
+
+        //    return false;
+        //}
+
+        public bool IsPathBlock(List<Vector3> path, bool isMyEntity)
         {
             if (path.Count == 0) return false;
 
@@ -51,11 +65,20 @@ namespace WPP.AI.GRID
             for (int i = 0; i < path.Count; i++)
             {
                 Vector2Int index = OnConvertV3ToIndexRequested(path[i]);
-                if (parameter.GridArray[index.x, index.y].IsWall == true) return true;
-            }
 
+                if(isMyEntity)
+                {
+                    if (parameter.GridArray[index.x, index.y].IsMyWall == true) return true;
+                }
+                else
+                {
+                    if (parameter.GridArray[index.x, index.y].IsYourWall == true) return true;
+                }
+            }
             return false;
         }
+
+
 
         Vector3Int SwitchV3ToV3Int(Vector3 pos)
         {
@@ -74,17 +97,19 @@ namespace WPP.AI.GRID
             return worldPos;
         }
 
-        public List<Vector3> ReturnPath(Vector3 startPos, Vector3 targetPos, bool ignoreWall)
+        public List<Vector3> ReturnPath(Vector3 startPos, Vector3 targetPos, bool isMyEntity, bool ignoreWall)
         {
             // Vector3 startPos, Vector3 targetPos --> 이거를 Vector3Int로 맞춰주기
             Vector3Int startIntPos = SwitchV3ToV3Int(startPos);
             Vector3Int targetIntPos = SwitchV3ToV3Int(targetPos);
 
             PathFindingParameter parameter = OnPathFindingRequested();
-            return CalculatePath(startIntPos, targetIntPos, parameter, startPos.y, ignoreWall);
+            return CalculatePath(startIntPos, targetIntPos, parameter, startPos.y, isMyEntity, ignoreWall);
         }
 
-        List<Vector3> CalculatePath(Vector3 startIntPos, Vector3 targetIntPos, PathFindingParameter parameter, float startYPos, bool ignoreWall)
+        #region NewCalculatePath
+
+        List<Vector3> CalculatePath(Vector3 startIntPos, Vector3 targetIntPos, PathFindingParameter parameter, float startYPos, bool isMyEntity, bool ignoreWall)
         {
             List<Grid> FinalNodeList;
             List<Grid> OpenList, ClosedList;
@@ -146,38 +171,50 @@ namespace WPP.AI.GRID
                 // ↗↖↙↘
                 if (allowDiagonal)
                 {
-                    OpenListAdd(parameter, CurNode.x + 1, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                    OpenListAdd(parameter, CurNode.x - 1, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                    OpenListAdd(parameter, CurNode.x - 1, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                    OpenListAdd(parameter, CurNode.x + 1, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
+                    OpenListAdd(parameter, CurNode.x + 1, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                    OpenListAdd(parameter, CurNode.x - 1, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                    OpenListAdd(parameter, CurNode.x - 1, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                    OpenListAdd(parameter, CurNode.x + 1, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
                 }
 
                 // ↑ → ↓ ←
-                OpenListAdd(parameter, CurNode.x, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                OpenListAdd(parameter, CurNode.x + 1, CurNode.z, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                OpenListAdd(parameter, CurNode.x, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
-                OpenListAdd(parameter, CurNode.x - 1, CurNode.z, OpenList, ClosedList, CurNode, TargetNode, ignoreWall);
+                OpenListAdd(parameter, CurNode.x, CurNode.z + 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                OpenListAdd(parameter, CurNode.x + 1, CurNode.z, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                OpenListAdd(parameter, CurNode.x, CurNode.z - 1, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
+                OpenListAdd(parameter, CurNode.x - 1, CurNode.z, OpenList, ClosedList, CurNode, TargetNode, isMyEntity, ignoreWall);
             }
 
             return new List<Vector3>(); // 기본형 반환
         }
 
-        void OpenListAdd(PathFindingParameter parameter, int checkX, int checkZ, List<Grid> OpenList, List<Grid> ClosedList, Grid CurNode, Grid TargetNode, bool ignoreWall)
+        void OpenListAdd(PathFindingParameter parameter, int checkX, int checkZ, List<Grid> OpenList, List<Grid> ClosedList, Grid CurNode, Grid TargetNode, bool isMyEntity, bool ignoreWall)
         {
             // 상하좌우 범위를 벗어나지 않고, 벽이 아니면서, 닫힌리스트에 없다면
             if (checkX >= parameter.LocalBottomLeft.x && checkX < parameter.LocalTopRight.x + 1 && checkZ >= parameter.LocalBottomLeft.y && checkZ < parameter.LocalTopRight.y + 1 &&
                 !ClosedList.Contains(parameter.GridArray[checkX - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y]))
             {
-                if(ignoreWall == false) // 벽을 무시하지 않는다면 아래를 진행함
+                if (ignoreWall == false) // 벽을 무시하지 않는다면 아래를 진행함
                 {
-                    if (parameter.GridArray[checkX - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsWall == true) return;
+                    if(isMyEntity == true)
+                    {
+                        if (parameter.GridArray[checkX - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsMyWall == true) return;
 
-                    // 대각선 허용시, 벽 사이로 통과 안됨
-                    if (allowDiagonal) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsWall && parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsWall) return;
+                        // 대각선 허용시, 벽 사이로 통과 안됨
+                        if (allowDiagonal) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsMyWall && parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsMyWall) return;
 
-                    // 코너를 가로질러 가지 않을시, 이동 중에 수직수평 장애물이 있으면 안됨
-                    if (dontCrossCorner) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsWall || parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsWall) return;
+                        // 코너를 가로질러 가지 않을시, 이동 중에 수직수평 장애물이 있으면 안됨
+                        if (dontCrossCorner) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsMyWall || parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsMyWall) return;
+                    }
+                    else
+                    {
+                        if (parameter.GridArray[checkX - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsYourWall == true) return;
 
+                        // 대각선 허용시, 벽 사이로 통과 안됨
+                        if (allowDiagonal) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsYourWall && parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsYourWall) return;
+
+                        // 코너를 가로질러 가지 않을시, 이동 중에 수직수평 장애물이 있으면 안됨
+                        if (dontCrossCorner) if (parameter.GridArray[CurNode.x - parameter.LocalBottomLeft.x, checkZ - parameter.LocalBottomLeft.y].IsYourWall || parameter.GridArray[checkX - parameter.LocalBottomLeft.x, CurNode.z - parameter.LocalBottomLeft.y].IsYourWall) return;
+                    }
                 }
 
                 // 이웃노드에 넣고, 직선은 10, 대각선은 14비용
@@ -201,5 +238,7 @@ namespace WPP.AI.GRID
                 }
             }
         }
+
+        #endregion CalculatePath
     }
 }

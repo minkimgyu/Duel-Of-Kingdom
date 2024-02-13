@@ -29,8 +29,7 @@ namespace WPP.AI.GRID.STATE
         {
             Debug.Log(info);
 
-            //int ownershipId = ClientData.Instance().player_id_in_game;
-            int ownershipId = 1; // 서버 연동 전까지 일단 1로 적용
+            int ownershipId = ClientData.Instance().player_id_in_game;
             _spawner.Spawn(card, level, ownershipId, pos);
             GoToReadyState();
         }

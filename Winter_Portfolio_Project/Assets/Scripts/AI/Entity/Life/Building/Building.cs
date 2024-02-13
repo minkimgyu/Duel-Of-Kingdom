@@ -42,8 +42,8 @@ namespace WPP.AI.BUILDING
 
         public override void Die()
         {
-            base.Die();
             ObjectPooler.SpawnFromPool("TowerDestroyEffect", transform.position);
+            base.Die();
         }
     }
 
@@ -159,8 +159,8 @@ namespace WPP.AI.BUILDING
 
         public override void Die()
         {
-            base.Die();
             ObjectPooler.SpawnFromPool("LiveOutBuildingDestroyEffect", transform.position);
+            base.Die();
         }
     }
 
@@ -237,8 +237,8 @@ namespace WPP.AI.BUILDING
 
         public override void Die()
         {
-            base.Die();
             ObjectPooler.SpawnFromPool("LiveOutBuildingDestroyEffect", transform.position);
+            base.Die();
         }
     }
 
@@ -273,7 +273,7 @@ namespace WPP.AI.BUILDING
             // 여기에서 GridFiller 참조해서 현재 스폰된 위치 기반으로 그리드 인덱스 찾아서 막아주기
             // 만약 타워가 터진다면 그리드 참조해서 다시 풀어주기
             InitializeFillerAction();
-            OnPlantRequested(transform.position, _fillOffset, IsMyEntity);
+            //OnPlantRequested(transform.position, _fillOffset, IsMyEntity);
 
             InitializeBT(); // 여기서 초기화 진행
         }

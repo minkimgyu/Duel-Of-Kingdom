@@ -306,6 +306,7 @@ namespace WPP.Network
 
             // set player_id
             int player_id_in_game = buffer.ReadInteger(true);
+            Debug.Log("player_id_in_game: " + player_id_in_game);
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
             // try to connect with private end point
@@ -366,7 +367,7 @@ namespace WPP.Network
         {
             string cardName = buffer.ReadString(true);
             int level = buffer.ReadInteger(true);
-            int ownershipId = buffer.ReadInteger(true);
+            int opponentOwnershipId = buffer.ReadInteger(true);
             Vector3 pos = buffer.ReadVector3(true);
 
             CardData cardData = CardCollection.Instance().FindCard(cardName, level);
@@ -379,7 +380,7 @@ namespace WPP.Network
 
             for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
             }
 
             Spawner.Instance().SpawnClockUI(pos, duration);

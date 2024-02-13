@@ -4637,6 +4637,7 @@ GameObject:
   - component: {fileID: 8159436333276444155}
   - component: {fileID: 4631165360641065688}
   - component: {fileID: 6419330595228977566}
+  - component: {fileID: 994479658157529845}
   m_Layer: 8
   m_Name: FireProjectile
   m_TagString: Untagged
@@ -4675,7 +4676,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -4698,6 +4699,20 @@ MonoBehaviour:
   _speed: 3
   _radius: 1.5
   _drawingPrefab: {fileID: 4495645697706373623, guid: 46f5e6c73addf594b8ac40cd7de12ada, type: 3}
+--- !u!114 &994479658157529845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3064648599797444771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da4c08e2d7c83024c82457a660a68dc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _drawingPrefab: {fileID: 929475850626693537, guid: e7ae234b861da224a903f21bc6246c38, type: 3}
+  _damageAreaDestroyDuration: 2
 --- !u!1 &4171890318682522050
 GameObject:
   m_ObjectHideFlags: 0

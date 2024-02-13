@@ -60,7 +60,6 @@ namespace WPP.AI.SPAWNER
                 leftPrincessTowerPos = new Vector3(-1, 1, -14);
                 rightPrincessTowerPos = new Vector3(10, 1, -14);
             }
-
             SpawnTower(ClientData.Instance().player_id_in_game, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
         }
 
@@ -90,12 +89,11 @@ namespace WPP.AI.SPAWNER
             Entity entity = _entityPrefabs.Find(x => x.Name == name);
             if (entity == null) return null;
 
-            // 나중에 여기 변경
-            Quaternion rotation = ReturnQuaternionUsingLandFormation(1);
-            Entity spawnedEntity = Instantiate(entity, pos, rotation);
-
-
             int clientId = ClientData.Instance().player_id_in_game; // 본인 클라이언트 아이디를 받아와서 넣어준다.
+
+            // 나중에 여기 변경
+            Quaternion rotation = ReturnQuaternionUsingLandFormation(clientId);
+            Entity spawnedEntity = Instantiate(entity, pos, rotation);
 
             // 체력바를 붙일 수 있는 경우에만 진행
             if(spawnedEntity.CanAttachHpBar() == true)
@@ -104,7 +102,7 @@ namespace WPP.AI.SPAWNER
                 spawnedEntity.AttachHpBar(hpContainer);
             }
 
-            spawnedEntity.ResetPlayerId(ownershipId, 1);
+            spawnedEntity.ResetPlayerId(ownershipId, clientId);
             // 여기에 대기 시간을 추가해준다.
 
             Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(1);

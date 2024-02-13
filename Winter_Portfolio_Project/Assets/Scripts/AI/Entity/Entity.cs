@@ -24,7 +24,7 @@ namespace WPP.AI
         /// <summary>
         /// 객체를 소유하고 있는 플레이어의 Id
         /// </summary>
-        protected int _ownershipId;
+        [SerializeField] protected int _ownershipId;
         public int OwnershipId { get { return _ownershipId; } }
 
         /// <summary>

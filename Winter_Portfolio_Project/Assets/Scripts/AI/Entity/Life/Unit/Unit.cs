@@ -80,8 +80,8 @@ namespace WPP.AI.UNIT
 
         public override void Die()
         {
-            base.Die();
             ObjectPooler.SpawnFromPool("DieEffect", transform.position);
+            base.Die();
         }
     }
 

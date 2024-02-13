@@ -25,11 +25,6 @@ namespace WPP.AI
         [SerializeField] int _player1Id = 0;
 
         /// <summary>
-        /// 플레이어2 ID
-        /// </summary>
-        [SerializeField] int _player2Id = 1;
-
-        /// <summary>
         /// 현재 클라이언트를 조작하고 있는 플레이어 ID
         /// </summary>
         [SerializeField] int _clientId = 1;
@@ -50,8 +45,7 @@ namespace WPP.AI
 
             // 여기서 본인 지형 초기화
 
-
-            LandFormation landFormation = ReturnLandFormation(_clientId);
+            LandFormation landFormation = ReturnLandFormation(ClientData.Instance().player_id_in_game);
 
             //_cameraController.Rotate(landFormation);
             _gridController.Initialize(landFormation);

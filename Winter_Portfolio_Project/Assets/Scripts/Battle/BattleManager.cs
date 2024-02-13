@@ -1,11 +1,21 @@
 using System;
 using UnityEngine;
+using WPP.AI.GRID;
+using WPP.AI.SPAWNER;
 using WPP.Battle.Fsm;
+using WPP.CAMERA;
+using WPP.ClientInfo;
 
 namespace WPP.Battle
 {
     public class BattleManager : MonoBehaviour
     {
+        [SerializeField] bool _isTest = false;
+        [Header("AI")]
+        [SerializeField] Spawner _spawner;
+        [SerializeField] GridController _gridController;
+        [SerializeField] CameraController _cameraController;
+
         [Header("Battle Timer")]
         [SerializeField] private BattleTimer _battleTimer;
         [SerializeField] private float _battleLength = 3f;
@@ -13,10 +23,16 @@ namespace WPP.Battle
 
         [Header("Player")]
         [SerializeField] private BattlePlayer _player;
-        [SerializeField] private BattlePlayer _opponent;
+        public BattlePlayer Player => _player;
+
+        [Header("CrownSystem")]
+        [SerializeField] private CrownSystem _playerCrown;
+        [SerializeField] private CrownSystem _opponentCrown;
+        public CrownSystem PlayerCrown => _playerCrown;
+        public CrownSystem OpponentCrown => _opponentCrown;
+
 
         [Header("Elixir System")]
-        //[SerializeField] private ElixirTimer _playerElixirTimer;
         [SerializeField] private float _battleRegenRate = 2.8f;
         [SerializeField] private float _overtimeRegenRate1 = 1.4f;
         [SerializeField] private float _overtimeRegenRate2 = 0.9f;
@@ -62,9 +78,16 @@ namespace WPP.Battle
             _fsm.SetInitialState(Status.PreBattle);
         }
 
+        // TODO : use this
         private void Start()
         {
-            _fsm.OnFsmStep(FsmStep.Enter);
+            if(!_isTest) _fsm.OnFsmStep(FsmStep.Enter);
+        }
+        
+        // for test purpose
+        public void StartLoad()
+        {
+            if(_isTest) _fsm.OnFsmStep(FsmStep.Enter);
         }
 
         private void Update()
@@ -92,7 +115,22 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
-                OnStatusChange?.Invoke(Status.PreBattle);
+                // Ready to Battle
+
+                OnStatusChange?.Invoke(fsm.CurrentState);
+                _player.Init();
+
+                LandFormation landFormation = ClientData.Instance().LandFormation;
+
+                Debug.Log("LandFormation : " + landFormation);
+                _gridController.Initialize(landFormation);
+                _cameraController.Rotate(landFormation);
+
+            }
+            else if(step == FsmStep.Update)
+            {
+                // TODO : Remove this
+                _fsm.TransitionTo(Status.Battle);
             }
         }
 
@@ -111,12 +149,12 @@ namespace WPP.Battle
                 _battleTimer.PauseTimer();
                 _battleTimer.OnTimerEnd -= TransitionToOvertime;
             }
-
-            void TransitionToOvertime()
-            {
-                _fsm.TransitionTo(Status.Overtime);
-            }
         }
+        private void TransitionToOvertime()
+        {
+            _fsm.TransitionTo(Status.Overtime);
+        }
+
 
         private bool _isOvertimeSecondHalf = false;
 
@@ -147,11 +185,10 @@ namespace WPP.Battle
 
                 _player.Elixir.StopRegen();
             }
-
-            void TransitionToTiebreaker()
-            {
-                _fsm.TransitionTo(Status.Tiebreaker);
-            }
+        }
+        void TransitionToTiebreaker()
+        {
+            _fsm.TransitionTo(Status.Tiebreaker);
         }
 
         private void Tiebreaker(Fsm<Status> fsm, FsmStep step)

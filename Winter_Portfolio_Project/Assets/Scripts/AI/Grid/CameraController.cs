@@ -12,8 +12,8 @@ namespace WPP.CAMERA
 
         public void Rotate(LandFormation landFormation)
         {
-            if(landFormation == LandFormation.C) Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
-            else Camera.main.transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+            if(landFormation == LandFormation.C) transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+            else transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
         }
     }
 }

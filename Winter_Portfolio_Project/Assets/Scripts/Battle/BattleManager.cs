@@ -1,11 +1,25 @@
 using System;
 using UnityEngine;
+using WPP.AI.GRID;
+using WPP.AI.SPAWNER;
 using WPP.Battle.Fsm;
+using WPP.CAMERA;
+using WPP.ClientInfo;
 
 namespace WPP.Battle
 {
     public class BattleManager : MonoBehaviour
     {
+        [SerializeField] bool _isTest = false;
+        [Header("AI")]
+        [SerializeField] Spawner _spawner;
+        [SerializeField] GridController _gridController;
+        [SerializeField] CameraController _cameraController;
+
+        [SerializeField] int _player1Id = 0;
+        [SerializeField] int _player2Id = 1;
+        [SerializeField] int _clientId = 1;
+
         [Header("Battle Timer")]
         [SerializeField] private BattleTimer _battleTimer;
         [SerializeField] private float _battleLength = 3f;
@@ -13,16 +27,16 @@ namespace WPP.Battle
 
         [Header("Player")]
         [SerializeField] private BattlePlayer _player;
-        [SerializeField] private BattlePlayer _opponent;
+        public BattlePlayer Player => _player;
 
         [Header("Elixir System")]
-        //[SerializeField] private ElixirTimer _playerElixirTimer;
         [SerializeField] private float _battleRegenRate = 2.8f;
         [SerializeField] private float _overtimeRegenRate1 = 1.4f;
         [SerializeField] private float _overtimeRegenRate2 = 0.9f;
 
         public enum Status
         {
+            Loading,
             PreBattle,
             Battle,
             Overtime,
@@ -54,17 +68,25 @@ namespace WPP.Battle
             _fsm = new Fsm<Status>();
             _fsm.OnStateTransition += (status) => { OnStatusChange?.Invoke(status); };
 
+            _fsm.Add(Status.Loading, Loading);
             _fsm.Add(Status.PreBattle, PreBattle);
             _fsm.Add(Status.Battle, Battle);
             _fsm.Add(Status.Overtime, Overtime);
             _fsm.Add(Status.Tiebreaker, Tiebreaker);
             _fsm.Add(Status.PostBattle, PostBattle);
-            _fsm.SetInitialState(Status.PreBattle);
+            _fsm.SetInitialState(Status.Loading);
         }
 
+        // TODO : use this
         private void Start()
         {
-            _fsm.OnFsmStep(FsmStep.Enter);
+            if(!_isTest) _fsm.OnFsmStep(FsmStep.Enter);
+        }
+        
+        // for test purpose
+        public void StartLoad()
+        {
+            if(_isTest) _fsm.OnFsmStep(FsmStep.Enter);
         }
 
         private void Update()
@@ -88,11 +110,39 @@ namespace WPP.Battle
             _fsm.TransitionTo(Status.Tiebreaker);
         }
 
+        private void Loading(Fsm<Status> fsm, FsmStep step)
+        {
+            if (step == FsmStep.Enter)
+            {
+                OnStatusChange?.Invoke(Status.Loading);
+                _player.Init();
+
+                LandFormation landFormation = ClientData.Instance().LandFormation;
+
+                Debug.Log("LandFormation : " + landFormation);
+                _gridController.Initialize(landFormation);
+                _cameraController.Rotate(landFormation);
+
+                // R
+                _spawner.SpawnTower(1, new Vector3(4.51f, 1, -17.49f), new Vector3(-1, 1, -14), new Vector3(10, 1, -14));
+                // C
+                _spawner.SpawnTower(0, new Vector3(4.51f, 1, 9.51f), new Vector3(-1, 1, 6), new Vector3(10, 1, 6));
+
+                _fsm.TransitionTo(Status.PreBattle);
+            }
+        }
+
         private void PreBattle(Fsm<Status> fsm, FsmStep step)
         {
             if(step == FsmStep.Enter)
             {
-                OnStatusChange?.Invoke(Status.PreBattle);
+                // Ready to Battle
+
+            }
+            else if(step == FsmStep.Update)
+            {
+                // TODO : Remove this
+                _fsm.TransitionTo(Status.Battle);
             }
         }
 
@@ -111,12 +161,12 @@ namespace WPP.Battle
                 _battleTimer.PauseTimer();
                 _battleTimer.OnTimerEnd -= TransitionToOvertime;
             }
-
-            void TransitionToOvertime()
-            {
-                _fsm.TransitionTo(Status.Overtime);
-            }
         }
+        private void TransitionToOvertime()
+        {
+            _fsm.TransitionTo(Status.Overtime);
+        }
+
 
         private bool _isOvertimeSecondHalf = false;
 
@@ -147,11 +197,10 @@ namespace WPP.Battle
 
                 _player.Elixir.StopRegen();
             }
-
-            void TransitionToTiebreaker()
-            {
-                _fsm.TransitionTo(Status.Tiebreaker);
-            }
+        }
+        void TransitionToTiebreaker()
+        {
+            _fsm.TransitionTo(Status.Tiebreaker);
         }
 
         private void Tiebreaker(Fsm<Status> fsm, FsmStep step)

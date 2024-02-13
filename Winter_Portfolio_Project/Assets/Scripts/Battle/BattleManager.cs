@@ -25,6 +25,13 @@ namespace WPP.Battle
         [SerializeField] private BattlePlayer _player;
         public BattlePlayer Player => _player;
 
+        [Header("CrownSystem")]
+        [SerializeField] private CrownSystem _playerCrown;
+        [SerializeField] private CrownSystem _opponentCrown;
+        public CrownSystem PlayerCrown => _playerCrown;
+        public CrownSystem OpponentCrown => _opponentCrown;
+
+
         [Header("Elixir System")]
         [SerializeField] private float _battleRegenRate = 2.8f;
         [SerializeField] private float _overtimeRegenRate1 = 1.4f;

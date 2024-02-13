@@ -8,7 +8,6 @@ using UnityEngine.Events;
 using WPP.ClientInfo.Card;
 using WPP.Collection;
 using WPP.FileReader;
-using WPP.Units;
 
 namespace WPP.DeckManagement
 {

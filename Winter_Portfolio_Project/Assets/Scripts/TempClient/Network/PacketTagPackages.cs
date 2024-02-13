@@ -46,5 +46,6 @@ namespace WPP.Network
         DAMAGE_LPT,
         DAMAGE_RPT,
         SPAWN_CARD,
+        SPAWN_TOWER,
     }
 }

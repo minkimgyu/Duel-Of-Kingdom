@@ -15,6 +15,10 @@ using System;
 using WPP.FileReader;
 using Unity.VisualScripting;
 using WPP.ClientInfo.Card;
+using WPP.AI.SPAWNER;
+using WPP.Collection;
+using WPP.DeckManagement;
+using WPP.AI;
 
 namespace WPP.Network
 {
@@ -24,10 +28,11 @@ namespace WPP.Network
         private delegate void HandleFunc(ref ByteBuffer buffer);
         private Dictionary<int, HandleFunc> packetHandler;
         public Queue<byte[]> packetQueue { get; set; }
-        public Queue<ByteBuffer> inGamePacketQueue { get; set; }
+        public Queue<byte[]> inGamePacketQueue { get; set; }
 
         private int _packetLength;
         private bool _isSegmentated;
+        private object packetHandlerLockObj;
 
         public static PacketHandler Instance()
         {
@@ -42,11 +47,12 @@ namespace WPP.Network
             _packetLength = 0;
             _isSegmentated = false;
             packetQueue = new Queue<byte[]>();
-            inGamePacketQueue = new Queue<ByteBuffer>();
+            inGamePacketQueue = new Queue<byte[]>();
+            packetHandler = new Dictionary<int, HandleFunc>();
+            packetHandlerLockObj = new object();
         }
         public void InitializePacketHandler()
         {
-            packetHandler = new Dictionary<int, HandleFunc>();
             packetHandler.Add((int)Server_PacketTagPackages.S_LOAD_CARD_COLLECTION, LoadCardCollection);
             packetHandler.Add((int)Server_PacketTagPackages.S_ACCEPT_REGISTER_ACCOUNT, HandleRegisterAcception);
             packetHandler.Add((int)Server_PacketTagPackages.S_REJECT_REGISTER_ACCOUNT, HandleRegisterRejection);
@@ -63,7 +69,9 @@ namespace WPP.Network
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_KT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_LPT, DamageTower);
             packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_RPT, DamageTower);
+
             packetHandler.Add((int)Peer_PacketTagPackages.SPAWN_CARD, SpawnCard);
+            packetHandler.Add((int)Peer_PacketTagPackages.SPAWN_TOWER, SpawnTower);
         }
 
         public void HandlePacket(byte[] packet)
@@ -116,24 +124,78 @@ namespace WPP.Network
             return;
         }
 
+        public void HandleInGamePacket(byte[] packet)
+        {
+            if (packet == null || packet.Length == 0)
+                return;
+
+            if (ClientTCP.Instance().inGameBuffer == null)
+            {
+                ClientTCP.Instance().inGameBuffer = new ByteBuffer();
+            }
+
+            // packet 복사
+            ClientTCP.Instance().inGameBuffer.WriteBytes(packet);
+
+            if (_isSegmentated == false)
+            {
+                _packetLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
+                Debug.Log("total packet length: " + _packetLength);
+            }
+            Debug.Log("received packet length: " + packet.Length);
+
+            // 처음으로 패킷이 분할되어 왔을 경우
+            if (_packetLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isSegmentated == false)
+            {
+                _isSegmentated = true;
+                return;
+            }
+
+            if (_isSegmentated == true)
+            {
+                // 패킷을 다 받았다면
+                if (_packetLength == ClientTCP.Instance().inGameBuffer.Count() + 4)
+                {
+                    _isSegmentated = false;
+                    HandleData(ClientTCP.Instance().inGameBuffer.ToArray());
+                    _packetLength = 0;
+                    ClientTCP.Instance().inGameBuffer.Dispose();
+                    ClientTCP.Instance().inGameBuffer = null;
+                    Debug.Log("received all packets");
+                }
+            }
+            else
+            {
+                HandleData(ClientTCP.Instance().inGameBuffer.ToArray());
+                _packetLength = 0;
+                ClientTCP.Instance().inGameBuffer.Dispose();
+                ClientTCP.Instance().inGameBuffer = null;
+            }
+            return;
+        }
+
+
         public void HandleData(byte[] data)
         {
-            ByteBuffer buffer = new ByteBuffer();
-            buffer.WriteBytes(data);
-            // skip size
-            buffer.ReadInteger(true);
-            int packetTag = buffer.ReadInteger(true);
-
-            if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
+            lock(packetHandlerLockObj)
             {
-                func.Invoke(ref buffer);
+                ByteBuffer buffer = new ByteBuffer();
+                buffer.WriteBytes(data);
+                // skip size
+                buffer.ReadInteger(true);
+                int packetTag = buffer.ReadInteger(true);
+
+                if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
+                {
+                    func.Invoke(ref buffer);
+                }
             }
         }
 
         public void LoadCardCollection(ref ByteBuffer buffer)
         {
             string cardCollectionString = buffer.ReadString(true);
-#if DEBUG
+#if UNITY_EDITOR
             string jsonFilePath = "Assets\\GameFiles\\card_collection.json";
 #else
             string jsonFilePath = Application.persistentDataPath + "/card_collection.json";
@@ -254,7 +316,9 @@ namespace WPP.Network
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
             }
 
-            SceneManager.LoadScene("EnableNetworkBattleScene");
+            //SceneManager.LoadScene("EnableNetworkBattleScene");
+            SceneManager.LoadScene("CameraTestScene");
+
             Debug.Log("entered game");
         }
 
@@ -292,12 +356,7 @@ namespace WPP.Network
         {
             if(inGamePacketQueue.Count > 0)
             {
-                ByteBuffer inGameBuffer = inGamePacketQueue.Dequeue();
-                int card_id = inGameBuffer.ReadInteger(true);
-                //Vector3 spawnLocation = buffer.ReadVector3(true);
-
-                // spawn with spawner class
-                Debug.Log($"spawn {card_id}");
+                HandleInGamePacket(inGamePacketQueue.Dequeue());
             }
 
             Debug.Log("turn on");
@@ -305,7 +364,50 @@ namespace WPP.Network
 
         public void SpawnCard(ref ByteBuffer buffer)
         {
-            inGamePacketQueue.Enqueue(buffer);
+            string cardName = buffer.ReadString(true);
+            int level = buffer.ReadInteger(true);
+            int ownershipId = buffer.ReadInteger(true);
+            Vector3 pos = buffer.ReadVector3(true);
+
+            CardData cardData = CardCollection.Instance().FindCard(cardName, level);
+            float duration = cardData.duration;
+
+            int unitCount = cardData.spawnData.spawnUnitCount;
+            Vector2[] offset = cardData.spawnData.spawnOffset;
+
+            Entity[] spawnedEntities = new Entity[unitCount];
+
+            for (int i = 0; i < unitCount; i++)
+            {
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
+            }
+
+            Spawner.Instance().SpawnClockUI(pos, duration);
+        }
+
+        public void SpawnTower(ref ByteBuffer buffer)
+        {
+            int ownershipId = buffer.ReadInteger(true);
+            Vector3 kingTowerPos = buffer.ReadVector3(true);
+            Vector3 leftPrincessTowerPos = buffer.ReadVector3(true);
+            Vector3 rightPrincessTowerPos = buffer.ReadVector3(true);
+
+            /*            Vector3 kingTowerPos;
+                        Vector3 leftPrincessTowerPos;
+                        Vector3 rightPrincessTowerPos;
+                        if (ClientData.Instance().player_id_in_game != 0)
+                        {
+                            kingTowerPos = new Vector3(4.51f, 1, 9.51f);
+                            leftPrincessTowerPos = new Vector3(-1, 1, 6);
+                            rightPrincessTowerPos = new Vector3(10, 1, 6);
+                        }
+                        else
+                        {
+                            kingTowerPos = new Vector3(4.51f, 1, -17.49f);
+                            leftPrincessTowerPos = new Vector3(-1, 1, -14);
+                            rightPrincessTowerPos = new Vector3(10, 1, -14);
+                        }*/
+            Spawner.Instance().Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
         }
     }
 

@@ -599,7 +599,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 84
@@ -678,7 +678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc04ce14a0d175244921d99b1a916827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectile: {fileID: 7442395293984419073, guid: bd21d53764c16ab47b5d76026a2d4567, type: 3}
+  _projectile: {fileID: 6419330595228977566, guid: acfb46c1195bbf140b376722f1238319, type: 3}
   _spawnPoint: {fileID: 8017472577742261182}
 --- !u!1 &5980656703280752435
 GameObject:

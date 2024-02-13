@@ -104,7 +104,7 @@ namespace WPP.AI.CAPTURE
         public ITarget ReturnTarget()
         {
             // _storedTarget이 null이 아닌 경우 해당 타겟을 리턴해준다.
-            if (_storedTarget != null) return _storedTarget;
+            if (_storedTarget.Equals(null) == false) return _storedTarget;
 
             float distanceBetween = 0;
             int indexOfTarget = -1;

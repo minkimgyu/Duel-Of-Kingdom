@@ -65,6 +65,8 @@ namespace WPP.AI
 
             //ClientData.Instance().towers
 
+            // Position은 이거 참고해서 스폰시키면 됨
+
             //Entity cRightTower = _spawner.Spawn(10, _player1Id, _clientId, new Vector3(10, 1, 6), LandFormation.C);
             //cRightTower.IsLeft(false);
 

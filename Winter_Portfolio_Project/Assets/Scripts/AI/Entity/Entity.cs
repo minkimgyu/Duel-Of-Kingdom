@@ -52,6 +52,7 @@ namespace WPP.AI
         public void ResetId(int ownershipId, int clientId, string networdId) { _ownershipId = ownershipId; _clientId = clientId; _networdId = networdId; }
 
         public virtual void ResetMagicStartPosition(Vector3 pos) { }
+        public virtual float ReturnHpContainerScale() { return 0f; }
 
         public virtual void InitializeListRemover(Action<string> removeAction) { }
         abstract public bool CanAttachHpBar();

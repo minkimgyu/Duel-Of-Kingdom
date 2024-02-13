@@ -116,8 +116,7 @@ namespace WPP.AI.SPAWNER
             // 체력바를 붙일 수 있는 경우에만 진행
             if (spawnedEntity.CanAttachHpBar() == true)
             {
-                HpContainerUI hpContainer = Instantiate(_hpContainerUIPrefab);
-                spawnedEntity.AttachHpBar(hpContainer);
+                SpawnHpContainerUI(spawnedEntity);
             }
 
             spawnedEntity.ResetId(ownershipId, clientId, networkId);
@@ -130,6 +129,16 @@ namespace WPP.AI.SPAWNER
             _spawnedEntities.Add(spawnedEntity);
 
             return spawnedEntity;
+        }
+
+        // 타워는 1, 나머지 오브젝트는 0.5로 진행
+        void SpawnHpContainerUI(Entity entity)
+        {
+            float scaleRatio = entity.ReturnHpContainerScale();
+
+            HpContainerUI hpContainer = Instantiate(_hpContainerUIPrefab);
+            hpContainer.OnScaleChangeRequested(scaleRatio);
+            entity.AttachHpBar(hpContainer);
         }
 
         public void SpawnClockUI(Vector3 pos, float duration)

@@ -75249,7 +75249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00e510cdd4cbed848a190a614ba5960d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _hpContainerUIPrefab: {fileID: 7232610836561858827, guid: b907f72943a4ae0448b47f6485c7a377, type: 3}
+  _hpContainerUIPrefab: {fileID: 8527403038162118059, guid: 91969e704cb4cff468349735ac77c2f0, type: 3}
   _clockUIPrefab: {fileID: 2289537939207672344, guid: 8a157e606a84b1c41b748c1ff3e1f211, type: 3}
   _cMagicProjectileStartPoint: {fileID: 856537803}
   _rMagicProjectileStartPoint: {fileID: 334058205}

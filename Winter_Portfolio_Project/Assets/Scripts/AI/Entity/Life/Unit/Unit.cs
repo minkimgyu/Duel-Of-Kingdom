@@ -41,6 +41,8 @@ namespace WPP.AI.UNIT
 
         protected List<Vector3> _posListForDrawingGizmo = new List<Vector3>(); // 이거는 BT에서 지정해주기
 
+        public override float ReturnHpContainerScale() { return 0.5f; }
+
         protected override void InitializeComponent()
         {
             _moveComponent = GetComponent<MoveComponent>();

@@ -25,6 +25,8 @@ namespace WPP.AI.BUILDING
         [SerializeField] Material blueFlag;
         [SerializeField] Material redFlag;
 
+        public override float ReturnHpContainerScale() { return 1f; }
+
         protected void ResetMatrial(Material material)
         {
             MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
@@ -134,6 +136,8 @@ namespace WPP.AI.BUILDING
 
         // Ready --> Active State로 전환됨
 
+        public override float ReturnHpContainerScale() { return 0.5f; }
+
         public override void ResetDelayAfterSpawn(float delayDuration) { _delayDuration = delayDuration; }
 
         public override void Initialize(int level, string name, float hp, OffsetRect fillOffset, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange, float lifeTime)
@@ -172,6 +176,8 @@ namespace WPP.AI.BUILDING
         protected float _delayDuration = 0; // 스폰 시 일정 시간 딜레이
 
         // Ready --> Active State로 전환됨
+
+        public override float ReturnHpContainerScale() { return 0.5f; }
 
         public override void ResetDelayAfterSpawn(float delayDuration) { _delayDuration = delayDuration; }
 

@@ -31,6 +31,8 @@ namespace WPP.AI.UI
             transform.position = new Vector3(_parentTransform.position.x, yPos, _parentTransform.position.z);
         }
 
+        public void OnScaleChangeRequested(float ratio) => transform.localScale *= ratio;
+
         public void OnVisibleChangeRequested(bool nowShow) => _container.SetActive(nowShow);
         public void OnTxtVisibleRequested(bool nowShow) => _hpTxt.gameObject.SetActive(nowShow);
 

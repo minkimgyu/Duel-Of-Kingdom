@@ -55,6 +55,7 @@ namespace WPP.Battle
         public void StartRegen()
         {
             _regenStarted = true;
+            OnElixirCountChange?.Invoke(_elixirCount);
         }
         public void StopRegen()
         {

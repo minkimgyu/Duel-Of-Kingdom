@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using WPP.AI.STAT;
 using WPP.ClientInfo.Card;
 using WPP.Collection;
 using WPP.FileReader;
@@ -34,6 +35,8 @@ namespace WPP.DeckManagement
         
         private void Start()
         {
+            JsonParser.Instance().LoadAccount();
+            JsonParser.Instance().LoadTowers();
             JsonParser.Instance().LoadDecks();
             JsonParser.Instance().LoadCardCollection();
             JsonParser.Instance().LoadCardInstances();
@@ -71,6 +74,10 @@ namespace WPP.DeckManagement
         {
             return _cardDatas[new(card, level)];
         }
+        public static CardData GetCardData(string name, int level)
+        {
+            return GetCardData(_cards[name], level);
+        }
 
         public static Card GetCard(string name)
         {
@@ -80,6 +87,11 @@ namespace WPP.DeckManagement
         public static Card GetCard (CardData cardData)
         {
             return _cards[cardData.unit._name];
+        }
+    
+        public static BaseStat GetBaseStat(string name, int level)
+        {
+            return GetCardData(name, level).unit;
         }
     }
 }

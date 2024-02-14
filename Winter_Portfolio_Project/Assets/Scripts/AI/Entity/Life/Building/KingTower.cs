@@ -5,6 +5,7 @@ using WPP.AI.ACTION.STATE;
 using WPP.AI.CAPTURE;
 using WPP.AI.FSM;
 using WPP.AI.GRID;
+using WPP.Battle;
 
 namespace WPP.AI.BUILDING
 {
@@ -29,6 +30,7 @@ namespace WPP.AI.BUILDING
 
         public override void Die()
         {
+            BattleManager.Instance().GetPlayerOfEntity(this).TowerSystem.DestroyKingTower();
             // 여기에 게임 종료 시퀀스 넣어주기
             base.Die();
         }

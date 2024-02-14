@@ -6,6 +6,7 @@ using WPP.AI.CAPTURE;
 using WPP.AI.FSM;
 using WPP.AI.GRID;
 using System;
+using WPP.Battle;
 
 namespace WPP.AI.BUILDING
 {
@@ -57,6 +58,9 @@ namespace WPP.AI.BUILDING
                 if (_isLeft) OnTowerConditionChangeRequested?.Invoke(TowerCondition.LeftDestroy);
                 else OnTowerConditionChangeRequested?.Invoke(TowerCondition.RightDestroy);
             }
+
+            if(_isLeft) BattleManager.Instance().GetPlayerOfEntity(this).TowerSystem.DestroyLeftPrincessTower();
+            else BattleManager.Instance().GetPlayerOfEntity(this).TowerSystem.DestroyRightPrincessTower();
 
             base.Die();
             // FillComponent에 이벤트 호출

@@ -35,6 +35,11 @@ namespace WPP.AI.SPAWNER
             _spawnedEntities.Remove(entity);
         }
 
+        public Entity FindSameNetwordIdEntity(string networkId)
+        {
+            return _spawnedEntities.Find(x => x.NetwordId == networkId);
+        }
+
         private static Spawner _instance;
 
         int _spawnCount = 0;
@@ -95,6 +100,8 @@ namespace WPP.AI.SPAWNER
         {
             return (ownershipId + _spawnCount).ToString();
         }
+
+
 
         // entityId 이거를 string로 해서 받기
         Entity ReturnEntity(string name, int ownershipId, Vector3 pos)

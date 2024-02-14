@@ -7,11 +7,12 @@ namespace WPP.Battle.UI
 {
     public class BattleTimerUI : MonoBehaviour
     {
-        [SerializeField] private BattleTimer _battleTimer;
+        private BattleTimer _battleTimer;
         [SerializeField] private TextMeshProUGUI _timerText;
 
         private void OnEnable()
         {
+            _battleTimer = BattleManager.Instance().BattleTimer;
             _battleTimer.OnTimerUpdate += SetTimerText;
         }
         private void OnDisable()

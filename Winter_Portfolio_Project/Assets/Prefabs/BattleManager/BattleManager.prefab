@@ -240,7 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0e7a5a8b6348064f946dc810d2ed5ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _isTest: 1
+  _isTest: 0
   _spawner: {fileID: 0}
   _gridController: {fileID: 0}
   _cameraController: {fileID: 0}

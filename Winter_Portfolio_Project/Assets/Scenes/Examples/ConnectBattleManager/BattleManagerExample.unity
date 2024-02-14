@@ -2543,17 +2543,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4873292686600796, guid: feaafaf134a08984bbe841826f548247, type: 3}
   m_PrefabInstance: {fileID: 52456841}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &52878258 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3818086435176579306, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-  m_PrefabInstance: {fileID: 1081209397}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c733337683686fc4b94334aa66054b41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &54200120
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29172,17 +29161,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4111116904279595642, guid: ee7178cfb7afcd84eb9ba897aaf77a6c, type: 3}
   m_PrefabInstance: {fileID: 757557951}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &759650978 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8960080014794587639, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-  m_PrefabInstance: {fileID: 1081209397}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 220ce2ddaba67b141900745b91032351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &763228945
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41371,6 +41349,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
+      propertyPath: _isTest
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
       propertyPath: _spawner
       value: 
@@ -84829,18 +84811,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2065407674339100901, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
-      propertyPath: _player
-      value: 
-      objectReference: {fileID: 52878258}
-    - target: {fileID: 2065407674339100901, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
-      propertyPath: _opponent
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 2885617055977771011, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
-      propertyPath: _battleTimer
-      value: 
-      objectReference: {fileID: 759650978}
     - target: {fileID: 8377592768621093609, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
       propertyPath: m_Name
       value: BattleSystemUI

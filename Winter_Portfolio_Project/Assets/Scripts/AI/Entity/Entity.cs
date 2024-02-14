@@ -35,8 +35,8 @@ namespace WPP.AI
         /// <summary>
         /// 현재 스폰된 Entity를 동기화시키기 위해서 필요한 Id
         /// </summary>
-        protected string _networdId;
-        public string NetwordId { get { return _networdId; } } // NetwordId 반환
+        protected string _networkId;
+        public string NetwordId { get { return _networkId; } } // NetwordId 반환
 
 
         protected bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
@@ -54,7 +54,7 @@ namespace WPP.AI
         /// <summary>
         /// 이거 사용
         /// </summary>
-        public void ResetId(int ownershipId, int clientId, string networdId) { _ownershipId = ownershipId; _clientId = clientId; _networdId = networdId; }
+        public void ResetId(int ownershipId, int clientId, string networdId) { _ownershipId = ownershipId; _clientId = clientId; _networkId = networdId; }
 
         public virtual void ResetMagicStartPosition(Vector3 pos) { }
         public virtual float ReturnHpContainerScale() { return 0f; }

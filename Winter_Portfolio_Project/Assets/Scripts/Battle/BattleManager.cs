@@ -6,9 +6,11 @@ using WPP.AI.SPAWNER;
 using WPP.Battle.Fsm;
 using WPP.CAMERA;
 using WPP.ClientInfo;
+using WPP.DeckManagement;
 
 namespace WPP.Battle
 {
+    [DefaultExecutionOrder(-100)]
     public class BattleManager : MonoBehaviour
     {
         [SerializeField] bool _isTest = false;
@@ -116,17 +118,17 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
-                // Ready to Battle
-
                 OnStatusChange?.Invoke(fsm.CurrentState);
-                //_player.Init();
+                _deckSystem.Init(DeckManager.CurrentDeck);
+
+                _player.Init();
+                _opponent.Init();
 
                 LandFormation landFormation = ClientData.Instance().LandFormation;
 
                 Debug.Log("LandFormation : " + landFormation);
                 _gridController.Initialize(landFormation);
                 _cameraController.Rotate(landFormation);
-
             }
             else if(step == FsmStep.Update)
             {

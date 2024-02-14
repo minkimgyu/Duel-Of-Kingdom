@@ -7,8 +7,6 @@ namespace WPP.Battle
 {
     public class TowerSystem : MonoBehaviour
     {
-        [SerializeField] private CrownSystem _crownSystem;
-
         private bool _isKingTowerDestroyed;
         private bool _isLeftPrincessTowerDestroyed;
         private bool _isRightPrincessTowerDestroyed;
@@ -26,7 +24,6 @@ namespace WPP.Battle
             DestroyLeftPrincessTower();
             DestroyRightPrincessTower();
 
-            _crownSystem.AddCrown();
             OnKingTowerDestroyed?.Invoke();
         }
 
@@ -36,7 +33,6 @@ namespace WPP.Battle
 
             _isLeftPrincessTowerDestroyed = true;
 
-            _crownSystem.AddCrown();
             OnLeftPrincessTowerDestroyed?.Invoke();
         }
 
@@ -46,7 +42,6 @@ namespace WPP.Battle
 
             _isRightPrincessTowerDestroyed = true;
 
-            _crownSystem.AddCrown();
             OnRightPrincessTowerDestroyed?.Invoke();
         }
     }

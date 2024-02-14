@@ -8,14 +8,14 @@ namespace WPP.Battle.UI
 {
     public class CrownCountUI : MonoBehaviour
     {
-        [SerializeField] private CrownSystem _player;
-        [SerializeField] private CrownSystem _opponent;
-
         [SerializeField] private TextMeshProUGUI _playerText;
         [SerializeField] private TextMeshProUGUI _opponentText;
 
         private void OnEnable()
         {
+            CrownSystem _player = BattleManager.Instance().Player.CrownSystem;
+            CrownSystem _opponent = BattleManager.Instance().Opponent.CrownSystem;
+
             _player.OnCrownCountChange += SetPlayerCrownCount;
             _opponent.OnCrownCountChange += SetOpponentCrownCount;
 

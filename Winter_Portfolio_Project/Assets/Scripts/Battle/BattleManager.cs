@@ -26,6 +26,7 @@ namespace WPP.Battle
         [SerializeField] private BattleTimer _battleTimer;
         [SerializeField] private float _battleLength = 3f;
         [SerializeField] private float _overtimeLength = 2f;
+        public BattleTimer BattleTimer => _battleTimer;
 
         [Header("Deck & Elixir")]
         [SerializeField] private DeckSystem _deckSystem;

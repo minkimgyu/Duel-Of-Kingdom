@@ -59,6 +59,8 @@ namespace WPP.AI
         public virtual void ResetMagicStartPosition(Vector3 pos) { }
         public virtual float ReturnHpContainerScale() { return 0f; }
 
+        public virtual void SynchronizeHP(float hp) { }
+
         public virtual void InitializeListRemover(Action<string> removeAction) { RemoveFromListInSpawnerRequested = removeAction; }
         abstract public bool CanAttachHpBar();
         public virtual void AttachHpBar(HpContainerUI hpContainer) { }
@@ -88,6 +90,8 @@ namespace WPP.AI
         public Action<bool> OnVisibleChangeRequested;
         protected Action<bool> OnTxtVisibleRequested;
         Action OnHpDestroyRequested;
+
+        public override void SynchronizeHP(float hp) { HP = hp; OnHpChangeRequested?.Invoke(hp, _maxHp); }
 
         public override bool CanAttachHpBar() { return true; }
 

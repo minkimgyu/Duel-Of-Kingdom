@@ -62,10 +62,8 @@ namespace WPP.Battle
 
         public event Action<Status> OnStatusChange;
 
-        private Status _status;
-        public Status CurrentStatus => _status;
-
         private Fsm<Status> _fsm;
+        public Status CurrentStatus => _fsm.CurrentState;
 
         private void Awake()
         {
@@ -100,13 +98,14 @@ namespace WPP.Battle
 
         public void StartBattle()
         {
-            if(_status == Status.PreBattle)
+            if(_fsm.CurrentState == Status.PreBattle)
                 _fsm.TransitionTo(Status.Battle);
         }
 
         public void StartOverTime()
         {
-             _fsm.TransitionTo(Status.Overtime);
+            if(_fsm.CurrentState == Status.Battle)
+                _fsm.TransitionTo(Status.Overtime);
         }
 
         public void StartTiebreak()
@@ -143,15 +142,25 @@ namespace WPP.Battle
             {
                 _battleTimer.StartTimer(_battleLength * 60);
                 //_battleTimer.OnTimerEnd += TransitionToOvertime;
-
                 _elixirSystem.SetElixirRegenTime(_battleRegenRate);
                 _elixirSystem.StartRegen();
+
+                _player.CrownSystem.OnCrownCountMax += TransitionToPostBattle;
+                _opponent.CrownSystem.OnCrownCountMax += TransitionToPostBattle;
             }
             else if(step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
                 //_battleTimer.OnTimerEnd -= TransitionToOvertime;
+
+                _player.CrownSystem.OnCrownCountMax -= TransitionToPostBattle;
+                _opponent.CrownSystem.OnCrownCountMax -= TransitionToPostBattle;
             }
+        }
+        private void TransitionToPostBattle()
+        {
+            if(_fsm.CurrentState == Status.Battle)
+                _fsm.TransitionTo(Status.PostBattle);
         }
         /*
         private void TransitionToOvertime()
@@ -202,7 +211,21 @@ namespace WPP.Battle
 
         private void PostBattle(Fsm<Status> fsm, FsmStep step)
         {
-            throw new NotImplementedException();
+            if(step == FsmStep.Enter)
+            {
+                if(_player.CrownSystem.CrownCount > _opponent.CrownSystem.CrownCount)
+                {
+                    Debug.Log("Player Win");
+                }
+                else if(_player.CrownSystem.CrownCount < _opponent.CrownSystem.CrownCount)
+                {
+                    Debug.Log("Opponent Win");
+                }
+                else
+                {
+                    Debug.Log("Tie");
+                }
+            }
         }
     }
 }

@@ -25,13 +25,13 @@ namespace WPP.AI.SPAWNER
         [SerializeField] Transform _rMagicProjectileStartPoint;
 
         [SerializeField] List<Entity> _entityPrefabs;
-        //List<BaseStat> _stats;
-
         [SerializeField] List<Entity> _spawnedEntities;
 
         public void RemoveFromListInSpawner(string networkId)
         {
             Entity entity = _spawnedEntities.Find(x => x.NetwordId == networkId);
+            if (entity == null) return; // 오브젝트가 없다면 return;
+
             _spawnedEntities.Remove(entity);
         }
 
@@ -91,9 +91,9 @@ namespace WPP.AI.SPAWNER
             else return _rMagicProjectileStartPoint.position;
         }
 
-        string ReturnNetworkId()
+        string ReturnNetworkId(int ownershipId)
         {
-            return (ClientData.Instance().player_id_in_game + _spawnCount).ToString();
+            return (ownershipId + _spawnCount).ToString();
         }
 
         // entityId 이거를 string로 해서 받기
@@ -103,7 +103,7 @@ namespace WPP.AI.SPAWNER
             if (entity == null) return null;
 
             _spawnCount++; // 여기서 스폰 카운트를 올려준다.
-            string networkId = ReturnNetworkId(); // 이거를 생성되는 오브젝트에 부여해야한다 --> 따로 서버를 통해서 넘겨서 받아주기
+            string networkId = ReturnNetworkId(ownershipId); // 이거를 생성되는 오브젝트에 부여해야한다 --> 따로 서버를 통해서 넘겨서 받아주기
             // 매개변수로 받아야할 듯?
 
             int clientId = ClientData.Instance().player_id_in_game; // 본인 클라이언트 아이디를 받아와서 넣어준다.
@@ -119,6 +119,7 @@ namespace WPP.AI.SPAWNER
                 SpawnHpContainerUI(spawnedEntity);
             }
 
+            spawnedEntity.InitializeListRemover(RemoveFromListInSpawner);
             spawnedEntity.ResetId(ownershipId, clientId, networkId);
             // 여기에 대기 시간을 추가해준다.
 

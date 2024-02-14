@@ -284,8 +284,9 @@ namespace WPP.AI.BUILDING
             InitializeBT(); // 여기서 초기화 진행
         }
 
-        private void OnDestroy()
+        protected override void OnDestroyRequested()
         {
+            base.OnDestroyRequested();
             OnReleaseRequested(transform.position, _fillOffset, IsMyEntity);
         }
 

@@ -7,33 +7,42 @@ namespace WPP.Battle
 {
     public class TowerSystem : MonoBehaviour
     {
-        [SerializeField] private List<Tower> _crownTowers;
-        [SerializeField] private Tower _kingTower;
+        private bool _isKingTowerDestroyed;
+        private bool _isLeftPrincessTowerDestroyed;
+        private bool _isRightPrincessTowerDestroyed;
 
-        public event System.Action<Tower> OnCrownTowerDestroyed;
-        public event System.Action<Tower> OnKingTowerDestroyed;
+        public event Action OnKingTowerDestroyed;
+        public event Action OnLeftPrincessTowerDestroyed;
+        public event Action OnRightPrincessTowerDestroyed;
 
-
-        private void OnEnable()
+        public void DestroyKingTower()
         {
-            _kingTower.OnDestroyed += OnKingTowerDestroyHandler;
+            if (_isKingTowerDestroyed) return;
+
+            _isKingTowerDestroyed = true;
+
+            DestroyLeftPrincessTower();
+            DestroyRightPrincessTower();
+
+            OnKingTowerDestroyed?.Invoke();
         }
-        private void OnDisable()
+
+        public void DestroyLeftPrincessTower()
         {
-            _kingTower.OnDestroyed -= OnKingTowerDestroyHandler;
+            if (_isLeftPrincessTowerDestroyed) return;
+
+            _isLeftPrincessTowerDestroyed = true;
+
+            OnLeftPrincessTowerDestroyed?.Invoke();
         }
 
-        private void OnKingTowerDestroyHandler(Tower tower)
+        public void DestroyRightPrincessTower()
         {
-            DestoyAllCrownTower();
-        }
+            if (_isRightPrincessTowerDestroyed) return;
 
-        private void DestoyAllCrownTower()
-        {
-            foreach (var tower in _crownTowers)
-            {
-                tower.DestroyTower();
-            }
+            _isRightPrincessTowerDestroyed = true;
+
+            OnRightPrincessTowerDestroyed?.Invoke();
         }
     }
 }

@@ -33,8 +33,6 @@ namespace WPP.Battle.UI
         [Header("Elixir")]
         [SerializeField] private Slider _elixirSlider;
         [SerializeField] private TextMeshProUGUI _elixirText;
-
-        private BattlePlayer _player;
         private enum State
         {
             Idle,
@@ -54,12 +52,10 @@ namespace WPP.Battle.UI
         }
 
         private void OnEnable() {
-            _player = _battleManager.Player;
-
             _battleManager.OnStatusChange += OnStatusChange;
 
-            _player.Deck.OnHandChange += OnCardDrawn;
-            _player.Elixir.OnElixirCountChange += SetElixirBar;
+            _battleManager.DeckSystem.OnHandChange += OnCardDrawn;
+            _battleManager.ElixirSystem.OnElixirCountChange += SetElixirBar;
         }
 
         private void OnDisable()
@@ -85,8 +81,8 @@ namespace WPP.Battle.UI
         {
             _fsm.OnFsmStep(FsmStep.Update);
 
-            if (_player.Deck.LeftCooldown > 0f)
-                _cooldown.text = _player.Deck.LeftCooldown.ToString("F1");
+            if (_battleManager.DeckSystem.LeftCooldown > 0f)
+                _cooldown.text = _battleManager.DeckSystem.LeftCooldown.ToString("F1");
             else _cooldown.text = "";
         }
 
@@ -150,10 +146,10 @@ namespace WPP.Battle.UI
             if (step == FsmStep.Enter)
             {
                 _cards[_selectedCardIndex].gameObject.SetActive(false);
-                _player.Deck.OnCardUsed += OnCardUsed;
+                _battleManager.DeckSystem.OnCardUsed += OnCardUsed;
 
-                Card card = _player.Deck.Hand[_selectedCardIndex];
-                int level = _player.Deck.GetCardLevel(_selectedCardIndex);
+                Card card = _battleManager.DeckSystem.Hand[_selectedCardIndex];
+                int level = _battleManager.DeckSystem.GetCardLevel(_selectedCardIndex);
                 Debug.Log("Placing Card name : " + name + ", lv : " + level);
                 CardData selectedCardData = CardCollection.Instance().FindCard(card.id, level);
 
@@ -180,7 +176,7 @@ namespace WPP.Battle.UI
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (_player.Deck.UseCard(_selectedCardIndex))
+                    if (_battleManager.DeckSystem.UseCard(_selectedCardIndex))
                     {
                         return;
                     }
@@ -197,7 +193,7 @@ namespace WPP.Battle.UI
                     _cards[_selectedCardIndex].gameObject.SetActive(true);
                 }
 
-                _player.Deck.OnCardUsed -= OnCardUsed;
+                _battleManager.DeckSystem.OnCardUsed -= OnCardUsed;
 
                 _gridController.FSM.OnCancelSelect();
             }
@@ -218,7 +214,7 @@ namespace WPP.Battle.UI
 
         private void OnCardDrawn()
         {
-            var hand = _player.Deck.Hand;
+            var hand = _battleManager.DeckSystem.Hand;
 
             for (int i = 0; i < _cards.Length; i++)
             {
@@ -238,8 +234,8 @@ namespace WPP.Battle.UI
                 }
             }
 
-            _next.text = _player.Deck.Next.id;
-            _nextElixir.text = _player.Deck.Next.cost.ToString();
+            _next.text = _battleManager.DeckSystem.Next.id;
+            _nextElixir.text = _battleManager.DeckSystem.Next.cost.ToString();
         }
 
         private void UpdateCardTransform()

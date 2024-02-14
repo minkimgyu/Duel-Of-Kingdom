@@ -1,13 +1,16 @@
 using System;
 using UnityEngine;
+using WPP.AI;
 using WPP.AI.GRID;
 using WPP.AI.SPAWNER;
 using WPP.Battle.Fsm;
 using WPP.CAMERA;
 using WPP.ClientInfo;
+using WPP.DeckManagement;
 
 namespace WPP.Battle
 {
+    [DefaultExecutionOrder(-100)]
     public class BattleManager : MonoBehaviour
     {
         [SerializeField] bool _isTest = false;
@@ -21,16 +24,23 @@ namespace WPP.Battle
         [SerializeField] private float _battleLength = 3f;
         [SerializeField] private float _overtimeLength = 2f;
 
+        [Header("Deck & Elixir")]
+        [SerializeField] private DeckSystem _deckSystem;
+        [SerializeField] private ElixirSystem _elixirSystem;
+        public DeckSystem DeckSystem => _deckSystem;
+        public ElixirSystem ElixirSystem => _elixirSystem;
+
         [Header("Player")]
         [SerializeField] private BattlePlayer _player;
+        [SerializeField] private BattlePlayer _opponent;
         public BattlePlayer Player => _player;
+        public BattlePlayer Opponent => _opponent;
+        public BattlePlayer GetPlayerOfEntity(Entity entity)
+        {
+            int playerID = ClientData.Instance().player_id_in_game;
 
-        [Header("CrownSystem")]
-        [SerializeField] private CrownSystem _playerCrown;
-        [SerializeField] private CrownSystem _opponentCrown;
-        public CrownSystem PlayerCrown => _playerCrown;
-        public CrownSystem OpponentCrown => _opponentCrown;
-
+            return (entity.OwnershipId == playerID) ? _player : _opponent;
+        }
 
         [Header("Elixir System")]
         [SerializeField] private float _battleRegenRate = 2.8f;
@@ -48,14 +58,7 @@ namespace WPP.Battle
 
         private static BattleManager _instance;
 
-        public static BattleManager Instance()
-        {
-            if(_instance == null )
-            {
-                return null;
-            }
-            return _instance;
-        }
+        public static BattleManager Instance() => _instance;
 
         public event Action<Status> OnStatusChange;
 
@@ -115,17 +118,17 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
-                // Ready to Battle
-
                 OnStatusChange?.Invoke(fsm.CurrentState);
+                _deckSystem.Init(DeckManager.CurrentDeck);
+
                 _player.Init();
+                _opponent.Init();
 
                 LandFormation landFormation = ClientData.Instance().LandFormation;
 
                 Debug.Log("LandFormation : " + landFormation);
                 _gridController.Initialize(landFormation);
                 _cameraController.Rotate(landFormation);
-
             }
             else if(step == FsmStep.Update)
             {
@@ -139,22 +142,23 @@ namespace WPP.Battle
             if (step == FsmStep.Enter)
             {
                 _battleTimer.StartTimer(_battleLength * 60);
-                _battleTimer.OnTimerEnd += TransitionToOvertime;
+                //_battleTimer.OnTimerEnd += TransitionToOvertime;
 
-                _player.Elixir.SetElixirRegenTime(_battleRegenRate);
-                _player.Elixir.StartRegen();
+                _elixirSystem.SetElixirRegenTime(_battleRegenRate);
+                _elixirSystem.StartRegen();
             }
             else if(step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
-                _battleTimer.OnTimerEnd -= TransitionToOvertime;
+                //_battleTimer.OnTimerEnd -= TransitionToOvertime;
             }
         }
+        /*
         private void TransitionToOvertime()
         {
             _fsm.TransitionTo(Status.Overtime);
         }
-
+        */
 
         private bool _isOvertimeSecondHalf = false;
 
@@ -165,7 +169,7 @@ namespace WPP.Battle
                 _battleTimer.StartTimer(_overtimeLength * 60);
                 _battleTimer.OnTimerEnd += TransitionToTiebreaker;
 
-                _player.Elixir.SetElixirRegenTime(_overtimeRegenRate1);
+                _elixirSystem.SetElixirRegenTime(_overtimeRegenRate1);
             }
             else if(step == FsmStep.Update)
             {
@@ -173,7 +177,7 @@ namespace WPP.Battle
                 {
                     if (_battleTimer.TimeLeft <= _overtimeLength * 60f * 0.5f)
                     {
-                        _player.Elixir.SetElixirRegenTime(_overtimeRegenRate2);
+                        _elixirSystem.SetElixirRegenTime(_overtimeRegenRate2);
                         _isOvertimeSecondHalf = true;
                     }
                 }
@@ -183,7 +187,7 @@ namespace WPP.Battle
                 _battleTimer.PauseTimer();
                 _battleTimer.OnTimerEnd -= TransitionToTiebreaker;
 
-                _player.Elixir.StopRegen();
+                _elixirSystem.StopRegen();
             }
         }
         void TransitionToTiebreaker()

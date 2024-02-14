@@ -10,7 +10,7 @@ namespace WPP.Battle
         public event System.Action OnCrownCountMax;
 
         private int _maxCrownCount = 3;
-        private int _crownCount = 3;
+        private int _crownCount = 0;
         public int CrownCount => _crownCount;
 
         public void AddCrown()

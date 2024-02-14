@@ -13,6 +13,13 @@ using UnityEditor;
 
 namespace WPP.Battle
 {
+    public enum BattleResult
+    {
+        Win,
+        Lose,
+        Tie
+    }
+
     [DefaultExecutionOrder(-100)]
     public class BattleManager : MonoBehaviour
     {
@@ -65,6 +72,7 @@ namespace WPP.Battle
         public static BattleManager Instance() => _instance;
 
         public event Action<Status> OnStatusChange;
+        public event Action<BattleResult> OnGameOver; 
 
         private Fsm<Status> _fsm;
         public Status CurrentStatus => _fsm.CurrentState;
@@ -222,18 +230,25 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
+                BattleResult result;
+
                 if(_player.CrownSystem.CrownCount > _opponent.CrownSystem.CrownCount)
                 {
                     Debug.Log("Player Win");
+                    result = BattleResult.Win;
                 }
                 else if(_player.CrownSystem.CrownCount < _opponent.CrownSystem.CrownCount)
                 {
                     Debug.Log("Opponent Win");
+                    result = BattleResult.Lose;
                 }
                 else
                 {
                     Debug.Log("Tie");
+                    result = BattleResult.Tie;
                 }
+
+                OnGameOver?.Invoke(result);
             }
         }
     }

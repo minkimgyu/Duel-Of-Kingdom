@@ -24,27 +24,26 @@ namespace WPP.DeckManagement
         private static bool isInitialized = false;
         private void Awake()
         {
-            if(isInitialized)
+            if(!isInitialized)
             {
-                Destroy(gameObject);
-                return;
+
+                JsonParser.Instance().LoadAccount();
+                JsonParser.Instance().LoadTowers();
+                JsonParser.Instance().LoadDecks();
+                JsonParser.Instance().LoadCardCollection();
+                JsonParser.Instance().LoadCardInstances();
+
+                Load();
+                DeckManager.LoadPlayerDeck();
+
+                isInitialized = true;
             }
-            isInitialized = true;
         }
         
         private void Start()
         {
-            JsonParser.Instance().LoadAccount();
-            JsonParser.Instance().LoadTowers();
-            JsonParser.Instance().LoadDecks();
-            JsonParser.Instance().LoadCardCollection();
-            JsonParser.Instance().LoadCardInstances();
-
-            Load();
-
-            DeckManager.LoadPlayerDeck();
-
             _onCardDatabaseLoaded?.Invoke();
+            Destroy(gameObject);
         }
 
         // TODO : fill card data

@@ -228,10 +228,11 @@ namespace WPP.AI.SPAWNER
             Entity entity = ReturnEntity(cardData.unit._name, ownershipId, pos);
             if (entity == null) return null;
 
+            entity.ResetDelayAfterSpawn(duration);
+
             if (cardData.unit == null) return null;
             cardData.unit.ResetData(entity);
 
-            entity.ResetDelayAfterSpawn(duration);
             return entity;
         }
 
@@ -244,7 +245,7 @@ namespace WPP.AI.SPAWNER
             float duration = cardData.duration;
 
             int unitCount = cardData.spawnData.spawnUnitCount;
-            Vector2[] offset = cardData.spawnData.spawnOffset;
+            SerializableVector2[] offset = cardData.spawnData.spawnOffset;
 
             Entity[] spawnedEntities = new Entity[unitCount];
 

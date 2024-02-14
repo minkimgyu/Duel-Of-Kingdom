@@ -47,5 +47,24 @@ namespace WPP.DeckManagement
         {
             selectedDeckIndex = index;
         }
+    
+        public static void SaveCurrentDeck()
+        {
+            var deckToModify = ClientData.Instance().decks.decks[selectedDeckIndex];
+            deckToModify.cards.Clear();
+
+            for (int i = 0; i < CurrentDeck.Cards.Count; i++)
+            {
+                var card = CurrentDeck.Cards[i];
+                if (card == Card.Empty)
+                {
+                    continue;
+                }
+
+                var cardData = CardDatabase.GetCardData(card, CurrentDeck.GetCardLevel(i));
+                if(cardData != null) 
+                    deckToModify.cards.Add(cardData);
+            }
+        }
     }
 }

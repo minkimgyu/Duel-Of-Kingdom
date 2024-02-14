@@ -15,6 +15,16 @@ namespace WPP.DeckManagement
         private int currentDeck;
         public Deck SelectedDeck => _deck[currentDeck];
 
+        private void Awake()
+        {
+            OnDeckChanged += SaveDeck;
+        }
+
+        private void OnDestroy()
+        {
+            OnDeckChanged -= SaveDeck;
+        }
+
         public void LoadDeck()
         {
             _deck = new Deck[DeckManager.Decks.Count];
@@ -137,6 +147,19 @@ namespace WPP.DeckManagement
                 }
             }
             return false;
+        }
+    
+        public void SaveDeck(Deck deck)
+        {
+            foreach (var card in deck.Cards)
+            {
+                if (card == Card.Empty)
+                {
+                    Debug.Log("Deck is not full, not saving");
+                    return;
+                }
+            }
+            DeckManager.SaveCurrentDeck();
         }
     }
 }

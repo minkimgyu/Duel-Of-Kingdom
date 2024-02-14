@@ -65,7 +65,6 @@ namespace WPP.Battle.UI
 
         private void OnStatusChange(BattleManager.Status status)
         {
-            Debug.Log("BattleDeckUIController OnStatusChange : " + status);
             if(status == BattleManager.Status.PreBattle)
             {
                 Init();

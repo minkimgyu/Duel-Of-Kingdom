@@ -125,7 +125,6 @@ namespace WPP.Battle
 
                 LandFormation landFormation = ClientData.Instance().LandFormation;
 
-                Debug.Log("LandFormation : " + landFormation);
                 _gridController.Initialize(landFormation);
                 _cameraController.Rotate(landFormation);
             }

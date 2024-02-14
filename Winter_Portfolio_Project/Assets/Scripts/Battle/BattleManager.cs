@@ -7,6 +7,9 @@ using WPP.Battle.Fsm;
 using WPP.CAMERA;
 using WPP.ClientInfo;
 using WPP.DeckManagement;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace WPP.Battle
 {
@@ -139,34 +142,30 @@ namespace WPP.Battle
         {
             if (step == FsmStep.Enter)
             {
+                print("Battle Start");
+
                 _battleTimer.StartTimer(_battleLength * 60);
                 //_battleTimer.OnTimerEnd += TransitionToOvertime;
                 _elixirSystem.SetElixirRegenTime(_battleRegenRate);
                 _elixirSystem.StartRegen();
 
-                _player.CrownSystem.OnCrownCountMax += TransitionToPostBattle;
-                _opponent.CrownSystem.OnCrownCountMax += TransitionToPostBattle;
+                _player.CrownSystem.OnCrownCountMax += OnBattleStatusEndCondition;
+                _opponent.CrownSystem.OnCrownCountMax += OnBattleStatusEndCondition;
             }
             else if(step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
                 //_battleTimer.OnTimerEnd -= TransitionToOvertime;
 
-                _player.CrownSystem.OnCrownCountMax -= TransitionToPostBattle;
-                _opponent.CrownSystem.OnCrownCountMax -= TransitionToPostBattle;
+                _player.CrownSystem.OnCrownCountMax -= OnBattleStatusEndCondition;
+                _opponent.CrownSystem.OnCrownCountMax -= OnBattleStatusEndCondition;
             }
         }
-        private void TransitionToPostBattle()
+        private void OnBattleStatusEndCondition()
         {
             if(_fsm.CurrentState == Status.Battle)
                 _fsm.TransitionTo(Status.PostBattle);
         }
-        /*
-        private void TransitionToOvertime()
-        {
-            _fsm.TransitionTo(Status.Overtime);
-        }
-        */
 
         private bool _isOvertimeSecondHalf = false;
 
@@ -175,9 +174,13 @@ namespace WPP.Battle
             if(step == FsmStep.Enter)
             {
                 _battleTimer.StartTimer(_overtimeLength * 60);
-                _battleTimer.OnTimerEnd += TransitionToTiebreaker;
+                _battleTimer.OnTimerEnd += OnOverTimeStatusEndCondition;
+                //_battleTimer.OnTimerEnd += TransitionToTiebreaker;
 
                 _elixirSystem.SetElixirRegenTime(_overtimeRegenRate1);
+
+                _player.CrownSystem.OnCrownCountChange += OnOverTimeStatusEndCondition;
+                _opponent.CrownSystem.OnCrownCountChange += OnOverTimeStatusEndCondition;
             }
             else if(step == FsmStep.Update)
             {
@@ -193,15 +196,21 @@ namespace WPP.Battle
             else if (step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
-                _battleTimer.OnTimerEnd -= TransitionToTiebreaker;
+                _battleTimer.OnTimerEnd -= OnOverTimeStatusEndCondition;
+                //_battleTimer.OnTimerEnd -= TransitionToTiebreaker;
 
                 _elixirSystem.StopRegen();
+
+                _player.CrownSystem.OnCrownCountChange -= OnOverTimeStatusEndCondition;
+                _opponent.CrownSystem.OnCrownCountChange -= OnOverTimeStatusEndCondition;
             }
         }
-        void TransitionToTiebreaker()
+        private void OnOverTimeStatusEndCondition()
         {
-            _fsm.TransitionTo(Status.Tiebreaker);
+            if (_fsm.CurrentState == Status.Overtime)
+                _fsm.TransitionTo(Status.PostBattle);
         }
+        private void OnOverTimeStatusEndCondition(int _) => OnOverTimeStatusEndCondition();
 
         private void Tiebreaker(Fsm<Status> fsm, FsmStep step)
         {
@@ -227,4 +236,55 @@ namespace WPP.Battle
             }
         }
     }
+
+#if UNITY_EDITOR
+    [CustomEditor(typeof(BattleManager))]
+    public class BattleManagerEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+
+            if (!Application.isPlaying) return;
+            var battleManager = (BattleManager)target;
+
+            EditorGUILayout.Space();
+
+            if (GUILayout.Button("Start Overtime"))
+            {
+                battleManager.StartOverTime();
+            }
+
+            EditorGUILayout.LabelField("Player Towers", EditorStyles.boldLabel);
+
+            if (GUILayout.Button("Destroy Left Princess Tower"))
+            {
+                battleManager.Player.TowerSystem.DestroyLeftPrincessTower();
+            }
+            if(GUILayout.Button("Destroy Right Princess Tower"))
+            {
+                battleManager.Player.TowerSystem.DestroyRightPrincessTower();
+            }
+            if (GUILayout.Button("Destroy King Tower"))
+            {
+                battleManager.Player.TowerSystem.DestroyKingTower();
+            }
+
+            EditorGUILayout.LabelField("Opponent Towers", EditorStyles.boldLabel);
+
+            if (GUILayout.Button("Destroy Left Princess Tower"))
+            {
+                battleManager.Opponent.TowerSystem.DestroyLeftPrincessTower();
+            }
+            if (GUILayout.Button("Destroy Right Princess Tower"))
+            {
+                battleManager.Opponent.TowerSystem.DestroyRightPrincessTower();
+            }
+            if (GUILayout.Button("Destroy King Tower"))
+            {
+                battleManager.Opponent.TowerSystem.DestroyKingTower();
+            }
+        }
+    }
+#endif
 }

@@ -19,6 +19,7 @@ using WPP.AI.SPAWNER;
 using WPP.Collection;
 using WPP.DeckManagement;
 using WPP.AI;
+using WPP.AI.STAT;
 
 namespace WPP.Network
 {
@@ -374,13 +375,13 @@ namespace WPP.Network
             float duration = cardData.duration;
 
             int unitCount = cardData.spawnData.spawnUnitCount;
-            Vector2[] offset = cardData.spawnData.spawnOffset;
+            SerializableVector2[] offset = cardData.spawnData.spawnOffset;
 
             Entity[] spawnedEntities = new Entity[unitCount];
 
             for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
             Spawner.Instance().SpawnClockUI(pos, duration);

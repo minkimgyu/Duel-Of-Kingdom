@@ -25,13 +25,13 @@ namespace WPP.AI.SPAWNER
         [SerializeField] Transform _rMagicProjectileStartPoint;
 
         [SerializeField] List<Entity> _entityPrefabs;
-        //List<BaseStat> _stats;
-
         [SerializeField] List<Entity> _spawnedEntities;
 
         public void RemoveFromListInSpawner(string networkId)
         {
             Entity entity = _spawnedEntities.Find(x => x.NetwordId == networkId);
+            if (entity == null) return; // 오브젝트가 없다면 return;
+
             _spawnedEntities.Remove(entity);
         }
 
@@ -119,6 +119,7 @@ namespace WPP.AI.SPAWNER
                 SpawnHpContainerUI(spawnedEntity);
             }
 
+            spawnedEntity.InitializeListRemover(RemoveFromListInSpawner);
             spawnedEntity.ResetId(ownershipId, clientId, networkId);
             // 여기에 대기 시간을 추가해준다.
 

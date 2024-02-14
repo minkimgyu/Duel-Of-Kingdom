@@ -41,6 +41,11 @@ namespace WPP.AI
 
         protected bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
 
+        Action<string> RemoveFromListInSpawnerRequested;
+
+        private void OnDestroy() => OnDestroyRequested();
+        protected virtual void OnDestroyRequested() => RemoveFromListInSpawnerRequested?.Invoke(NetwordId);
+
         /// <summary>
         /// 사용되지 않음
         /// </summary>
@@ -54,7 +59,7 @@ namespace WPP.AI
         public virtual void ResetMagicStartPosition(Vector3 pos) { }
         public virtual float ReturnHpContainerScale() { return 0f; }
 
-        public virtual void InitializeListRemover(Action<string> removeAction) { }
+        public virtual void InitializeListRemover(Action<string> removeAction) { RemoveFromListInSpawnerRequested = removeAction; }
         abstract public bool CanAttachHpBar();
         public virtual void AttachHpBar(HpContainerUI hpContainer) { }
         protected virtual void InitializeComponent() { }
@@ -83,9 +88,6 @@ namespace WPP.AI
         public Action<bool> OnVisibleChangeRequested;
         protected Action<bool> OnTxtVisibleRequested;
         Action OnHpDestroyRequested;
-
-        Action<string> RemoveFromListInSpawnerRequested;
-        public override void InitializeListRemover(Action<string> removeAction) { RemoveFromListInSpawnerRequested = removeAction; }
 
         public override bool CanAttachHpBar() { return true; }
 
@@ -121,7 +123,6 @@ namespace WPP.AI
             if (IsDie == true) return;
             Destroy(gameObject);
             OnHpDestroyRequested?.Invoke();
-            RemoveFromListInSpawnerRequested?.Invoke(NetwordId);
         }
 
         private void OnDrawGizmos() => DrawGizmo();

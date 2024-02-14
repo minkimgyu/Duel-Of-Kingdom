@@ -132,8 +132,8 @@ namespace WPP.Battle
                 OnStatusChange?.Invoke(fsm.CurrentState);
                 _deckSystem.Init(DeckManager.CurrentDeck);
 
-                _player.Init();
-                _opponent.Init();
+                _player.Init(true);
+                _opponent.Init(false);
 
                 LandFormation landFormation = ClientData.Instance().LandFormation;
 

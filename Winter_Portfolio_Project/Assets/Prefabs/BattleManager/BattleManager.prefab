@@ -348,6 +348,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5526849473138464546, guid: 8c569840e67c9874bbd07a5ecf8814ca, type: 3}
+      propertyPath: _enemy
+      value: 
+      objectReference: {fileID: 5992912074745654270}
     - target: {fileID: 7497872146282060531, guid: 8c569840e67c9874bbd07a5ecf8814ca, type: 3}
       propertyPath: m_Name
       value: Player
@@ -421,6 +425,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5526849473138464546, guid: 8c569840e67c9874bbd07a5ecf8814ca, type: 3}
+      propertyPath: _enemy
+      value: 
+      objectReference: {fileID: 6143170114942748760}
     - target: {fileID: 7497872146282060531, guid: 8c569840e67c9874bbd07a5ecf8814ca, type: 3}
       propertyPath: m_Name
       value: Opponent

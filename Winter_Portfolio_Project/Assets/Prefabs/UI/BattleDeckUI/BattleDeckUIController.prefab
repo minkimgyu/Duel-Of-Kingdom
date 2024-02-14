@@ -1615,8 +1615,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7b24497f55574842b262f161f125532, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _deckSystem: {fileID: 0}
-  _elixirSystem: {fileID: 0}
+  _battleManager: {fileID: 0}
+  _gridController: {fileID: 0}
+  _spawner: {fileID: 0}
+  _cardSection: {fileID: 7436250785264907451}
   _cards:
   - {fileID: 7587042573481301850}
   - {fileID: 7005605786351889961}

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using WPP.AI.STAT;
 
 namespace WPP.ClientInfo.Card
 {
@@ -14,6 +15,6 @@ namespace WPP.ClientInfo.Card
     {
         public SpawnType type;
         public int spawnUnitCount;
-        public Vector2[] spawnOffset;
+        public SerializableVector2[] spawnOffset;
     }
 }

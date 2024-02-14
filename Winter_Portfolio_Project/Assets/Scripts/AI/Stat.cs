@@ -22,6 +22,20 @@ namespace WPP.AI.STAT
         public Vector3 ConvertToV3() { return new Vector3(_x, _y, _z); }
     }
 
+    [Serializable]
+    public struct SerializableVector2
+    {
+        public float _x, _y;
+
+        public SerializableVector2(float x, float y)
+        {
+            _x = x;
+            _y = y;
+        }
+
+        public Vector2 ConvertToV2() { return new Vector2(_x, _y); }
+    }
+
 
     // json 데이터를 Stat 형태로 파싱해서 가져오기
     [Serializable]

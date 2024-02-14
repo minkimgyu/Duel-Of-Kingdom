@@ -40079,17 +40079,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4234351233338361949, guid: 14bd39015f913514493e9d0481dbf9ed, type: 3}
   m_PrefabInstance: {fileID: 1043873515}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1045079052 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8399826785356670087, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-  m_PrefabInstance: {fileID: 1081209397}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c733337683686fc4b94334aa66054b41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1045252051
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41383,17 +41372,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-      propertyPath: _isTest
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
       propertyPath: _spawner
       value: 
       objectReference: {fileID: 1923023153}
-    - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-      propertyPath: _opponent
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2472082171870715694, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
       propertyPath: _gridController
       value: 
@@ -75276,6 +75257,7 @@ MonoBehaviour:
   - {fileID: 6359415894939427762, guid: 280915dc225551c4780aaadb77e043be, type: 3}
   - {fileID: 8401401061194717960, guid: 206addee58a5fb24c9bd5e5c678b0ff7, type: 3}
   - {fileID: 508461809780634744, guid: 2b6ba63ce1dddab4881b10b851d75776, type: 3}
+  _spawnedEntities: []
 --- !u!1 &1923549167
 GameObject:
   m_ObjectHideFlags: 0
@@ -84824,7 +84806,7 @@ PrefabInstance:
     - target: {fileID: 2065407674339100901, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
       propertyPath: _opponent
       value: 
-      objectReference: {fileID: 1045079052}
+      objectReference: {fileID: 0}
     - target: {fileID: 2885617055977771011, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
       propertyPath: _battleTimer
       value: 

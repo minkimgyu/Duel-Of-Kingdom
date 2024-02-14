@@ -7,33 +7,47 @@ namespace WPP.Battle
 {
     public class TowerSystem : MonoBehaviour
     {
-        [SerializeField] private List<Tower> _crownTowers;
-        [SerializeField] private Tower _kingTower;
+        [SerializeField] private CrownSystem _crownSystem;
 
-        public event System.Action<Tower> OnCrownTowerDestroyed;
-        public event System.Action<Tower> OnKingTowerDestroyed;
+        private bool _isKingTowerDestroyed;
+        private bool _isLeftPrincessTowerDestroyed;
+        private bool _isRightPrincessTowerDestroyed;
 
+        public event Action OnKingTowerDestroyed;
+        public event Action OnLeftPrincessTowerDestroyed;
+        public event Action OnRightPrincessTowerDestroyed;
 
-        private void OnEnable()
+        public void DestroyKingTower()
         {
-            _kingTower.OnDestroyed += OnKingTowerDestroyHandler;
+            if (_isKingTowerDestroyed) return;
+
+            _isKingTowerDestroyed = true;
+
+            DestroyLeftPrincessTower();
+            DestroyRightPrincessTower();
+
+            _crownSystem.AddCrown();
+            OnKingTowerDestroyed?.Invoke();
         }
-        private void OnDisable()
+
+        public void DestroyLeftPrincessTower()
         {
-            _kingTower.OnDestroyed -= OnKingTowerDestroyHandler;
+            if (_isLeftPrincessTowerDestroyed) return;
+
+            _isLeftPrincessTowerDestroyed = true;
+
+            _crownSystem.AddCrown();
+            OnLeftPrincessTowerDestroyed?.Invoke();
         }
 
-        private void OnKingTowerDestroyHandler(Tower tower)
+        public void DestroyRightPrincessTower()
         {
-            DestoyAllCrownTower();
-        }
+            if (_isRightPrincessTowerDestroyed) return;
 
-        private void DestoyAllCrownTower()
-        {
-            foreach (var tower in _crownTowers)
-            {
-                tower.DestroyTower();
-            }
+            _isRightPrincessTowerDestroyed = true;
+
+            _crownSystem.AddCrown();
+            OnRightPrincessTowerDestroyed?.Invoke();
         }
     }
 }

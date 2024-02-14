@@ -5,21 +5,11 @@ namespace WPP.Battle
 {
     public class BattlePlayer : MonoBehaviour
     {
-        [Header("Tower System")]
+        [SerializeField] private CrownSystem _crownSystem;
         [SerializeField] private TowerSystem _towerSystem;
-        [Header("Deck System")]
-        [SerializeField] private DeckSystem _deckSystem;
-        [Header("Elixir System")]
-        [SerializeField] private ElixirSystem _elixirSystem;
 
-        public TowerSystem Tower => _towerSystem;
-        public DeckSystem Deck => _deckSystem;
-        public ElixirSystem Elixir => _elixirSystem;
-
-        public void Init()
-        {
-            _deckSystem.Init(DeckManager.CurrentDeck);
-        }
+        public CrownSystem CrownSystem => _crownSystem;
+        public TowerSystem TowerSystem => _towerSystem;
     }
 }
 

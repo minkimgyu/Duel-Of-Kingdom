@@ -50,10 +50,14 @@ namespace WPP.Battle.UI
                 _playerWinnerText.SetActive(true);
                 _opponentWinnerText.SetActive(false);
             }
-            else
+            else if (result == BattleResult.Lose)
             {
                 _opponentWinnerText.SetActive(true);
                 _playerWinnerText.SetActive(false);
+            } else
+            {
+                _playerWinnerText.SetActive(false);
+                _opponentWinnerText.SetActive(false);
             }
         }
     }

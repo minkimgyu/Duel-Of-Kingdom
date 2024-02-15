@@ -268,6 +268,17 @@ namespace WPP.AI.SPAWNER
             return spawnedEntities;
         }
 
+        public Entity[] Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
+        {
+            for (int i = 0; i < offsets.Length; i++)
+            {
+                ClientTCP.Instance().SpawnCard(cardId, level, ownershipId, pos + offsets[i]);
+            }
+
+            return new Entity[0];
+        }
+
+
 
         /// <summary>
         /// 카드로 스폰시키지 않는 경우 ex) 타워

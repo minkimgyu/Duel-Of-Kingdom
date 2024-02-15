@@ -44,6 +44,7 @@ namespace WPP.Network
     {
         P_REQUEST_SPAWN_CARD = 30,
         P_REQUEST_SPAWN_TOWER,
+        P_REQUEST_SPAWN_UNIT,
         P_REQUEST_SYNCHRONIZATION,
         P_REQUEST_DESTROY_UNIT,
     }

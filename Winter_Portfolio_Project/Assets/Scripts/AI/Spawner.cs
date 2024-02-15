@@ -270,9 +270,13 @@ namespace WPP.AI.SPAWNER
 
         public Entity[] Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
         {
+            CardData cardData = CardCollection.Instance().FindCard(cardId, level);
+            float duration = cardData.duration;
+
             for (int i = 0; i < offsets.Length; i++)
             {
-                ClientTCP.Instance().SpawnCard(cardId, level, ownershipId, pos + offsets[i]);
+                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y)); // test
+                ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
             }
 
             return new Entity[0];

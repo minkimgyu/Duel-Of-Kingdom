@@ -79,6 +79,7 @@ namespace WPP.Network
 
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnUsingUnitData);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, SynchronizeUnits);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_DESTROY_UNIT, DestroyUnit);
         }

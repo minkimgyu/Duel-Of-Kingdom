@@ -7,6 +7,7 @@ using UnityEngine;
 using WPP.DeckManagement;
 using WPP.RoomInfo;
 using WPP.ClientInfo;
+using WPP.DeckManagement.UI;
 
 namespace WPP.Network
 {
@@ -352,47 +353,49 @@ namespace WPP.Network
             }
         }
 
-//        public void SpawnCard(Card card, int level, int ownershipId, Vector3 pos)
-//        {
-//            ByteBuffer bufferToSend = new ByteBuffer();
-//            bufferToSend.WriteString(card.id);
-//            bufferToSend.WriteInteger(level);
-//            bufferToSend.WriteInteger(ownershipId);
-//            bufferToSend.WriteVector3(pos);
-//            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
+        //        public void SpawnCard(Card card, int level, int ownershipId, Vector3 pos)
+        //        {
+        //            ByteBuffer bufferToSend = new ByteBuffer();
+        //            bufferToSend.WriteString(card.id);
+        //            bufferToSend.WriteInteger(level);
+        //            bufferToSend.WriteInteger(ownershipId);
+        //            bufferToSend.WriteVector3(pos);
+        //            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
 
-///*
-//            ByteBuffer bufferToEnqueue = new ByteBuffer();
-//            bufferToEnqueue.WriteString(card.id);
-//            bufferToEnqueue.WriteInteger(level);
-//            bufferToEnqueue.WriteInteger(ownershipId);
-//            bufferToEnqueue.WriteVector3(pos);
-//            ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToEnqueue.ToArray());
-//            lock (PacketHandler.Instance().InGamePacketHandlerLockObj)
-//            {
-//                //PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
-//            }
-//*/
-//        }
+        ///*
+        //            ByteBuffer bufferToEnqueue = new ByteBuffer();
+        //            bufferToEnqueue.WriteString(card.id);
+        //            bufferToEnqueue.WriteInteger(level);
+        //            bufferToEnqueue.WriteInteger(ownershipId);
+        //            bufferToEnqueue.WriteVector3(pos);
+        //            ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToEnqueue.ToArray());
+        //            lock (PacketHandler.Instance().InGamePacketHandlerLockObj)
+        //            {
+        //                //PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
+        //            }
+        //*/
+        //        }
 
-        void Spawn(string cardId, int level, int ownershipId, Vector3 pos)
+        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, Vector3 pos)
         {
             ByteBuffer bufferToSend = new ByteBuffer();
             bufferToSend.WriteString(cardId);
             bufferToSend.WriteInteger(level);
             bufferToSend.WriteInteger(ownershipId);
             bufferToSend.WriteVector3(pos);
-            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
+            return bufferToSend;
         }
 
         public void SpawnCard(Card card, int level, int ownershipId, Vector3 pos)
         {
-            Spawn(card.id, level, ownershipId, pos);
+            ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, pos);
+            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
         }
 
-        public void SpawnCard(string cardId, int level, int ownershipId, Vector3 pos)
+        public void SpawnUnit(string cardId, int level, int ownershipId, Vector3 pos)
         {
-            Spawn(cardId, level, ownershipId, pos);
+            ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, pos);
+            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
         }
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)

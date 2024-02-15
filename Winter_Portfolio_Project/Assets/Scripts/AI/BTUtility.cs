@@ -9,6 +9,8 @@ using WPP.AI.TIMER;
 using WPP.AI.SPAWNER;
 using System;
 using WPP.AI.GRID;
+using WPP.Collection;
+using WPP.ClientInfo.Card;
 
 namespace WPP.AI.BTUtility
 {
@@ -365,21 +367,23 @@ namespace WPP.AI.BTUtility
     public class Spawn : Node
     {
         int _unitId;
+        int _level;
         int _ownershipId;
-        int _clientId;
         Transform _spawnPoint;
         Vector3[] _offsets;
-        Quaternion _rotation;
-        Func<int, int, int, Vector3, Vector3[], Quaternion, Entity[]> OnSpawnRequested;
+        Func<string, int, int, Vector3, Vector3[], Entity[]> OnSpawnRequested;
 
-        public Spawn(int unitId, int ownershipId, int clientId, Transform spawnPoint, Vector3[] offsets, Quaternion rotation)
+        string _cardId;
+
+        CardData _cardData;
+
+        public Spawn(int unitId, int level, int ownershipId, Transform spawnPoint, Vector3[] offsets)
         {
             _unitId = unitId;
+            _level = level;
             _ownershipId = ownershipId;
-            _clientId = clientId;
             _spawnPoint = spawnPoint;
             _offsets = offsets;
-            _rotation = rotation;
 
             GameObject go = GameObject.FindWithTag("Spawner");
             if (go == null) return;
@@ -387,12 +391,15 @@ namespace WPP.AI.BTUtility
             Spawner spawner = go.GetComponent<Spawner>();
             if (spawner == null) return;
 
-            //OnSpawnRequested = spawner.Spawn;
+            _cardData = CardCollection.Instance().FindCard(_unitId, _level);
+            _cardId = _cardData.unit._name;
+
+            OnSpawnRequested = spawner.Spawn;
         }
 
         public override NodeState Evaluate()
         {
-            OnSpawnRequested?.Invoke(_unitId, _ownershipId, _clientId, _spawnPoint.position, _offsets, _rotation);
+            OnSpawnRequested?.Invoke(_cardId, _level, _ownershipId, _spawnPoint.position, _offsets);
             return NodeState.SUCCESS;
         }
     }

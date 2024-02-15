@@ -36,6 +36,7 @@ namespace WPP.Network
         private int _packetLength;
         private bool _isSegmentated;
         private object packetHandlerLockObj;
+        private object inGamePacketHandlerLockObj;
 
         public static PacketHandler Instance()
         {
@@ -53,6 +54,7 @@ namespace WPP.Network
             inGamePacketQueue = new Queue<byte[]>();
             packetHandler = new Dictionary<int, HandleFunc>();
             packetHandlerLockObj = new object();
+            inGamePacketHandlerLockObj = new object();
         }
         public void InitializePacketHandler()
         {
@@ -66,15 +68,13 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_ALERT_OVER_TIME, HandleOverTime);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_END_GAME, HandleEndGame);
 
-            packetHandler.Add((int)Server_PacketTagPackages.HOLE_PUNCHING, HandleHolePunching);
-            packetHandler.Add((int)Server_PacketTagPackages.TURN_ON, HandleTurnOn);
+            packetHandler.Add((int)Server_PacketTagPackages.S_REQUSET_HOLE_PUNCHING, HandleHolePunching);
+            packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_TURN_ON, HandleTurnOn);
+            packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
 
-            packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_KT, DamageTower);
-            packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_LPT, DamageTower);
-            packetHandler.Add((int)Peer_PacketTagPackages.DAMAGE_RPT, DamageTower);
-
-            packetHandler.Add((int)Peer_PacketTagPackages.SPAWN_CARD, SpawnCard);
-            packetHandler.Add((int)Peer_PacketTagPackages.SPAWN_TOWER, SpawnTower);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, SynchronizeUnits);
         }
 
         public void HandlePacket(byte[] packet)
@@ -93,9 +93,9 @@ namespace WPP.Network
             if (_isSegmentated == false)
             {
                 _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
-                Debug.Log("total packet length: " + _packetLength);
+                //Debug.Log("total packet length: " + _packetLength);
             }
-            Debug.Log("received packet length: " + packet.Length);
+            //Debug.Log("received packet length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmentated == false)
@@ -143,9 +143,9 @@ namespace WPP.Network
             if (_isSegmentated == false)
             {
                 _packetLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
-                Debug.Log("total packet length: " + _packetLength);
+                Debug.Log("total inGamePacket length: " + _packetLength);
             }
-            Debug.Log("received packet length: " + packet.Length);
+            Debug.Log("received inGamePacket length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_packetLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isSegmentated == false)
@@ -176,7 +176,6 @@ namespace WPP.Network
             }
             return;
         }
-
 
         public void HandleData(byte[] data)
         {
@@ -319,8 +318,6 @@ namespace WPP.Network
                 // try to connect with public end point
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
             }
-
-            //SceneManager.LoadScene("EnableNetworkBattleScene");
             SceneManager.LoadScene("CameraTestScene");
 
             Debug.Log("entered game");
@@ -341,12 +338,6 @@ namespace WPP.Network
             SceneManager.LoadScene("Lobby");
         }
 
-        public void DamageTower(ref ByteBuffer buffer)
-        {
-            int towerID = buffer.ReadInteger(true);
-            BattleUIExample.Instance().DamageTower(towerID);
-        }
-
         public void HandleHolePunching(ref ByteBuffer buffer)
         {
             IPEndPoint externalEP = buffer.ReadEndPoint(true);
@@ -358,12 +349,49 @@ namespace WPP.Network
 
         public void HandleTurnOn(ref ByteBuffer buffer)
         {
-            if(inGamePacketQueue.Count > 0)
+            lock(inGamePacketHandlerLockObj)
             {
-                HandleInGamePacket(inGamePacketQueue.Dequeue());
-            }
+                Debug.Log("turn on");
+                Debug.Log("num of packets in queue: " + inGamePacketQueue.Count);
 
-            Debug.Log("turn on");
+                if (inGamePacketQueue.Count > 0)
+                {
+                    HandleInGamePacket(inGamePacketQueue.Dequeue());
+                }
+            }
+        }
+
+        public void HandleSynchronization(ref ByteBuffer buffer)
+        {
+            Logger.WriteLog("sink on");
+            List<Entity> spawnedEntities = Spawner.Instance().SpawnedEntities;
+            ByteBuffer syncBuffer = new ByteBuffer();
+
+            int numOfSpawnedEntites = spawnedEntities.Count;
+            Logger.WriteLog("numOfSpawnedEntites: " + numOfSpawnedEntites);
+
+            syncBuffer.WriteInteger(numOfSpawnedEntites);
+
+            for (int i = 0; i < numOfSpawnedEntites; i++)
+            {
+                string networkId = spawnedEntities[i].NetwordId;
+                float hp = (spawnedEntities[i] as Life).HP;
+                Vector3 pos = (spawnedEntities[i]).transform.position;
+                Quaternion rotation = (spawnedEntities[i]).transform.rotation;
+                syncBuffer.WriteString(networkId);
+                syncBuffer.WriteFloat(hp);
+                syncBuffer.WriteVector3(pos);
+                syncBuffer.WriteQuaternion(rotation);
+                Logger.WriteLog("--------------------------------------------------------------");
+                Logger.WriteLog("entity name: " + spawnedEntities[i].Name);
+                Logger.WriteLog("networkId: " + networkId);
+                Logger.WriteLog("hp: " + hp);
+                Logger.WriteLog("pos: " + pos);
+                Logger.WriteLog("rotation: " + rotation);
+
+            }
+            Logger.WriteLog("sink buffer size: " + syncBuffer.Count());
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, syncBuffer.ToArray());
         }
 
         public void SpawnCard(ref ByteBuffer buffer)
@@ -384,6 +412,7 @@ namespace WPP.Network
             for (int i = 0; i < unitCount; i++)
             {
                 spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+                Logger.WriteLog("spawn card: " + spawnedEntities[i].Name);
             }
 
             Spawner.Instance().SpawnClockUI(pos, duration);
@@ -396,22 +425,43 @@ namespace WPP.Network
             Vector3 leftPrincessTowerPos = buffer.ReadVector3(true);
             Vector3 rightPrincessTowerPos = buffer.ReadVector3(true);
 
-            /*            Vector3 kingTowerPos;
-                        Vector3 leftPrincessTowerPos;
-                        Vector3 rightPrincessTowerPos;
-                        if (ClientData.Instance().player_id_in_game != 0)
-                        {
-                            kingTowerPos = new Vector3(4.51f, 1, 9.51f);
-                            leftPrincessTowerPos = new Vector3(-1, 1, 6);
-                            rightPrincessTowerPos = new Vector3(10, 1, 6);
-                        }
-                        else
-                        {
-                            kingTowerPos = new Vector3(4.51f, 1, -17.49f);
-                            leftPrincessTowerPos = new Vector3(-1, 1, -14);
-                            rightPrincessTowerPos = new Vector3(10, 1, -14);
-                        }*/
             Spawner.Instance().Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            Logger.WriteLog("spawn towers");
+        }
+
+        public void SynchronizeUnits(ref ByteBuffer buffer)
+        {
+            int numOfEntitiesSpawned = buffer.ReadInteger(true);
+
+            // 자신의 _spawnedEntities와 크기를 비교 후 크기가 작은 쪽에 맞춘다.
+            if (numOfEntitiesSpawned > Spawner.Instance().SpawnedEntities.Count)
+                return;
+
+            for (int i=0; i< numOfEntitiesSpawned; i++)
+            {
+                string networkId = buffer.ReadString(true);
+                float targetHP = buffer.ReadFloat(true);
+                Vector3 targetPos = buffer.ReadVector3(true);
+                Quaternion targetRotation = buffer.ReadQuaternion(true);
+
+                // 자신과 동일한 networkId를 지닌 entity를 찾아 동기화를 해준다
+                Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
+                if (sameEntity == null) continue;
+
+                Logger.WriteLog("entity to synchronize: " + sameEntity.Name);
+
+                if (!sameEntity.IsMyEntity)
+                {
+                    Logger.WriteLog("synchronize hp from " + (sameEntity as Life).HP + " to " + targetHP);
+                    sameEntity.SynchronizeHP(targetHP);
+
+                    Logger.WriteLog("synchronize position from " + sameEntity.transform.position + " to " + targetPos);
+                    sameEntity.transform.position = targetPos;
+
+                    Logger.WriteLog("synchronize rotation from " + sameEntity.transform.rotation + " to " + targetRotation);
+                    sameEntity.transform.rotation = targetRotation;
+                }
+            }
         }
     }
 

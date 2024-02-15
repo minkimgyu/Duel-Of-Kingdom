@@ -26,6 +26,9 @@ namespace WPP.AI.SPAWNER
 
         [SerializeField] List<Entity> _entityPrefabs;
         [SerializeField] List<Entity> _spawnedEntities;
+        public List<Entity> SpawnedEntities { get { return _spawnedEntities; } }
+
+        private object _spawnerLockObj;
 
         public void RemoveFromListInSpawner(string networkId)
         {
@@ -52,6 +55,7 @@ namespace WPP.AI.SPAWNER
         void Awake()
         {
             _instance = this;
+            _spawnerLockObj = new object();
             //_stats = _jsonParser.Load();
 
         }
@@ -98,10 +102,8 @@ namespace WPP.AI.SPAWNER
 
         string ReturnNetworkId(int ownershipId)
         {
-            return (ownershipId + _spawnCount).ToString();
+            return ownershipId.ToString() + _spawnCount.ToString();
         }
-
-
 
         // entityId 이거를 string로 해서 받기
         Entity ReturnEntity(string name, int ownershipId, Vector3 pos)
@@ -111,7 +113,7 @@ namespace WPP.AI.SPAWNER
 
             _spawnCount++; // 여기서 스폰 카운트를 올려준다.
             string networkId = ReturnNetworkId(ownershipId); // 이거를 생성되는 오브젝트에 부여해야한다 --> 따로 서버를 통해서 넘겨서 받아주기
-            // 매개변수로 받아야할 듯?
+                                                             // 매개변수로 받아야할 듯?
 
             int clientId = ClientData.Instance().player_id_in_game; // 본인 클라이언트 아이디를 받아와서 넣어준다.
 
@@ -135,7 +137,6 @@ namespace WPP.AI.SPAWNER
             // 여기에 화살 마법 스폰 위치를 추가해준다.
 
             _spawnedEntities.Add(spawnedEntity);
-
             return spawnedEntity;
         }
 

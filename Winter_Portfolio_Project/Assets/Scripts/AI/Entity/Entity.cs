@@ -39,7 +39,7 @@ namespace WPP.AI
         public string NetwordId { get { return _networkId; } } // NetwordId 반환
 
 
-        protected bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
+        public bool IsMyEntity { get { return _ownershipId == _clientId; } } // 내 소유의 Entity일 경우
 
         Action<string> RemoveFromListInSpawnerRequested;
 

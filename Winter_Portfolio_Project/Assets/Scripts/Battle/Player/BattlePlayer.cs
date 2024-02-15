@@ -1,5 +1,7 @@
 using UnityEngine;
+using WPP.ClientInfo;
 using WPP.Network;
+using WPP.RoomInfo;
 
 namespace WPP.Battle
 {
@@ -26,17 +28,26 @@ namespace WPP.Battle
 
         private void OnOpponentRightTowerDestroyed()
         {
-            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_RIGHT_TOWER);
+            ByteBuffer buffer = new ByteBuffer();
+            int roomID = GameRoom.Instance().roomID;
+            buffer.WriteInteger(roomID);
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_RIGHT_TOWER, buffer.ToArray());
         }
 
         private void OnOpponentLeftTowerDestroyed()
         {
-            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_LEFT_TOWER);
+            ByteBuffer buffer = new ByteBuffer();
+            int roomID = GameRoom.Instance().roomID;
+            buffer.WriteInteger(roomID);
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_LEFT_TOWER, buffer.ToArray());
         }
 
         private void OnOpponentKingTowerDestroyed()
         {
-            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_KING_TOWER);
+            ByteBuffer buffer = new ByteBuffer();
+            int roomID = GameRoom.Instance().roomID;
+            buffer.WriteInteger(roomID);
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_DESTROY_OPPONENT_KING_TOWER, buffer.ToArray());
         }
 
         public CrownSystem CrownSystem => _crownSystem;

@@ -19,9 +19,10 @@ namespace WPP.Network
 
         S_REQUEST_END_GAME,
 
-        HOLE_PUNCHING,
+        S_REQUSET_HOLE_PUNCHING,
         S_REQUEST_RELAY,
-        TURN_ON,
+        S_REQUEST_TURN_ON,
+        S_REQUEST_SYNCHRONIZATION,
     }
 
     public enum Client_PacketTagPackages
@@ -41,11 +42,9 @@ namespace WPP.Network
     }
 
     public enum Peer_PacketTagPackages
-    { 
-        DAMAGE_KT = 30,
-        DAMAGE_LPT,
-        DAMAGE_RPT,
-        SPAWN_CARD,
-        SPAWN_TOWER,
+    {
+        P_REQUEST_SPAWN_CARD = 30,
+        P_REQUEST_SPAWN_TOWER,
+        P_REQUEST_SYNCHRONIZATION,
     }
 }

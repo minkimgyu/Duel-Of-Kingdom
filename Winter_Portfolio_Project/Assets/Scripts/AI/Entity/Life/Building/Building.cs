@@ -232,7 +232,7 @@ namespace WPP.AI.BUILDING
                     new List<Node>()
                     {
                         new Delay(_spawnDelay),
-                        new Spawn(_spawnUnitId, OwnershipId, _clientId, _spawnPoint, _spawnOffsets, transform.rotation)
+                        new Spawn(_spawnUnitId, _level, OwnershipId, _spawnPoint, _spawnOffsets)
                     }
                 )
             };

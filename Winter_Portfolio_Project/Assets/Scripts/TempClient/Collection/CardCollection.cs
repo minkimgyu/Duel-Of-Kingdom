@@ -62,5 +62,15 @@ namespace WPP.Collection
             }
             return null;
         }
+
+        public CardData FindCard(int unitId, int level)
+        {
+            foreach (CardData card in cardCollection)
+            {
+                if (card.unit._id == unitId && card.unit._level == level)
+                    return card;
+            }
+            return null;
+        }
     }
 }

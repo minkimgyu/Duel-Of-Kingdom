@@ -399,6 +399,20 @@ namespace WPP.Network
             Spawner.Instance().SpawnClockUI(pos, duration);
         }
 
+        public void SpawnUsingUnitData(ref ByteBuffer buffer)
+        {
+            string cardName = buffer.ReadString(true);
+            int level = buffer.ReadInteger(true);
+            int opponentOwnershipId = buffer.ReadInteger(true);
+            Vector3 pos = buffer.ReadVector3(true);
+
+            CardData cardData = CardCollection.Instance().FindCard(cardName, level);
+            float duration = cardData.duration;
+
+            Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos);
+            Spawner.Instance().SpawnClockUI(pos, duration);
+        }
+
         public void SpawnTower(ref ByteBuffer buffer)
         {
             int ownershipId = buffer.ReadInteger(true);

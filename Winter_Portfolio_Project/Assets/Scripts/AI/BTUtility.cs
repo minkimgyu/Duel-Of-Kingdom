@@ -371,7 +371,7 @@ namespace WPP.AI.BTUtility
         int _ownershipId;
         Transform _spawnPoint;
         Vector3[] _offsets;
-        Func<string, int, int, Vector3, Vector3[], Entity[]> OnSpawnRequested;
+        Action<string, int, int, Vector3, Vector3[]> OnSpawnRequested;
 
         string _cardId;
 

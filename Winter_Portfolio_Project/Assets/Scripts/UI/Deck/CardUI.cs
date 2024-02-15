@@ -17,6 +17,7 @@ namespace WPP.DeckManagement.UI
         private DeckEditorUIController _controller;
         private GameObject _popup;
         private int _gridIndex;
+        public int GridIndex => _gridIndex;
 
 
         public void Initialize(DeckEditorUIController controller, GameObject popup, int gridIndex)
@@ -43,6 +44,11 @@ namespace WPP.DeckManagement.UI
 
             if(_levelBar != null)
                 SetLevelBar(lvProgress);
+        }
+
+        public void SetInteractable(bool val)
+        {
+            _button.interactable = val;
         }
 
         public void TogglePopup()

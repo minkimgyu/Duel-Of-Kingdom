@@ -8,10 +8,12 @@ namespace WPP.Battle.UI
     {
         [SerializeField] private GameObject _gameOverPanel;
         [Space]
+        [SerializeField] private GameObject _playerWinnerText;
         [SerializeField] private GameObject _playerCrown1;
         [SerializeField] private GameObject _playerCrown2;
         [SerializeField] private GameObject _playerCrown3;
         [Space]
+        [SerializeField] private GameObject _opponentWinnerText;
         [SerializeField] private GameObject _opponentCrown1;
         [SerializeField] private GameObject _opponentCrown2;
         [SerializeField] private GameObject _opponentCrown3;
@@ -42,6 +44,17 @@ namespace WPP.Battle.UI
             _opponentCrown1.SetActive(opponentCrown >= 1);
             _opponentCrown2.SetActive(opponentCrown >= 2);
             _opponentCrown3.SetActive(opponentCrown >= 3);
+
+            if (result == BattleResult.Win)
+            {
+                _playerWinnerText.SetActive(true);
+                _opponentWinnerText.SetActive(false);
+            }
+            else
+            {
+                _opponentWinnerText.SetActive(true);
+                _playerWinnerText.SetActive(false);
+            }
         }
     }
 }

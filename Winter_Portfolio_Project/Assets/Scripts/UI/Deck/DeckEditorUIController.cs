@@ -152,6 +152,7 @@ namespace WPP.DeckManagement.UI
     
         public void SetCards(Deck deck)
         {
+            HashSet<Card> deckCards = new HashSet<Card>(deck.Cards);
             for (int i = 0; i < deck.Cards.Count; i++)
             {
                 Card card;
@@ -167,6 +168,7 @@ namespace WPP.DeckManagement.UI
                 _deckCardUIs[i].SetCard(card, deck.GetCardLevel(i) / 10f);
                 _deckPopups[i].GetComponentInChildren<CardUI>().SetCard(card, deck.GetCardLevel(i) / 10f);
 
+                deckCards.Add(card);
             }
 
             for (int i = 0; i < CardDatabase.Cards.Count; i++)
@@ -174,6 +176,8 @@ namespace WPP.DeckManagement.UI
                 var card = CardDatabase.Cards.ElementAt(i).Value;
                 _collectionCardUIs[i].SetCard(card, 0);
                 _collectionPopups[i].GetComponentInChildren<CardUI>().SetCard(card, 0);
+
+                _collectionCardUIs[i].SetInteractable(!deckCards.Contains(card));
             }
         }
         

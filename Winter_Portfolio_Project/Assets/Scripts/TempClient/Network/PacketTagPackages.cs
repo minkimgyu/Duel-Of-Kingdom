@@ -21,7 +21,6 @@ namespace WPP.Network
 
         S_REQUSET_HOLE_PUNCHING,
         S_REQUEST_RELAY,
-        S_REQUEST_TURN_ON,
         S_REQUEST_SYNCHRONIZATION,
     }
 
@@ -46,5 +45,6 @@ namespace WPP.Network
         P_REQUEST_SPAWN_CARD = 30,
         P_REQUEST_SPAWN_TOWER,
         P_REQUEST_SYNCHRONIZATION,
+        P_REQUEST_DESTROY_UNIT,
     }
 }

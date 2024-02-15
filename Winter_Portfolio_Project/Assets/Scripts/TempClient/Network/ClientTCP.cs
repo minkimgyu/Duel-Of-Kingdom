@@ -26,7 +26,6 @@ namespace WPP.Network
         public IPEndPoint peerSockPrivateEP { get; set; }
 
         private object _tcpLockObject;
-        private object _p2pLockObject;
 
         public static ClientTCP Instance()
         {
@@ -41,7 +40,6 @@ namespace WPP.Network
             InitializeClientSock();
             InitializePeerSock();
             _tcpLockObject = new object();
-            _p2pLockObject = new object();
             _receivedPacket = new byte[4096];
             buffer = null;
         }
@@ -340,7 +338,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                lock (_p2pLockObject)
+                lock (PacketHandler.Instance().InGamePacketHandlerLockObj)
                 {
                     PacketHandler.Instance().inGamePacketQueue.Enqueue(dataToHandle);
                 }
@@ -363,16 +361,18 @@ namespace WPP.Network
             bufferToSend.WriteVector3(pos);
             SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
 
+/*
             ByteBuffer bufferToEnqueue = new ByteBuffer();
             bufferToEnqueue.WriteString(card.id);
             bufferToEnqueue.WriteInteger(level);
             bufferToEnqueue.WriteInteger(ownershipId);
             bufferToEnqueue.WriteVector3(pos);
             ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToEnqueue.ToArray());
-            lock (_p2pLockObject)
+            lock (PacketHandler.Instance().InGamePacketHandlerLockObj)
             {
-                PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
+                //PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
             }
+*/
         }
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
@@ -383,17 +383,17 @@ namespace WPP.Network
             bufferToSend.WriteVector3(leftPrincessTowerPos);
             bufferToSend.WriteVector3(rightPrincessTowerPos);
             SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToSend.ToArray());
-
+            /*
             ByteBuffer bufferToEnqueue = new ByteBuffer();
             bufferToEnqueue.WriteInteger(ownershipId);
             bufferToEnqueue.WriteVector3(kingTowerPos);
             bufferToEnqueue.WriteVector3(leftPrincessTowerPos);
             bufferToEnqueue.WriteVector3(rightPrincessTowerPos);
             ByteBuffer buffer = CreateBufferToSend(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToEnqueue.ToArray());
-            lock(_p2pLockObject)
+            lock (PacketHandler.Instance().InGamePacketHandlerLockObj)
             {
-                PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
-            }
+                //PacketHandler.Instance().inGamePacketQueue.Enqueue(buffer.ToArray());
+            }*/
         }
 
         // functions to close connection

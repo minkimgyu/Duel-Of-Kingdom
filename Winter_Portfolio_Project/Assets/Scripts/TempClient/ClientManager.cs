@@ -24,11 +24,21 @@ namespace WPP
 
         void Update()
         {
-            lock (_managerLockObj)
+            if (PacketHandler.Instance().packetQueue.Count > 0)
             {
-                if (PacketHandler.Instance().packetQueue.Count > 0)
+                lock (_managerLockObj)
                 {
                     PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
+
+                }
+            }
+
+            if (PacketHandler.Instance().inGamePacketQueue.Count > 0)
+            {
+                lock (_managerLockObj)
+                {
+                    PacketHandler.Instance().HandleInGamePacket(PacketHandler.Instance().inGamePacketQueue.Dequeue());
+
                 }
             }
         }

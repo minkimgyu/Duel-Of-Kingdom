@@ -258,12 +258,12 @@ namespace WPP.AI.SPAWNER
 
             Entity[] spawnedEntities = new Entity[unitCount];
 
-/*            for (int i = 0; i < unitCount; i++)
+            for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i].x, 0, offset[i].y));
-            }*/
+                spawnedEntities[i] = Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+            }
 
-            //SpawnClockUI(pos, duration);
+            SpawnClockUI(pos, duration);
             ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
             return spawnedEntities;
         }
@@ -297,7 +297,7 @@ namespace WPP.AI.SPAWNER
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
             ClientTCP.Instance().SpawnTower(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
-            //Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
         }
 
         //public Entity Spawn(int entityId, int ownershipId, Vector3 pos)

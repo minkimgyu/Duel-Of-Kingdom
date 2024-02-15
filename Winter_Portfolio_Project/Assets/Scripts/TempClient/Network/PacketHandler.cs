@@ -22,6 +22,7 @@ using WPP.Collection;
 using WPP.DeckManagement;
 using WPP.AI;
 using WPP.AI.STAT;
+using System.Collections;
 
 namespace WPP.Network
 {
@@ -34,9 +35,12 @@ namespace WPP.Network
         public Queue<byte[]> inGamePacketQueue { get; set; }
 
         private int _packetLength;
+        private int _inGamePacketLength;
         private bool _isSegmentated;
-        private object packetHandlerLockObj;
-        private object inGamePacketHandlerLockObj;
+        private bool _isInGamePacketSegmentated;
+        private object _packetHandlerLockObj;
+        private object _inGamePacketHandlerLockObj;
+        public object InGamePacketHandlerLockObj { get { return _inGamePacketHandlerLockObj;  } }
 
         public static PacketHandler Instance()
         {
@@ -49,12 +53,14 @@ namespace WPP.Network
 
         public PacketHandler() {
             _packetLength = 0;
+            _inGamePacketLength = 0;
             _isSegmentated = false;
+            _isInGamePacketSegmentated = false;
             packetQueue = new Queue<byte[]>();
             inGamePacketQueue = new Queue<byte[]>();
             packetHandler = new Dictionary<int, HandleFunc>();
-            packetHandlerLockObj = new object();
-            inGamePacketHandlerLockObj = new object();
+            _packetHandlerLockObj = new object();
+            _inGamePacketHandlerLockObj = new object();
         }
         public void InitializePacketHandler()
         {
@@ -69,12 +75,12 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_END_GAME, HandleEndGame);
 
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUSET_HOLE_PUNCHING, HandleHolePunching);
-            packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_TURN_ON, HandleTurnOn);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
 
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, SynchronizeUnits);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_DESTROY_UNIT, DestroyUnit);
         }
 
         public void HandlePacket(byte[] packet)
@@ -93,9 +99,7 @@ namespace WPP.Network
             if (_isSegmentated == false)
             {
                 _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
-                //Debug.Log("total packet length: " + _packetLength);
             }
-            //Debug.Log("received packet length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmentated == false)
@@ -115,6 +119,7 @@ namespace WPP.Network
                     ClientTCP.Instance().buffer.Dispose();
                     ClientTCP.Instance().buffer = null;
                     Debug.Log("received all packets");
+                    return;
                 }
             }
             else
@@ -140,31 +145,32 @@ namespace WPP.Network
             // packet 복사
             ClientTCP.Instance().inGameBuffer.WriteBytes(packet);
 
-            if (_isSegmentated == false)
+            if (_isInGamePacketSegmentated == false)
             {
-                _packetLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
-                Debug.Log("total inGamePacket length: " + _packetLength);
+                _inGamePacketLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
+                Debug.Log("total inGamePacket length: " + _inGamePacketLength);
             }
             Debug.Log("received inGamePacket length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
-            if (_packetLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isSegmentated == false)
+            if (_inGamePacketLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isInGamePacketSegmentated == false)
             {
-                _isSegmentated = true;
+                _isInGamePacketSegmentated = true;
                 return;
             }
 
-            if (_isSegmentated == true)
+            if (_isInGamePacketSegmentated == true)
             {
                 // 패킷을 다 받았다면
-                if (_packetLength == ClientTCP.Instance().inGameBuffer.Count() + 4)
+                if (_inGamePacketLength == ClientTCP.Instance().inGameBuffer.Count() + 4)
                 {
-                    _isSegmentated = false;
+                    _isInGamePacketSegmentated = false;
                     HandleData(ClientTCP.Instance().inGameBuffer.ToArray());
-                    _packetLength = 0;
+                    _inGamePacketLength = 0;
                     ClientTCP.Instance().inGameBuffer.Dispose();
                     ClientTCP.Instance().inGameBuffer = null;
                     Debug.Log("received all packets");
+                    return;
                 }
             }
             else
@@ -179,7 +185,7 @@ namespace WPP.Network
 
         public void HandleData(byte[] data)
         {
-            lock(packetHandlerLockObj)
+            lock(_packetHandlerLockObj)
             {
                 ByteBuffer buffer = new ByteBuffer();
                 buffer.WriteBytes(data);
@@ -347,28 +353,12 @@ namespace WPP.Network
             ClientTCP.Instance().CloseHolePunchingConnection();
         }
 
-        public void HandleTurnOn(ref ByteBuffer buffer)
-        {
-            lock(inGamePacketHandlerLockObj)
-            {
-                Debug.Log("turn on");
-                Debug.Log("num of packets in queue: " + inGamePacketQueue.Count);
-
-                if (inGamePacketQueue.Count > 0)
-                {
-                    HandleInGamePacket(inGamePacketQueue.Dequeue());
-                }
-            }
-        }
-
         public void HandleSynchronization(ref ByteBuffer buffer)
         {
-            Logger.WriteLog("sink on");
             List<Entity> spawnedEntities = Spawner.Instance().SpawnedEntities;
             ByteBuffer syncBuffer = new ByteBuffer();
 
             int numOfSpawnedEntites = spawnedEntities.Count;
-            Logger.WriteLog("numOfSpawnedEntites: " + numOfSpawnedEntites);
 
             syncBuffer.WriteInteger(numOfSpawnedEntites);
 
@@ -382,15 +372,7 @@ namespace WPP.Network
                 syncBuffer.WriteFloat(hp);
                 syncBuffer.WriteVector3(pos);
                 syncBuffer.WriteQuaternion(rotation);
-                Logger.WriteLog("--------------------------------------------------------------");
-                Logger.WriteLog("entity name: " + spawnedEntities[i].Name);
-                Logger.WriteLog("networkId: " + networkId);
-                Logger.WriteLog("hp: " + hp);
-                Logger.WriteLog("pos: " + pos);
-                Logger.WriteLog("rotation: " + rotation);
-
             }
-            Logger.WriteLog("sink buffer size: " + syncBuffer.Count());
             ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, syncBuffer.ToArray());
         }
 
@@ -412,7 +394,6 @@ namespace WPP.Network
             for (int i = 0; i < unitCount; i++)
             {
                 spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
-                Logger.WriteLog("spawn card: " + spawnedEntities[i].Name);
             }
 
             Spawner.Instance().SpawnClockUI(pos, duration);
@@ -426,16 +407,11 @@ namespace WPP.Network
             Vector3 rightPrincessTowerPos = buffer.ReadVector3(true);
 
             Spawner.Instance().Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
-            Logger.WriteLog("spawn towers");
         }
 
         public void SynchronizeUnits(ref ByteBuffer buffer)
         {
             int numOfEntitiesSpawned = buffer.ReadInteger(true);
-
-            // 자신의 _spawnedEntities와 크기를 비교 후 크기가 작은 쪽에 맞춘다.
-            if (numOfEntitiesSpawned > Spawner.Instance().SpawnedEntities.Count)
-                return;
 
             for (int i=0; i< numOfEntitiesSpawned; i++)
             {
@@ -446,23 +422,32 @@ namespace WPP.Network
 
                 // 자신과 동일한 networkId를 지닌 entity를 찾아 동기화를 해준다
                 Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
-                if (sameEntity == null) continue;
-
-                Logger.WriteLog("entity to synchronize: " + sameEntity.Name);
-
-                if (!sameEntity.IsMyEntity)
+                if (sameEntity == null)
                 {
-                    Logger.WriteLog("synchronize hp from " + (sameEntity as Life).HP + " to " + targetHP);
+                    ByteBuffer idBuffer = new ByteBuffer();
+                    idBuffer.WriteString(networkId);
+                    ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_DESTROY_UNIT, idBuffer.ToArray());
+                    continue;
+                }
+
+                if (sameEntity.IsMyEntity)
+                {
                     sameEntity.SynchronizeHP(targetHP);
-
-                    Logger.WriteLog("synchronize position from " + sameEntity.transform.position + " to " + targetPos);
                     sameEntity.transform.position = targetPos;
-
-                    Logger.WriteLog("synchronize rotation from " + sameEntity.transform.rotation + " to " + targetRotation);
                     sameEntity.transform.rotation = targetRotation;
                 }
             }
         }
+
+        public void DestroyUnit(ref ByteBuffer buffer)
+        {
+            Debug.Log("destroy unit");
+            string networkId = buffer.ReadString(true);
+            Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
+            if(sameEntity != null)
+                sameEntity.DestroyMyself();
+        }
+
     }
 
 }

@@ -44,6 +44,11 @@ namespace WPP.AI
         Action<string> RemoveFromListInSpawnerRequested;
 
         private void OnDestroy() => OnDestroyRequested();
+
+        public void DestroyMyself()
+        {
+            OnDestroyRequested();
+        }
         protected virtual void OnDestroyRequested() => RemoveFromListInSpawnerRequested?.Invoke(NetwordId);
 
         /// <summary>

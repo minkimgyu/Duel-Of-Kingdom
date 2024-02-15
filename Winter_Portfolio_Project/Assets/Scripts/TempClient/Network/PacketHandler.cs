@@ -1,4 +1,4 @@
-#undef UNITY_EDITOR
+#define UNITY_EDITOR
 
 using System.Collections.Generic;
 using UnityEngine;

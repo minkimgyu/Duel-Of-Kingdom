@@ -156,10 +156,10 @@ RectTransform:
   - {fileID: 61939358}
   - {fileID: 1936128997}
   - {fileID: 1688557987}
-  - {fileID: 1257252958}
   - {fileID: 1873354965}
   - {fileID: 1629452107}
   - {fileID: 335097039}
+  - {fileID: 1257252958}
   - {fileID: 829098232}
   m_Father: {fileID: 1698102646}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2197,6 +2197,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 351.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4242830810157409943, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4700825059361839713, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2324,6 +2328,10 @@ PrefabInstance:
     - target: {fileID: 6883583187398154534, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchorMin.y
       value: 0.07407397
+      objectReference: {fileID: 0}
+    - target: {fileID: 7407272118083237944, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8796706145334106481, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_IsActive
@@ -3464,6 +3472,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 21945447}
     m_Modifications:
+    - target: {fileID: 6581550867085949, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1648422370629137724, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3608,9 +3620,17 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2550271533839585411, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_Padding.m_Top
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2719327890194439017, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_Name
       value: CollectionCards
+      objectReference: {fileID: 0}
+    - target: {fileID: 2949949130584535941, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_Padding.m_Top
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2998061647250684736, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchorMax.y

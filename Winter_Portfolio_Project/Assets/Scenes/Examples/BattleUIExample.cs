@@ -79,13 +79,10 @@ namespace WPP.Battle.Example
 
             // Opponent Tower
             _opponentCT1.damageButton.onClick.AddListener(() => _opponentCT1.tower.Damage(1));
-            _playerCT1.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_LPT, BitConverter.GetBytes(3)));
 
             _opponentCT2.damageButton.onClick.AddListener(() => _opponentCT2.tower.Damage(1));
-            _playerCT2.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_RPT, BitConverter.GetBytes(2)));
 
             _opponentKT.damageButton.onClick.AddListener(() => _opponentKT.tower.Damage(1));
-            _playerKT.damageButton.onClick.AddListener(() => ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.DAMAGE_KT, BitConverter.GetBytes(1)));
 
             SubscribeTowerEvent(_opponentCT1);
             SubscribeTowerEvent(_opponentCT2);

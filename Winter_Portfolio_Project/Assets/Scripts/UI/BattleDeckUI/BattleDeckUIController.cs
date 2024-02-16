@@ -24,8 +24,9 @@ namespace WPP.Battle.UI
         [Header("Card")]
         [SerializeField] private CardUI[] _cards;
 
-        [SerializeField] private TextMeshProUGUI _next;
-        [SerializeField] private TextMeshProUGUI _nextElixir;
+        //[SerializeField] private TextMeshProUGUI _next;
+        //[SerializeField] private TextMeshProUGUI _nextElixir;
+        [SerializeField] private CardUI _nextCard;
         [SerializeField] private TextMeshProUGUI _cooldown;
         [Space]
         [SerializeField] private float _selectedCardOffset = 50f;
@@ -81,8 +82,15 @@ namespace WPP.Battle.UI
             _fsm.OnFsmStep(FsmStep.Update);
 
             if (_battleManager.DeckSystem.LeftCooldown > 0f)
+            {
+                _nextCard.SetInteractable(false);
                 _cooldown.text = _battleManager.DeckSystem.LeftCooldown.ToString("F1");
-            else _cooldown.text = "";
+            }
+            else
+            {
+                _nextCard.SetInteractable(true);
+                _cooldown.text = "";
+            }
         }
 
         private void OnIdle(Fsm<State> fsm, FsmStep step)
@@ -240,8 +248,9 @@ namespace WPP.Battle.UI
                 }
             }
 
-            _next.text = _battleManager.DeckSystem.Next.id;
-            _nextElixir.text = _battleManager.DeckSystem.Next.cost.ToString();
+            //_next.text = _battleManager.DeckSystem.Next.id;
+            //_nextElixir.text = _battleManager.DeckSystem.Next.cost.ToString();
+            _nextCard.SetCard(_battleManager.DeckSystem.Next);
         }
 
         private void UpdateCardTransform()

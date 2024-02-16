@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.14117648}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1325,8 +1325,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.3529412}
+  m_Material: {fileID: 2100000, guid: 7711246686091b04a8c8e6d7ea9db2e0, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3359,7 +3359,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3531062170382161388, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 351.5
       objectReference: {fileID: 0}
     - target: {fileID: 4242830810157409943, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_Enabled
@@ -3479,7 +3479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5931596865856480107, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 351.5
       objectReference: {fileID: 0}
     - target: {fileID: 6883583187398154534, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchorMax.x

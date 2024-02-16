@@ -910,6 +910,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardPopupUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1527136181710428192, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -972,6 +976,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1555,6 +1575,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardPopupUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1527136181710428192, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -1617,6 +1641,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2486,6 +2526,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardPopupUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1527136181710428192, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -2548,6 +2592,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2903,6 +2963,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954230377284238749, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_Name
       value: CardUI
@@ -2928,6 +3008,10 @@ PrefabInstance:
     - target: {fileID: 49880545053364226, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_Name
       value: CardPopupUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 1527136181710428192, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2991,6 +3075,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3948,6 +4048,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954230377284238749, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_Name
       value: CardUI
@@ -4415,6 +4535,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954230377284238749, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_Name
       value: CardUI
@@ -4515,6 +4655,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2725322936728164349, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954230377284238749, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
@@ -5096,6 +5256,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2725322936728164349, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5954230377284238749, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
@@ -6333,6 +6513,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CardPopupUI
       objectReference: {fileID: 0}
+    - target: {fileID: 1527136181710428192, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.5
@@ -6395,6 +6579,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7382486344887825525, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9001554759413816246, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+      propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

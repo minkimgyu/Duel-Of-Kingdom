@@ -11,6 +11,7 @@ using System;
 using WPP.AI.GRID;
 using WPP.Collection;
 using WPP.ClientInfo.Card;
+using WPP.AI.UNIT;
 
 namespace WPP.AI.BTUtility
 {
@@ -255,6 +256,33 @@ namespace WPP.AI.BTUtility
             if (nowBlock == false && nowChanged) ResetPath(); // 경로가 막혀있지 않지만 타겟의 위치가 바뀌거나 초기의 경우
 
             MoveAlongPath();
+
+            return NodeState.SUCCESS;
+        }
+    }
+
+    public class SyncPosition : Node
+    {
+        Unit _unit;
+        float _maxLerpDistance;
+        float _moveSpeed;
+
+        public SyncPosition(Unit unit, float maxLerpDistance, float moveSpeed)
+        {
+            _unit = unit;
+            _maxLerpDistance = maxLerpDistance;
+            _moveSpeed = moveSpeed;
+        }
+
+        float ReturnDistanceBetween()
+        {
+            return Vector3.Distance(_unit.transform.position, _unit.SynchronizedPosition);
+        }
+
+        public override NodeState Evaluate()
+        {
+            if(ReturnDistanceBetween() > _maxLerpDistance) _unit.transform.position = _unit.SynchronizedPosition;
+            else _unit.transform.position = Vector3.Lerp(_unit.transform.position, _unit.SynchronizedPosition, Time.deltaTime * _moveSpeed);
 
             return NodeState.SUCCESS;
         }

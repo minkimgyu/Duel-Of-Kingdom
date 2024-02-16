@@ -51,6 +51,8 @@ namespace WPP.AI
         }
         protected virtual void OnDestroyRequested() => RemoveFromListInSpawnerRequested?.Invoke(NetwordId);
 
+        public virtual void SynchronizePosition(Vector3 pos) {  }
+
         /// <summary>
         /// 사용되지 않음
         /// </summary>

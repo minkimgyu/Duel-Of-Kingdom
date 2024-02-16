@@ -41,6 +41,9 @@ namespace WPP.AI.UNIT
 
         protected List<Vector3> _posListForDrawingGizmo = new List<Vector3>(); // 이거는 BT에서 지정해주기
 
+        protected Vector3 _synchronizedPosition;
+        public Vector3 SynchronizedPosition { get { return _synchronizedPosition; } }
+
         public override float ReturnHpContainerScale() { return 0.5f; }
 
         protected override void InitializeComponent()
@@ -54,6 +57,8 @@ namespace WPP.AI.UNIT
 
             base.InitializeComponent();
         }
+
+        public override void SynchronizePosition(Vector3 pos) { _synchronizedPosition = pos; }
 
         protected void ResetPosListForDrawingGizmo(List<Vector3> posList) => _posListForDrawingGizmo = posList;
 
@@ -150,7 +155,9 @@ namespace WPP.AI.UNIT
             PathFinder pathFinder = go.GetComponent<PathFinder>();
             if (pathFinder == null) return;
 
-            List<Node> _childNodes = new List<Node>()
+            List<Node> _childNodes;
+
+            _childNodes = new List<Node>()
             {
                 new Selector
                 (
@@ -202,6 +209,77 @@ namespace WPP.AI.UNIT
                     }
                 )
             };
+
+            //if (IsMyEntity)
+            //{
+            //    _childNodes = new List<Node>()
+            //    {
+            //        new Selector
+            //        (
+            //            new List<Node>()
+            //            {
+            //                new Sequence
+            //                (
+            //                    new List<Node>
+            //                    {
+            //                        new CanFindTarget(_captureComponent), // 만약 타겟이 없다면 타워를 타겟으로 지정해준다.
+            //                        new Selector
+            //                        (
+            //                            new List<Node>
+            //                            {
+            //                                new Selector
+            //                                (
+            //                                    new List<Node>
+            //                                    {
+            //                                        new Sequence
+            //                                        (
+            //                                            new List<Node>
+            //                                            {
+            //                                                // 타겟이 바뀌는 경우, 일정 시간 딜레이 넣어주기
+            //                                                new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttack도 넣어주기
+            //                                                new LookAtTarget(_captureComponent, _viewComponent),
+            //                                                new Stop(_moveComponent),
+
+            //                                                new Attack(_attackComponent, _captureComponent)
+            //                                                // 공격 진행
+            //                                                // 만약 공격이 진행 중인 경우 거리가 멀어져도 계속 진행
+            //                                            }
+            //                                        ),
+            //                                        new Sequence
+            //                                        (
+            //                                            new List<Node>
+            //                                            {
+            //                                                new CheckIsNear(_captureComponent, _range + _directFollowOffset),
+            //                                                new GoDirectToPoint(_captureComponent, _moveComponent, _viewComponent, ResetPosListForDrawingGizmo, IsPosListEmpty)
+            //                                            }
+            //                                        )
+            //                                    }
+            //                                ),
+            //                                new FollowPath(_moveComponent, _viewComponent, _captureComponent, pathFinder, ResetPosListForDrawingGizmo, IsMyEntity, IgnoreWall)
+            //                            }
+            //                        )
+            //                    }
+            //                ),
+            //                new Stop(_moveComponent)
+            //            }
+            //        )
+            //    };
+            //}
+            //else
+            //{
+            //    _childNodes = new List<Node>()
+            //    {
+            //        new Selector
+            //        (
+            //            new List<Node>()
+            //            {
+            //                new SyncPosition(this, 3, _moveComponent.MoveSpeed)
+            //            }
+            //        )
+            //    };
+            //}
+
+            
 
             Node rootNode = new Selector(_childNodes);
             _bt.SetUp(rootNode);

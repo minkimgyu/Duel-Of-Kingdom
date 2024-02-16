@@ -7,6 +7,7 @@ public class MoveComponent : MonoBehaviour
     Rigidbody _rigid;
     Animator _animator;
     [SerializeField] float _moveSpeed = 2f;
+    public float MoveSpeed { get { return _moveSpeed; } }
 
     private void Start()
     {

@@ -96,8 +96,8 @@ namespace WPP.AI.UNIT
         protected float _hitSpeed; // 공격 속도
         protected float _range; // 범위
 
-        protected float _offsetDistance = 0.2f; // 추적 거리 오프셋
-        protected float _directFollowOffset = 0.5f;
+        protected float _offsetDistance = 0.45f; // 추적 거리 오프셋
+        protected float _directFollowOffset = 2f; // 직접 추적 기능 활성화 거리
         //
 
         protected float _delayDuration = 0; // 스폰 시 일정 시간 딜레이

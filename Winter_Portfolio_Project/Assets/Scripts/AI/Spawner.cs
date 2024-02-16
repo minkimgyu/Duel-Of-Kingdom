@@ -132,7 +132,7 @@ namespace WPP.AI.SPAWNER
             spawnedEntity.ResetId(ownershipId, clientId, networkId);
             // 여기에 대기 시간을 추가해준다.
 
-            Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(1);
+            Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(ownershipId);
             spawnedEntity.ResetMagicStartPosition(magicStartPosition);
             // 여기에 화살 마법 스폰 위치를 추가해준다.
 
@@ -182,31 +182,6 @@ namespace WPP.AI.SPAWNER
         //    return entity;
         //}
 
-        Entity Instantiate(string name, BaseStat stat, int ownershipId, Vector3 pos)
-        {
-            Entity entity = ReturnEntity(name, ownershipId, pos);
-            if (entity == null) return null;
-
-            stat.ResetData(entity);
-            return entity;
-        }
-
-        Entity Instantiate(string name, int level, int ownershipId, Vector3 pos)
-        {
-            //// name과 level이 같은 경우를 찾아서 스폰
-            //// 추후에 offset을 추가로 보고 적용시켜야할 수도 있기 때문에 그것도 고려해보기
-            //BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
-            //if (stat == null) return null;
-
-            //Entity entity = ReturnEntity(name, ownershipId, pos);
-            //if (entity == null) return null;
-
-            //stat.ResetData(entity);
-            //return entity;
-
-            return null;
-        }
-
         public void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
             // name과 level이 같은 경우를 찾아서 스폰
@@ -248,7 +223,7 @@ namespace WPP.AI.SPAWNER
         /// <summary>
         /// 카드를 사용해서 스폰시키는 경우
         /// </summary>
-        public Entity[] Spawn(Card card, int level, int ownershipId, Vector3 pos)
+        public void Spawn(Card card, int level, int ownershipId, Vector3 pos)
         {
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
             float duration = cardData.duration;
@@ -256,19 +231,16 @@ namespace WPP.AI.SPAWNER
             int unitCount = cardData.spawnData.spawnUnitCount;
             SerializableVector2[] offset = cardData.spawnData.spawnOffset;
 
-            Entity[] spawnedEntities = new Entity[unitCount];
-
             for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
             SpawnClockUI(pos, duration);
             ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
-            return spawnedEntities;
         }
 
-        public Entity[] Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
+        public void Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
         {
             CardData cardData = CardCollection.Instance().FindCard(cardId, level);
             float duration = cardData.duration;
@@ -278,11 +250,7 @@ namespace WPP.AI.SPAWNER
                 Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y)); // test
                 ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
             }
-
-            return new Entity[0];
         }
-
-
 
         /// <summary>
         /// 카드로 스폰시키지 않는 경우 ex) 타워
@@ -302,12 +270,7 @@ namespace WPP.AI.SPAWNER
         //{
         //    return Instantiate(name, level, ownershipId, pos);
         //}
-
-
-        public Entity Spawn(string name, BaseStat stat, int ownershipId, Vector3 pos)
-        {
-            return Instantiate(name, stat, ownershipId, pos);
-        }
+       
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {

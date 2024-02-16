@@ -31,6 +31,8 @@ namespace WPP.ClientInfo.Card
 
         public float duration = 1.5f;
 
+        public float radius = 0; // 이 값이 0이 아닌 경우 원형 범위를 그려줘야함
+
         public GridSize gridSize;
         public SpawnData spawnData { get; set; }
     }

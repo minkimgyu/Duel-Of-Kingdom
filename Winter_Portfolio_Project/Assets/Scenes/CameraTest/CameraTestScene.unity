@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -29684,37 +29684,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4111116904279595642, guid: ee7178cfb7afcd84eb9ba897aaf77a6c, type: 3}
   m_PrefabInstance: {fileID: 768527395}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &771363398
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 771363399}
-  m_Layer: 0
-  m_Name: End
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &771363399
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 771363398}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.5, y: 1, z: 6.01}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &771895071
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -80876,6 +80845,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4149452652256466513, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 21.340027
+      objectReference: {fileID: 0}
+    - target: {fileID: 7699952583261271494, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8377592768621093609, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
       propertyPath: m_Name
       value: BattleSystemUI
@@ -85041,7 +85018,6 @@ SceneRoots:
   - {fileID: 1267205911}
   - {fileID: 856537803}
   - {fileID: 334058205}
-  - {fileID: 771363399}
   - {fileID: 2081670288}
   - {fileID: 1735078940}
   - {fileID: 480499402}

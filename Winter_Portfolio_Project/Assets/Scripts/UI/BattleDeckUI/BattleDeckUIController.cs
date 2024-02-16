@@ -152,10 +152,17 @@ namespace WPP.Battle.UI
                 Debug.Log("Placing Card name : " + name + ", lv : " + level);
                 CardData selectedCardData = CardCollection.Instance().FindCard(card.id, level);
 
-                OffsetRect offsetRect 
-                    = new OffsetRect(selectedCardData.gridSize.top, selectedCardData.gridSize.down, 
-                    selectedCardData.gridSize.left, selectedCardData.gridSize.right);
-                _gridController.FSM.OnSelect(offsetRect);
+                if (selectedCardData.radius == 0) // OffsetRect 사용
+                {
+                    OffsetRect offsetRect
+                   = new OffsetRect(selectedCardData.gridSize.top, selectedCardData.gridSize.down,
+                   selectedCardData.gridSize.left, selectedCardData.gridSize.right);
+                    _gridController.OnSelect(offsetRect);
+                }
+                else // 원형 범위 사용
+                {
+                    _gridController.OnSelect(selectedCardData.radius);
+                }
 
                 _placedCard = false;
             }

@@ -9,6 +9,7 @@ namespace WPP.AI.GRID.STATE
     public class SelectState : State
     {
         GridController _gridController;
+        bool canEnterOpponentArea;
 
         public SelectState(GridController gridController)
         {
@@ -19,7 +20,7 @@ namespace WPP.AI.GRID.STATE
 
         public override void OnStateUpdate()
         {
-            _gridController.SelectComponent.SelectGrid(); // 작동시켜주기
+            _gridController.SelectComponent.SelectGrid(canEnterOpponentArea); // 작동시켜주기
         }
 
         public override void OnTowerConditionChangeRequested()
@@ -32,6 +33,7 @@ namespace WPP.AI.GRID.STATE
         public override void OnMessageRequested(string info, OffsetRect offsetFromCenter)
         {
             Debug.Log(info);
+            canEnterOpponentArea = false;
             _gridController.SelectComponent.ResetRect(offsetFromCenter); // 여기서 그려줌
             _gridController.FillComponent.DrawSpawnImpossibleRect();
         }
@@ -39,8 +41,9 @@ namespace WPP.AI.GRID.STATE
         public override void OnMessageRequested(string info, float radius)
         {
             Debug.Log(info);
+            canEnterOpponentArea = true;
             _gridController.SelectComponent.ResetRect(radius); // 여기서 그려줌
-            _gridController.FillComponent.DrawSpawnImpossibleRect();
+            //_gridController.FillComponent.DrawSpawnImpossibleRect();
         }
 
         public override void OnStateExit()

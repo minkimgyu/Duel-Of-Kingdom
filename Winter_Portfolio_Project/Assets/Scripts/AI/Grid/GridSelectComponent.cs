@@ -127,7 +127,7 @@ namespace WPP.AI.GRID
             return new Vector3(clampedX, 1.1f, clampedZ);
         }
 
-        public void SelectGrid()
+        public void SelectGrid(bool canEnterOpponentArea)
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -136,85 +136,89 @@ namespace WPP.AI.GRID
 
             if (Physics.Raycast(ray, out hit, _maxDistance, _layer))
             {
-                Vector3 clampedPos = ReturnClampedPos(hit.transform.position);
-                Vector2Int indexOfGrid = OnConvertV3ToIndexRequested(clampedPos);
+                Vector3 clampedPos = ReturnClampedPos(hit.transform.position); // 지정된 위치
 
-                int minXIndex = indexOfGrid.x - _rectSize._left;
-                int minYIndex = indexOfGrid.y - _rectSize._down;
-                minV2 = new Vector2Int(minXIndex, minYIndex);
-
-                int maxXIndex = indexOfGrid.x + _rectSize._right;
-                int maxYIndex = indexOfGrid.y + _rectSize._top;
-                maxV2 = new Vector2Int(maxXIndex, maxYIndex);
-
-                // 그리드의 최대 최소 값 인덱스
-                RectInt clampedRange = ReturnClampedRange();
-
-                Vector2Int downLeft = OnConvertV2ToIndexRequested(clampedRange.min);
-                Vector2Int topRight = OnConvertV2ToIndexRequested(clampedRange.max);
-
-                // 우선 가장 먼저 마우스 포인터 주변 인덱스를 조사해서 그 부분이 Filled 되어있는지 판단해보기
-                // 그렇다면 아래 코드 실행해주기
-
-                List<Vector3> points = new List<Vector3>();
-
-                Grid[,] grids = OnReturnGridRequested();
-                for (int i = downLeft.y; i <= topRight.y; i++)
+                if(canEnterOpponentArea == false)
                 {
-                    bool thisRectIsBlock = false;
-                    for (int j = minXIndex; j <= maxXIndex; j++)
+                    Vector2Int indexOfGrid = OnConvertV3ToIndexRequested(clampedPos);
+
+                    int minXIndex = indexOfGrid.x - _rectSize._left;
+                    int minYIndex = indexOfGrid.y - _rectSize._down;
+                    minV2 = new Vector2Int(minXIndex, minYIndex);
+
+                    int maxXIndex = indexOfGrid.x + _rectSize._right;
+                    int maxYIndex = indexOfGrid.y + _rectSize._top;
+                    maxV2 = new Vector2Int(maxXIndex, maxYIndex);
+
+                    // 그리드의 최대 최소 값 인덱스
+                    RectInt clampedRange = ReturnClampedRange();
+
+                    Vector2Int downLeft = OnConvertV2ToIndexRequested(clampedRange.min);
+                    Vector2Int topRight = OnConvertV2ToIndexRequested(clampedRange.max);
+
+                    // 우선 가장 먼저 마우스 포인터 주변 인덱스를 조사해서 그 부분이 Filled 되어있는지 판단해보기
+                    // 그렇다면 아래 코드 실행해주기
+
+                    List<Vector3> points = new List<Vector3>();
+
+                    Grid[,] grids = OnReturnGridRequested();
+                    for (int i = downLeft.y; i <= topRight.y; i++)
                     {
-                        bool exitThisLine = false;
-                        for (int z = i - _rectSize._down; z <= i + _rectSize._top; z++)
+                        bool thisRectIsBlock = false;
+                        for (int j = minXIndex; j <= maxXIndex; j++)
                         {
-                            if (grids[j, z].CanPlant == false)
+                            bool exitThisLine = false;
+                            for (int z = i - _rectSize._down; z <= i + _rectSize._top; z++)
                             {
-                                exitThisLine = true;
+                                if (grids[j, z].CanPlant == false)
+                                {
+                                    exitThisLine = true;
+                                    break;
+                                }
+                            }
+
+                            if (exitThisLine)
+                            {
+                                thisRectIsBlock = true;
                                 break;
                             }
                         }
 
-                        if (exitThisLine)
-                        {
-                            thisRectIsBlock = true;
-                            break;
-                        }
+                        if (thisRectIsBlock == false) points.Add(new Vector3(clampedPos.x, 1.1f, i + gridWorldPos.yMin));
                     }
 
-                    if (thisRectIsBlock == false) points.Add(new Vector3(clampedPos.x, 1.1f, i + gridWorldPos.yMin));
-                }
+                    float storedDistance = 0;
+                    int selectedIndex = -1;
 
-                float storedDistance = 0;
-                int selectedIndex = -1;
-
-                // 마우스와 가장 가까운 지점을 반환해서 그 위치로 spawnRect를 위치시킴
-                for (int i = 0; i < points.Count; i++)
-                {
-                    if (i == 0)
+                    // 마우스와 가장 가까운 지점을 반환해서 그 위치로 spawnRect를 위치시킴
+                    for (int i = 0; i < points.Count; i++)
                     {
-                        selectedIndex = i;
-                        storedDistance = Vector3.Distance(clampedPos, points[i]);
-                    }
-                    else
-                    {
-                        float tmpDistance = Vector3.Distance(clampedPos, points[i]);
-                        if (tmpDistance < storedDistance)
+                        if (i == 0)
                         {
-                            storedDistance = tmpDistance;
                             selectedIndex = i;
+                            storedDistance = Vector3.Distance(clampedPos, points[i]);
+                        }
+                        else
+                        {
+                            float tmpDistance = Vector3.Distance(clampedPos, points[i]);
+                            if (tmpDistance < storedDistance)
+                            {
+                                storedDistance = tmpDistance;
+                                selectedIndex = i;
+                            }
                         }
                     }
-                }
 
-                _spawnPoint = points[selectedIndex];
+                    _spawnPoint = points[selectedIndex];
+                }
+                else
+                {
+                    _spawnPoint = clampedPos;
+                }
+                
                 _spawnRect.Move(_spawnPoint);
             }
         }
-
-        //private void Update()
-        //{
- 
-        //}
 
         // 가장 먼저 그리드 사이즈를 받아서 마우스가 이동할 수 있는 최소, 최대 좌표를 구해보자
         // 먼저 오브젝트로 마우스 이동 입력을 받아보는 걸로 시작하고 이동은 int 범위로만 하는 걸로 하자

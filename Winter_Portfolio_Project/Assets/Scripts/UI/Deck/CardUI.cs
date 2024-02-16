@@ -8,11 +8,14 @@ namespace WPP.DeckManagement.UI
 {
     public class CardUI : MonoBehaviour
     {
+        [SerializeField] private CardSpriteSO _cardSpriteSO;
+        [Space]
+        [SerializeField] private Image _cardImage;
         [SerializeField] private TextMeshProUGUI _cardName;
         [SerializeField] private TextMeshProUGUI _cardCost;
         [SerializeField] private Button _button;
         [Header("Optional")]
-        [SerializeField] private RectTransform _levelBar;
+        [SerializeField] private Slider _levelBar;
 
         private DeckEditorUIController _controller;
         private GameObject _popup;
@@ -34,12 +37,16 @@ namespace WPP.DeckManagement.UI
                 _cardName.text = "Empty";
                 _button.interactable = false;
                 _cardCost.text = "";
+
+                _cardImage.sprite = _cardSpriteSO.EmptySprite;
             }
             else
             {
                 _cardName.text = card.id;
                 _button.interactable = true;
                 _cardCost.text = card.cost.ToString();
+
+                _cardImage.sprite = _cardSpriteSO.GetCardSprite(card.id);
             }
 
             if(_levelBar != null)
@@ -60,7 +67,8 @@ namespace WPP.DeckManagement.UI
 
         private void SetLevelBar(float progress)
         {
-            _levelBar.anchorMax = new Vector2(progress, 0);
+            //_levelBar.anchorMax = new Vector2(progress, 0);
+            _levelBar.value = progress;
         }
     }
 }

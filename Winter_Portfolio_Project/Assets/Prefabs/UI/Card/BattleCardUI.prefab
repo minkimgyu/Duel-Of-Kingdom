@@ -96,6 +96,18 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4124732178126137876, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.418
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_Name
       value: BattleCardUI

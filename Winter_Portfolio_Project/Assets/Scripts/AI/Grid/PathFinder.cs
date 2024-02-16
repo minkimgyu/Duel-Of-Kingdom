@@ -222,7 +222,7 @@ namespace WPP.AI.GRID
                 int MoveCost;
                 // 빠른 경로인 경우 다르게 초기화해줌
                 if (NeighborNode.IsFastPath)
-                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 5 : 7);
+                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 2 : 3);
                 else
                     MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 10 : 14);
                 // 여기서 타일 piece를 보고 경우가 맞다면 movecost를 일부 줄여준다.

@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 140c09070bab60b4f999f26cb755e30b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 3
+  _speed: 6
   _radius: 1.5
   _drawingPrefab: {fileID: 4495645697706373623, guid: 46f5e6c73addf594b8ac40cd7de12ada, type: 3}
 --- !u!65 &461170857941248623

@@ -77,6 +77,9 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUSET_HOLE_PUNCHING, HandleHolePunching);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
 
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_PING, RequestRoundTripTime);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_ANSWER_PING, GetRoundTripTime);
+
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnUsingUnitData);
@@ -296,6 +299,8 @@ namespace WPP.Network
 
         public void HandleEnterGame(ref ByteBuffer buffer)
         {
+            ClientTCP clientTCP = ClientTCP.Instance();
+
             // set room_id
             int roomID = buffer.ReadInteger(true);
             Debug.Log("roomID: " + roomID);
@@ -317,12 +322,16 @@ namespace WPP.Network
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
             // try to connect with private end point
-            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
-            if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
+            clientTCP.ConnectPeer(opponentPrivateEP);
+            if (clientTCP.peerSock == null || clientTCP.peerSock.Connected == false)
             {
                 // try to connect with public end point
-                ClientTCP.Instance().ConnectPeer(opponentPublicEP);
+                clientTCP.ConnectPeer(opponentPublicEP);
             }
+
+            clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_PING);
+            Debug.Log("send ping");
+
             SceneManager.LoadScene("CameraTestScene");
 
             Debug.Log("entered game");
@@ -350,6 +359,24 @@ namespace WPP.Network
             ClientTCP.Instance().peerSockPublicEP = externalEP;
 
             ClientTCP.Instance().CloseHolePunchingConnection();
+        }
+
+        public void RequestRoundTripTime(ref ByteBuffer buffer)
+        {
+            ClientTCP clientTCP = ClientTCP.Instance();
+            clientTCP.pingSentTime = DateTime.Now;
+            clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_ANSWER_PING);
+            Debug.Log("answer ping");
+        }
+
+        public void GetRoundTripTime(ref ByteBuffer buffer)
+        {
+            ClientTCP clientTCP = ClientTCP.Instance();
+            clientTCP.pingAnsweredTime = DateTime.Now;
+            clientTCP.rtt = clientTCP.pingAnsweredTime.Subtract(clientTCP.pingSentTime);
+            double rttMilliseconds = clientTCP.rtt.TotalMilliseconds;
+
+            Debug.Log("Round-Trip Time: " + rttMilliseconds + " milliseconds");
         }
 
         public void HandleSynchronization(ref ByteBuffer buffer)

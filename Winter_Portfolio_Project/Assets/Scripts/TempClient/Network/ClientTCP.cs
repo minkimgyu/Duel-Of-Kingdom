@@ -26,6 +26,10 @@ namespace WPP.Network
         public IPEndPoint peerSockPublicEP { get; set; }
         public IPEndPoint peerSockPrivateEP { get; set; }
 
+        public DateTime pingSentTime { get; set; }
+        public DateTime pingAnsweredTime { get; set; }
+        public TimeSpan rtt { get; set; }
+
         private object _tcpLockObject;
 
         public static ClientTCP Instance()
@@ -353,6 +357,7 @@ namespace WPP.Network
             }
         }
 
+        /*
         ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, Vector3 pos)
         {
             ByteBuffer bufferToSend = new ByteBuffer();
@@ -384,7 +389,7 @@ namespace WPP.Network
             bufferToSend.WriteVector3(rightPrincessTowerPos);
             SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToSend.ToArray());
         }
-
+        */
         // functions to close connection
         private void CloseServerConnection()
         {

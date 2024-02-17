@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace WPP.Battle.UI
     public class GameOverUI : MonoBehaviour
     {
         [SerializeField] private GameObject _gameOverPanel;
+        [SerializeField] private float _gameOverPanelDelay = 1.5f;
         [Space]
         [SerializeField] private Color _unlockedCrownColor;
         [SerializeField] private Color _lockedCrownColor;
@@ -34,8 +36,10 @@ namespace WPP.Battle.UI
             _battleManager.OnGameOver -= OnGameOver;
         }
 
-        private void OnGameOver(BattleResult result)
+        private async void OnGameOver(BattleResult result)
         {
+            await Task.Delay(Mathf.RoundToInt(_gameOverPanelDelay * 1000));
+
             _gameOverPanel.SetActive(true);
 
             int playerCrown = _battleManager.Player.CrownSystem.CrownCount;

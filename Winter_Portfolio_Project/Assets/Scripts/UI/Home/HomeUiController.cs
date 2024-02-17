@@ -19,7 +19,7 @@ namespace WPP.UI
             _battleMenu.gameObject.SetActive(true);
             _cardsMenu.gameObject.SetActive(true);
             // set the _cardsMenu on left side of the screen
-            _cardsMenu.anchoredPosition = new Vector2(-Screen.width, 0);
+            _cardsMenu.anchoredPosition = new Vector2(-_cardsMenu.rect.width, 0);
 
             _battleMenuButton.anchorMin = new Vector2(1 - _selectedButtonRatio, 0);
             _battleMenuButton.anchorMax = new Vector2(1, 0);
@@ -30,7 +30,7 @@ namespace WPP.UI
         public void OnBattleButtonClicked()
         {
             _battleMenu.DOAnchorPos(new Vector2(0, 0), 0.5f);
-            _cardsMenu.DOAnchorPos(new Vector2(-Screen.width, 0), 0.5f);
+            _cardsMenu.DOAnchorPos(new Vector2(-_cardsMenu.rect.width, 0), 0.5f);
 
             _battleMenuButton.DOAnchorMin(new Vector2(1 - _selectedButtonRatio, 0), 0.5f);
             _cardMenuButton.DOAnchorMax(new Vector2(1 - _selectedButtonRatio, 0), 0.5f);
@@ -38,7 +38,7 @@ namespace WPP.UI
 
         public void OnCardsButtonClicked()
         {
-            _battleMenu.DOAnchorPos(new Vector2(Screen.width, 0), 0.5f);
+            _battleMenu.DOAnchorPos(new Vector2(_battleMenu.rect.width, 0), 0.5f);
             _cardsMenu.DOAnchorPos(new Vector2(0, 0), 0.5f);
 
             _battleMenuButton.DOAnchorMin(new Vector2(_selectedButtonRatio, 0), 0.5f);

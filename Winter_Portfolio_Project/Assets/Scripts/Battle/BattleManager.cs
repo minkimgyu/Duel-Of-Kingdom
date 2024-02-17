@@ -239,7 +239,7 @@ namespace WPP.Battle
         }
         private void OnOverTimeStatusEndCondition()
         {
-            if (_fsm.CurrentState == Status.Overtime && CheckBattleEndCondition())
+            if (_fsm.CurrentState == Status.Overtime)
                 _fsm.TransitionTo(Status.PostBattle);
         }
         private void OnOverTimeStatusEndCondition(int _) => OnOverTimeStatusEndCondition();

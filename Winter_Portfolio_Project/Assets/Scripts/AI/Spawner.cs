@@ -45,19 +45,6 @@ namespace WPP.AI.SPAWNER
             _spawnedEntities.Remove(entity);
         }
 
-        public int FindSameNameEntityCount(int ownershipId, string name)
-        {
-            int sameNameCount = 1;
-            foreach(Entity entity in _spawnedEntities)
-            {
-                if(entity.Name == name && entity.OwnershipId == ownershipId)
-                {
-                    ++sameNameCount;
-                }
-            }
-            return sameNameCount;
-        }
-
         public Entity FindSameNetwordIdEntity(string networkId)
         {
             return _spawnedEntities.Find(x => x.NetwordId == networkId);
@@ -127,7 +114,7 @@ namespace WPP.AI.SPAWNER
         }
 
         // entityId �̰Ÿ� string�� �ؼ� �ޱ�
-        Entity ReturnEntity(string name, int ownershipId, Vector3 pos)
+        Entity ReturnEntity(string name, int ownershipId, string networkId, Vector3 pos)
         {
             Entity entity = _entityPrefabs.Find(x => x.Name == name);
             if (entity == null) return null;
@@ -136,8 +123,6 @@ namespace WPP.AI.SPAWNER
             string networkId = ReturnNetworkId(ownershipId); // �̰Ÿ� �����Ǵ� ������Ʈ�� �ο��ؾ��Ѵ� --> ���� ������ ���ؼ� �Ѱܼ� �޾��ֱ�
                                                              // �Ű������� �޾ƾ��� ��?
             */
-            _spawnCount = FindSameNameEntityCount(ownershipId, name);
-            string networkId = ReturnNetworkId(ownershipId, name, _spawnCount);
 
             int clientId = ClientData.Instance().player_id_in_game; // ���� Ŭ���̾�Ʈ ���̵� �޾ƿͼ� �־��ش�.
 
@@ -208,7 +193,7 @@ namespace WPP.AI.SPAWNER
         //    return entity;
         //}
 
-        public void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
+        public void Instantiate(int ownershipId, Vector3 kingTowerPos, string kingTowerNetworkId, Vector3 leftPrincessTowerPos, string leftPrincessTowerNetworkId, Vector3 rightPrincessTowerPos, string rightPrincessTowerNetworkId)
         {
             // name�� level�� ���� ��츦 ã�Ƽ� ����
             // ���Ŀ� offset�� �߰��� ���� ������Ѿ��� ���� �ֱ� ������ �װ͵� �����غ���
@@ -220,26 +205,26 @@ namespace WPP.AI.SPAWNER
             //return entity;
             TowersData towersData = ClientData.Instance().towers;
 
-            Entity kingTower = ReturnEntity("king_tower", ownershipId, kingTowerPos);
+            Entity kingTower = ReturnEntity("king_tower", ownershipId, kingTowerNetworkId, kingTowerPos);
             if (kingTower == null) return;
             towersData.kingTower.towerUnit.ResetData(kingTower);
 
-            Entity leftPrincessTower = ReturnEntity("princess_tower", ownershipId, leftPrincessTowerPos);
+            Entity leftPrincessTower = ReturnEntity("princess_tower", ownershipId, leftPrincessTowerNetworkId, leftPrincessTowerPos);
             if (leftPrincessTower == null) return;
             leftPrincessTower.IsLeft(true);
 
             towersData.leftPrincessTower.towerUnit.ResetData(leftPrincessTower);
 
-            Entity rightPrincessTower = ReturnEntity("princess_tower", ownershipId, rightPrincessTowerPos);
+            Entity rightPrincessTower = ReturnEntity("princess_tower", ownershipId, rightPrincessTowerNetworkId, rightPrincessTowerPos);
             if (rightPrincessTower == null) return;
             rightPrincessTower.IsLeft(false);
 
             towersData.rightPrincessTower.towerUnit.ResetData(rightPrincessTower);
         }
 
-        public Entity Instantiate(CardData cardData, float duration, int ownershipId, Vector3 pos)
+        public Entity Instantiate(CardData cardData, float duration, int ownershipId, string networkId, Vector3 pos)
         {
-            Entity entity = ReturnEntity(cardData.unit._name, ownershipId, pos);
+            Entity entity = ReturnEntity(cardData.unit._name, ownershipId, networkId, pos);
             if (entity == null) return null;
 
             entity.ResetDelayAfterSpawn(duration);
@@ -250,12 +235,29 @@ namespace WPP.AI.SPAWNER
             return entity;
         }
 
-        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, Vector3 pos)
+        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, string networkId, Vector3 pos)
         {
             ByteBuffer bufferToSend = new ByteBuffer();
             bufferToSend.WriteString(cardId);
             bufferToSend.WriteInteger(level);
             bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteInteger(1);
+            bufferToSend.WriteString(networkId);
+            bufferToSend.WriteVector3(pos);
+            return bufferToSend;
+        }
+
+        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, int numOfCardsToSpawn, string[] networkIds, Vector3 pos)
+        {
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteString(cardId);
+            bufferToSend.WriteInteger(level);
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteInteger(numOfCardsToSpawn);
+            for(int i=0; i< numOfCardsToSpawn; i++)
+            {
+                bufferToSend.WriteString(networkIds[i]);
+            }
             bufferToSend.WriteVector3(pos);
             return bufferToSend;
         }
@@ -272,15 +274,20 @@ namespace WPP.AI.SPAWNER
             float duration = cardData.duration;
 
             int unitCount = cardData.spawnData.spawnUnitCount;
+            string[] networkIds = new string[unitCount];
             SerializableVector2[] offset = cardData.spawnData.spawnOffset;
 
             for (int i = 0; i < unitCount; i++)
             {
-                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+                ++_spawnCount;
+                networkIds[i] = ReturnNetworkId(ownershipId, cardData.unit._name, _spawnCount);
+
+                Instantiate(cardData, duration, ownershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
             SpawnClockUI(cardData.type, pos, duration);
-            ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, pos);
+
+            ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, unitCount, networkIds, pos);
             ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
             return;
         }
@@ -295,8 +302,12 @@ namespace WPP.AI.SPAWNER
 
             for (int i = 0; i < offsets.Length; i++)
             {
-                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y));
-                ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, pos);
+                ++_spawnCount;
+                string networkId = ReturnNetworkId(ownershipId, cardData.unit._name, _spawnCount);
+
+                Instantiate(cardData, duration, ownershipId, networkId, pos + new Vector3(offsets[i].x, 0, offsets[i].y));
+
+                ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, networkId, pos);
                 ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
             }
 
@@ -325,14 +336,26 @@ namespace WPP.AI.SPAWNER
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
-            //ClientTCP.Instance().SpawnTower(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
-            Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            ++_spawnCount;
+            string kingTowerNetworkId = ReturnNetworkId(ownershipId, "king_tower", _spawnCount);
+            ++_spawnCount;
+            string leftPrincessTowerNetworkId = ReturnNetworkId(ownershipId, "princess_tower", _spawnCount);
+            ++_spawnCount;
+            string rightPrincessTowerNetworkId = ReturnNetworkId(ownershipId, "princess_tower", _spawnCount);
+            Instantiate(ownershipId, kingTowerPos, kingTowerNetworkId, leftPrincessTowerPos, leftPrincessTowerNetworkId, rightPrincessTowerPos, rightPrincessTowerNetworkId);
 
             ByteBuffer bufferToSend = new ByteBuffer();
             bufferToSend.WriteInteger(ownershipId);
+
             bufferToSend.WriteVector3(kingTowerPos);
+            bufferToSend.WriteString(kingTowerNetworkId);
+
             bufferToSend.WriteVector3(leftPrincessTowerPos);
+            bufferToSend.WriteString(leftPrincessTowerNetworkId);
+
             bufferToSend.WriteVector3(rightPrincessTowerPos);
+            bufferToSend.WriteString(rightPrincessTowerNetworkId);
+
             ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToSend.ToArray());
         }
 

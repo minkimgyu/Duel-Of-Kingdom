@@ -56,6 +56,7 @@ namespace WPP
             string decksString = JsonConvert.SerializeObject(ClientData.Instance().decks);
             decksBuffer.WriteString(decksString);
             ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_REQUEST_UPDATE_DECKS, decksBuffer.ToArray());
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_CLOSE_CONNECTION, decksBuffer.ToArray());
         }
     }
 }

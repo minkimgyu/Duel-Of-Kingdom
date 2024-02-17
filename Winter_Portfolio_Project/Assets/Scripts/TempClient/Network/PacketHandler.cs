@@ -1,4 +1,4 @@
-#define UNITY_EDITOR
+#undef UNITY_EDITOR
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +36,7 @@ namespace WPP.Network
 
         private int _packetLength;
         private int _inGamePacketLength;
-        private bool _isSegmentated;
+        private bool _isSegmented;
         private bool _isInGamePacketSegmentated;
         private object _packetHandlerLockObj;
         private object _inGamePacketHandlerLockObj;
@@ -54,7 +54,7 @@ namespace WPP.Network
         public PacketHandler() {
             _packetLength = 0;
             _inGamePacketLength = 0;
-            _isSegmentated = false;
+            _isSegmented = false;
             _isInGamePacketSegmentated = false;
             packetQueue = new Queue<byte[]>();
             inGamePacketQueue = new Queue<byte[]>();
@@ -100,24 +100,24 @@ namespace WPP.Network
             // packet 복사
             ClientTCP.Instance().buffer.WriteBytes(packet);
 
-            if (_isSegmentated == false)
+            if (_isSegmented == false)
             {
                 _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
             }
 
             // 처음으로 패킷이 분할되어 왔을 경우
-            if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmentated == false)
+            if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmented == false)
             {
-                _isSegmentated = true;
+                _isSegmented = true;
                 return;
             }
 
-            if (_isSegmentated == true)
+            if (_isSegmented == true)
             {
                 // 패킷을 다 받았다면
                 if (_packetLength == ClientTCP.Instance().buffer.Count() + 4)
                 {
-                    _isSegmentated = false;
+                    _isSegmented = false;
                     HandleData(ClientTCP.Instance().buffer.ToArray());
                     _packetLength = 0;
                     ClientTCP.Instance().buffer.Dispose();
@@ -495,7 +495,7 @@ namespace WPP.Network
                 {
                     if(sameEntity.CanAttachHpBar() == true && (sameEntity as Life).HP != targetHP)
                     {
-                        Debug.Log("Synchronize" + sameEntity.Name + (sameEntity as Life).HP + " to " + targetHP);
+                        Debug.Log("Synchronize " + sameEntity.Name + (sameEntity as Life).HP + " to " + targetHP);
                         sameEntity.SynchronizeHP(targetHP);
                     }
                     sameEntity.transform.position = targetPos;

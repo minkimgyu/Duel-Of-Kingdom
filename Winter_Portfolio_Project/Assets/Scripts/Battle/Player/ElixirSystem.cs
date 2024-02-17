@@ -10,6 +10,7 @@ namespace WPP.Battle
         [SerializeField] private float _startElixirRegenTime = 2.8f;
 
         public event System.Action<int> OnElixirCountChange;
+        public event System.Action<float> OnElixirRegenTimeChange;
         public int ElixirCount => _elixirCount;
         public float MaxElixirCount => _maxElixir;
         public float ElixirRegenTime => _elixirRegenTime;
@@ -50,12 +51,14 @@ namespace WPP.Battle
         public void SetElixirRegenTime(float time)
         {
             _elixirRegenTime = time;
+            OnElixirRegenTimeChange?.Invoke(_elixirRegenTime);
         }
     
         public void StartRegen()
         {
             _regenStarted = true;
             OnElixirCountChange?.Invoke(_elixirCount);
+            OnElixirRegenTimeChange?.Invoke(_elixirRegenTime);
         }
         public void StopRegen()
         {

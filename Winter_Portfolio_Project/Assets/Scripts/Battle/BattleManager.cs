@@ -57,6 +57,9 @@ namespace WPP.Battle
         [SerializeField] private float _battleRegenRate = 2.8f;
         [SerializeField] private float _overtimeRegenRate1 = 1.4f;
         [SerializeField] private float _overtimeRegenRate2 = 0.9f;
+        public float BattleRegenRate => _battleRegenRate;
+        public float OvertimeRegenRate1 => _overtimeRegenRate1;
+        public float OvertimeRegenRate2 => _overtimeRegenRate2;
 
         public enum Status
         {
@@ -204,6 +207,7 @@ namespace WPP.Battle
                     return;
                 }
                 Time.timeScale = 1;
+                _elixirSystem.SetElixirRegenTime(_overtimeRegenRate1);
 
                 _battleTimer.StartTimer(_overtimeLength * 60);
                 _battleTimer.OnTimerEnd += OnOverTimeStatusEndCondition;

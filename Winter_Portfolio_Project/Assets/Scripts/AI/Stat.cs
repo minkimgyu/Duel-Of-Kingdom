@@ -59,8 +59,8 @@ namespace WPP.AI.STAT
     [Serializable]
     public class MagicStat : BaseStat
     {
-        protected float _range; // 범위
-        protected float _durationBeforeDestroy; // Task 적용 후 기간
+        public float _range; // 범위
+        public float _durationBeforeDestroy; // Task 적용 후 기간
 
         public MagicStat(int id, int level, string name, float range, float durationBeforeDestroy) : base(id, level, name)
         {
@@ -74,8 +74,8 @@ namespace WPP.AI.STAT
     public class ProjectileMagicStat : MagicStat
     {
         // 기본 능력치
-        protected float _damage; // 데미지
-        protected float _speed; // Task 적용 전 딜레이
+        public float _damage; // 데미지
+        public float _speed; // Task 적용 전 딜레이
 
         public ProjectileMagicStat(int id, int level, string name, float range, float durationBeforeDestroy, float damage, float speed) : base(id, level, name, range, durationBeforeDestroy)
         {

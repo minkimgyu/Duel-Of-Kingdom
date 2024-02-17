@@ -357,39 +357,6 @@ namespace WPP.Network
             }
         }
 
-        /*
-        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, Vector3 pos)
-        {
-            ByteBuffer bufferToSend = new ByteBuffer();
-            bufferToSend.WriteString(cardId);
-            bufferToSend.WriteInteger(level);
-            bufferToSend.WriteInteger(ownershipId);
-            bufferToSend.WriteVector3(pos);
-            return bufferToSend;
-        }
-
-        public void SpawnCard(Card card, int level, int ownershipId, Vector3 pos)
-        {
-            ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, pos);
-            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
-        }
-
-        public void SpawnUnit(string cardId, int level, int ownershipId, Vector3 pos)
-        {
-            ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, pos);
-            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
-        }
-
-        public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
-        {
-            ByteBuffer bufferToSend = new ByteBuffer();
-            bufferToSend.WriteInteger(ownershipId);
-            bufferToSend.WriteVector3(kingTowerPos);
-            bufferToSend.WriteVector3(leftPrincessTowerPos);
-            bufferToSend.WriteVector3(rightPrincessTowerPos);
-            SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToSend.ToArray());
-        }
-        */
         // functions to close connection
         private void CloseServerConnection()
         {

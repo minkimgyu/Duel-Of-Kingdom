@@ -45,7 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9313f1e845663fa4cb019e9656f719b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _name: arrow
+  _name: arrows
+  _ownershipId: 0
   _projectileFlyPrefab: {fileID: 2093769195306745347, guid: bb62a5bd1db3c5e41a67ce4fbd9bbd5c, type: 3}
   _projectileGroundPrefab: {fileID: 3108788910989446195, guid: e39417149d239e34da6851fb47890517, type: 3}
 --- !u!114 &8238986604323486316

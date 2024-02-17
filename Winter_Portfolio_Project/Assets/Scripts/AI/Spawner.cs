@@ -34,6 +34,13 @@ namespace WPP.AI.SPAWNER
         {
             Entity entity = _spawnedEntities.Find(x => x.NetwordId == networkId);
             if (entity == null) return; // ������Ʈ�� ���ٸ� return;
+            if(entity.CanAttachHpBar() == true)
+            {
+                if (entity != null)
+                {
+                   ((Life)entity).Die();
+                }
+            }
 
             _spawnedEntities.Remove(entity);
         }
@@ -167,8 +174,10 @@ namespace WPP.AI.SPAWNER
             entity.AttachHpBar(hpContainer);
         }
 
-        public void SpawnClockUI(Vector3 pos, float duration)
+        public void SpawnClockUI(CardType type, Vector3 pos, float duration)
         {
+            if (type == CardType.spell)
+                return;
             ClockUI clockUI = Instantiate(_clockUIPrefab);
             clockUI.Initialize(pos, duration);
         }
@@ -253,7 +262,7 @@ namespace WPP.AI.SPAWNER
         public void Spawn(Card card, int level, int ownershipId, Vector3 pos)
         {
             if (ownershipId != ClientData.Instance().player_id_in_game)
-                return null;
+                return;
 
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
             float duration = cardData.duration;
@@ -266,11 +275,10 @@ namespace WPP.AI.SPAWNER
                 Instantiate(cardData, duration, ownershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
-            SpawnClockUI(pos, duration);
-            //ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
+            SpawnClockUI(cardData.type, pos, duration);
             ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, pos);
             ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
-            return spawnedEntities;
+            return;
         }
 
         public void Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
@@ -283,8 +291,7 @@ namespace WPP.AI.SPAWNER
 
             for (int i = 0; i < offsets.Length; i++)
             {
-                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y)); // test
-                //ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
+                Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y));
                 ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, pos);
                 ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
             }

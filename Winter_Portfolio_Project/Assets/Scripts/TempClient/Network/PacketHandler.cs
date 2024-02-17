@@ -391,7 +391,15 @@ namespace WPP.Network
             for (int i = 0; i < numOfSpawnedEntites; i++)
             {
                 string networkId = spawnedEntities[i].NetwordId;
-                float hp = (spawnedEntities[i] as Life).HP;
+                float hp = 0;
+                if (spawnedEntities[i].CanAttachHpBar() == true)
+                {
+                    if (spawnedEntities[i] != null)
+                    {
+                        hp = ((Life)spawnedEntities[i]).HP;
+                    }
+                }
+                 
                 Vector3 pos = (spawnedEntities[i]).transform.position;
                 Quaternion rotation = (spawnedEntities[i]).transform.rotation;
                 syncBuffer.WriteString(networkId);
@@ -422,7 +430,7 @@ namespace WPP.Network
                 spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
-            Spawner.Instance().SpawnClockUI(pos, duration);
+            Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
         }
 
         public void SpawnUsingUnitData(ref ByteBuffer buffer)
@@ -436,7 +444,7 @@ namespace WPP.Network
             float duration = cardData.duration;
 
             Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos);
-            Spawner.Instance().SpawnClockUI(pos, duration);
+            Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
         }
 
         public void SpawnTower(ref ByteBuffer buffer)
@@ -473,7 +481,7 @@ namespace WPP.Network
 
                 if (!sameEntity.IsMyEntity)
                 {
-                    if((sameEntity as Life).HP != targetHP)
+                    if(sameEntity.CanAttachHpBar() == true && (sameEntity as Life).HP != targetHP)
                     {
                         Debug.Log("Synchronize" + sameEntity.Name + (sameEntity as Life).HP + " to " + targetHP);
                         sameEntity.SynchronizeHP(targetHP);

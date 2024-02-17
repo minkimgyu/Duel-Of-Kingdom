@@ -9,8 +9,8 @@ namespace WPP.AI
     abstract public class Magic : Entity
     {
         // 기본 능력치
-        protected float _damage; // 데미지
-        protected float _range; // 범위
+        public float _damage; // 데미지
+        public float _range; // 범위
 
         public override bool CanAttachHpBar() { return false; }
 

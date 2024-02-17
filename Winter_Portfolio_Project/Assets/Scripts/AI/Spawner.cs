@@ -226,10 +226,14 @@ namespace WPP.AI.SPAWNER
 
             Entity leftPrincessTower = ReturnEntity("princess_tower", ownershipId, leftPrincessTowerPos);
             if (leftPrincessTower == null) return;
+            leftPrincessTower.IsLeft(true);
+
             towersData.leftPrincessTower.towerUnit.ResetData(leftPrincessTower);
 
             Entity rightPrincessTower = ReturnEntity("princess_tower", ownershipId, rightPrincessTowerPos);
             if (rightPrincessTower == null) return;
+            rightPrincessTower.IsLeft(false);
+
             towersData.rightPrincessTower.towerUnit.ResetData(rightPrincessTower);
         }
 

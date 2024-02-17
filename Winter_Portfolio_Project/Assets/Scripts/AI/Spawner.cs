@@ -33,9 +33,22 @@ namespace WPP.AI.SPAWNER
         public void RemoveFromListInSpawner(string networkId)
         {
             Entity entity = _spawnedEntities.Find(x => x.NetwordId == networkId);
-            if (entity == null) return; // ¿ÀºêÁ§Æ®°¡ ¾ø´Ù¸é return;
+            if (entity == null) return; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ return;
 
             _spawnedEntities.Remove(entity);
+        }
+
+        public int FindSameNameEntityCount(int ownershipId, string name)
+        {
+            int sameNameCount = 1;
+            foreach(Entity entity in _spawnedEntities)
+            {
+                if(entity.Name == name && entity.OwnershipId == ownershipId)
+                {
+                    ++sameNameCount;
+                }
+            }
+            return sameNameCount;
         }
 
         public Entity FindSameNetwordIdEntity(string networkId)
@@ -82,9 +95,9 @@ namespace WPP.AI.SPAWNER
 
         Quaternion ReturnQuaternionUsingLandFormation(int playerId)
         {
-            // playerId°¡ 0ÀÌ¸é CÁöÇüÀ¸·Î ÁöÁ¤
-            // 1ÀÌ¸é RÁöÇüÀ¸·Î ÁöÁ¤
-            // --> ÀÌ µÑÀ» ¹ÙÅÁÀ¸·Î rotation º¯¼ö¸¦ ÁöÁ¤ÇØÁØ´Ù.
+            // playerIdï¿½ï¿½ 0ï¿½Ì¸ï¿½ Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // 1ï¿½Ì¸ï¿½ Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // --> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ rotation ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 
             if (playerId == 0) return Quaternion.Euler(new Vector3(0, 180, 0));
             else return Quaternion.Euler(new Vector3(0, 0, 0));
@@ -92,37 +105,41 @@ namespace WPP.AI.SPAWNER
 
         Vector3 ReturnMagicProjectileStartPoint(int playerId)
         {
-            // playerId°¡ 0ÀÌ¸é CÁöÇüÀ¸·Î ÁöÁ¤
-            // 1ÀÌ¸é RÁöÇüÀ¸·Î ÁöÁ¤
-            // --> ÀÌ µÑÀ» ¹ÙÅÁÀ¸·Î rotation º¯¼ö¸¦ ÁöÁ¤ÇØÁØ´Ù.
+            // playerIdï¿½ï¿½ 0ï¿½Ì¸ï¿½ Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // 1ï¿½Ì¸ï¿½ Rï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // --> ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ rotation ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 
             if (playerId == 0) return _cMagicProjectileStartPoint.position;
             else return _rMagicProjectileStartPoint.position;
         }
 
-        string ReturnNetworkId(int ownershipId)
+        string ReturnNetworkId(int ownershipId, string name, int spawnCount)
         {
-            return ownershipId.ToString() + _spawnCount.ToString();
+            //return ownershipId.ToString() + _spawnCount.ToString();
+            return ownershipId.ToString() + name + spawnCount.ToString();
         }
 
-        // entityId ÀÌ°Å¸¦ string·Î ÇØ¼­ ¹Þ±â
+        // entityId ï¿½Ì°Å¸ï¿½ stringï¿½ï¿½ ï¿½Ø¼ï¿½ ï¿½Þ±ï¿½
         Entity ReturnEntity(string name, int ownershipId, Vector3 pos)
         {
             Entity entity = _entityPrefabs.Find(x => x.Name == name);
             if (entity == null) return null;
+            /*
+            _spawnCount++; // ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ø´ï¿½.
+            string networkId = ReturnNetworkId(ownershipId); // ï¿½Ì°Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Î¿ï¿½ï¿½Ø¾ï¿½ï¿½Ñ´ï¿½ --> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½Ñ°Ü¼ï¿½ ï¿½Þ¾ï¿½ï¿½Ö±ï¿½
+                                                             // ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¾Æ¾ï¿½ï¿½ï¿½ ï¿½ï¿½?
+            */
+            _spawnCount = FindSameNameEntityCount(ownershipId, name);
+            string networkId = ReturnNetworkId(ownershipId, name, _spawnCount);
 
-            _spawnCount++; // ¿©±â¼­ ½ºÆù Ä«¿îÆ®¸¦ ¿Ã·ÁÁØ´Ù.
-            string networkId = ReturnNetworkId(ownershipId); // ÀÌ°Å¸¦ »ý¼ºµÇ´Â ¿ÀºêÁ§Æ®¿¡ ºÎ¿©ÇØ¾ßÇÑ´Ù --> µû·Î ¼­¹ö¸¦ ÅëÇØ¼­ ³Ñ°Ü¼­ ¹Þ¾ÆÁÖ±â
-                                                             // ¸Å°³º¯¼ö·Î ¹Þ¾Æ¾ßÇÒ µí?
+            int clientId = ClientData.Instance().player_id_in_game; // ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Þ¾Æ¿Í¼ï¿½ ï¿½Ö¾ï¿½ï¿½Ø´ï¿½.
 
-            int clientId = ClientData.Instance().player_id_in_game; // º»ÀÎ Å¬¶óÀÌ¾ðÆ® ¾ÆÀÌµð¸¦ ¹Þ¾Æ¿Í¼­ ³Ö¾îÁØ´Ù.
-
-            // ³ªÁß¿¡ ¿©±â º¯°æ
+            // ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             Quaternion rotation = ReturnQuaternionUsingLandFormation(clientId);
             Entity spawnedEntity = Instantiate(entity, pos, rotation);
 
 
-            // Ã¼·Â¹Ù¸¦ ºÙÀÏ ¼ö ÀÖ´Â °æ¿ì¿¡¸¸ ÁøÇà
+            // Ã¼ï¿½Â¹Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ì¿¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             if (spawnedEntity.CanAttachHpBar() == true)
             {
                 SpawnHpContainerUI(spawnedEntity);
@@ -130,17 +147,17 @@ namespace WPP.AI.SPAWNER
 
             spawnedEntity.InitializeListRemover(RemoveFromListInSpawner);
             spawnedEntity.ResetId(ownershipId, clientId, networkId);
-            // ¿©±â¿¡ ´ë±â ½Ã°£À» Ãß°¡ÇØÁØ´Ù.
+            // ï¿½ï¿½ï¿½â¿¡ ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 
             Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(ownershipId);
             spawnedEntity.ResetMagicStartPosition(magicStartPosition);
-            // ¿©±â¿¡ È­»ì ¸¶¹ý ½ºÆù À§Ä¡¸¦ Ãß°¡ÇØÁØ´Ù.
+            // ï¿½ï¿½ï¿½â¿¡ È­ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 
             _spawnedEntities.Add(spawnedEntity);
             return spawnedEntity;
         }
 
-        // Å¸¿ö´Â 1, ³ª¸ÓÁö ¿ÀºêÁ§Æ®´Â 0.5·Î ÁøÇà
+        // Å¸ï¿½ï¿½ï¿½ï¿½ 1, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ 0.5ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         void SpawnHpContainerUI(Entity entity)
         {
             float scaleRatio = entity.ReturnHpContainerScale();
@@ -156,7 +173,7 @@ namespace WPP.AI.SPAWNER
             clockUI.Initialize(pos, duration);
         }
 
-        // ¿©±â ºÎºÐ¿¡¼­ ½Ã°è ¸ð¾ç ¾ÆÀÌÄÜ »ý¼º½ÃÄÑ¼­ ÁØºñ ½Ã°£ º¸¿©ÁÖ±â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ÎºÐ¿ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¼ï¿½ ï¿½Øºï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
         //Entity Instantiate(int entityId, int ownershipId, Vector2 pos, Quaternion quaternion)
         //{
         //    BaseStat stat = _stats.Find(x => x._id == entityId);
@@ -184,8 +201,8 @@ namespace WPP.AI.SPAWNER
 
         public void Instantiate(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
-            // name°ú levelÀÌ °°Àº °æ¿ì¸¦ Ã£¾Æ¼­ ½ºÆù
-            // ÃßÈÄ¿¡ offsetÀ» Ãß°¡·Î º¸°í Àû¿ë½ÃÄÑ¾ßÇÒ ¼öµµ ÀÖ±â ¶§¹®¿¡ ±×°Íµµ °í·ÁÇØº¸±â
+            // nameï¿½ï¿½ levelï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¸¦ Ã£ï¿½Æ¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½Ä¿ï¿½ offsetï¿½ï¿½ ï¿½ß°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×°Íµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Øºï¿½ï¿½ï¿½
             //BaseStat stat = _stats.Find(x => x._name == name && x._level == level);
             //if (stat == null) return null;
 
@@ -220,11 +237,24 @@ namespace WPP.AI.SPAWNER
             return entity;
         }
 
+        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, Vector3 pos)
+        {
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteString(cardId);
+            bufferToSend.WriteInteger(level);
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteVector3(pos);
+            return bufferToSend;
+        }
+
         /// <summary>
-        /// Ä«µå¸¦ »ç¿ëÇØ¼­ ½ºÆù½ÃÅ°´Â °æ¿ì
+        /// Ä«ï¿½å¸¦ ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½
         /// </summary>
         public void Spawn(Card card, int level, int ownershipId, Vector3 pos)
         {
+            if (ownershipId != ClientData.Instance().player_id_in_game)
+                return null;
+
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
             float duration = cardData.duration;
 
@@ -237,24 +267,34 @@ namespace WPP.AI.SPAWNER
             }
 
             SpawnClockUI(pos, duration);
-            ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
+            //ClientTCP.Instance().SpawnCard(card, level, ownershipId, pos);
+            ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, pos);
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, bufferToSend.ToArray());
+            return spawnedEntities;
         }
 
         public void Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
         {
+            if (ownershipId != ClientData.Instance().player_id_in_game)
+                return;
+
             CardData cardData = CardCollection.Instance().FindCard(cardId, level);
             float duration = cardData.duration;
 
             for (int i = 0; i < offsets.Length; i++)
             {
                 Instantiate(cardData, duration, ownershipId, pos + new Vector3(offsets[i].x, 0, offsets[i].y)); // test
-                ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
+                //ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
+                ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, pos);
+                ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
             }
+
+            return;
         }
 
         /// <summary>
-        /// Ä«µå·Î ½ºÆù½ÃÅ°Áö ¾Ê´Â °æ¿ì ex) Å¸¿ö
-        /// durationÀÌ ÀÖ´Â °æ¿ì ex) ¹Ù¹Ù¸®¾È ¿ÀµÎ¸·
+        /// Ä«ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ ex) Å¸ï¿½ï¿½
+        /// durationï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ ex) ï¿½Ù¹Ù¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î¸ï¿½
         /// </summary>
         //public Entity Spawn(string name, int level, float duration, int ownershipId, Vector3 pos)
         //{
@@ -263,8 +303,8 @@ namespace WPP.AI.SPAWNER
         //}
 
         /// <summary>
-        /// Ä«µå·Î ½ºÆù½ÃÅ°Áö ¾Ê´Â °æ¿ì ex) Å¸¿ö
-        /// durationÀÌ ¾ø´Â °æ¿ì ex) Å·, ÇÁ¸°¼¼½º Å¸¿ö
+        /// Ä«ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ï¿½ ex) Å¸ï¿½ï¿½
+        /// durationï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ex) Å·, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½
         /// </summary>
         //public Entity Spawn(string name, int level, int ownershipId, Vector3 pos)
         //{
@@ -274,8 +314,15 @@ namespace WPP.AI.SPAWNER
 
         public void SpawnTower(int ownershipId, Vector3 kingTowerPos, Vector3 leftPrincessTowerPos, Vector3 rightPrincessTowerPos)
         {
-            ClientTCP.Instance().SpawnTower(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            //ClientTCP.Instance().SpawnTower(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
             Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteVector3(kingTowerPos);
+            bufferToSend.WriteVector3(leftPrincessTowerPos);
+            bufferToSend.WriteVector3(rightPrincessTowerPos);
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, bufferToSend.ToArray());
         }
 
         //public Entity Spawn(int entityId, int ownershipId, Vector3 pos)

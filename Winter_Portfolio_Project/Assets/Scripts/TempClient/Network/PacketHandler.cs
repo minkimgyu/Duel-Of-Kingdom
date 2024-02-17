@@ -1,4 +1,4 @@
-#define UNITY_EDITOR
+#undef UNITY_EDITOR
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -77,6 +77,9 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUSET_HOLE_PUNCHING, HandleHolePunching);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
 
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_PING, RequestRoundTripTime);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_ANSWER_PING, GetRoundTripTime);
+
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnUsingUnitData);
@@ -149,9 +152,7 @@ namespace WPP.Network
             if (_isInGamePacketSegmentated == false)
             {
                 _inGamePacketLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
-                Debug.Log("total inGamePacket length: " + _inGamePacketLength);
             }
-            Debug.Log("received inGamePacket length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_inGamePacketLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isInGamePacketSegmentated == false)
@@ -298,6 +299,8 @@ namespace WPP.Network
 
         public void HandleEnterGame(ref ByteBuffer buffer)
         {
+            ClientTCP clientTCP = ClientTCP.Instance();
+
             // set room_id
             int roomID = buffer.ReadInteger(true);
             Debug.Log("roomID: " + roomID);
@@ -319,12 +322,16 @@ namespace WPP.Network
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
             // try to connect with private end point
-            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
-            if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
+            clientTCP.ConnectPeer(opponentPrivateEP);
+            if (clientTCP.peerSock == null || clientTCP.peerSock.Connected == false)
             {
                 // try to connect with public end point
-                ClientTCP.Instance().ConnectPeer(opponentPublicEP);
+                clientTCP.ConnectPeer(opponentPublicEP);
             }
+
+            clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_PING);
+            Debug.Log("send ping");
+
             SceneManager.LoadScene("CameraTestScene");
 
             Debug.Log("entered game");
@@ -352,6 +359,24 @@ namespace WPP.Network
             ClientTCP.Instance().peerSockPublicEP = externalEP;
 
             ClientTCP.Instance().CloseHolePunchingConnection();
+        }
+
+        public void RequestRoundTripTime(ref ByteBuffer buffer)
+        {
+            ClientTCP clientTCP = ClientTCP.Instance();
+            clientTCP.pingSentTime = DateTime.Now;
+            clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_ANSWER_PING);
+            Debug.Log("answer ping");
+        }
+
+        public void GetRoundTripTime(ref ByteBuffer buffer)
+        {
+            ClientTCP clientTCP = ClientTCP.Instance();
+            clientTCP.pingAnsweredTime = DateTime.Now;
+            clientTCP.rtt = clientTCP.pingAnsweredTime.Subtract(clientTCP.pingSentTime);
+            double rttMilliseconds = clientTCP.rtt.TotalMilliseconds;
+
+            Debug.Log("Round-Trip Time: " + rttMilliseconds + " milliseconds");
         }
 
         public void HandleSynchronization(ref ByteBuffer buffer)
@@ -437,6 +462,7 @@ namespace WPP.Network
 
                 // 자신과 동일한 networkId를 지닌 entity를 찾아 동기화를 해준다
                 Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
+
                 if (sameEntity == null)
                 {
                     ByteBuffer idBuffer = new ByteBuffer();
@@ -445,9 +471,13 @@ namespace WPP.Network
                     continue;
                 }
 
-                if (sameEntity.IsMyEntity)
+                if (!sameEntity.IsMyEntity)
                 {
-                    sameEntity.SynchronizeHP(targetHP);
+                    if((sameEntity as Life).HP != targetHP)
+                    {
+                        Debug.Log("Synchronize" + sameEntity.Name + (sameEntity as Life).HP + " to " + targetHP);
+                        sameEntity.SynchronizeHP(targetHP);
+                    }
                     sameEntity.transform.position = targetPos;
                     sameEntity.transform.rotation = targetRotation;
                 }
@@ -456,11 +486,13 @@ namespace WPP.Network
 
         public void DestroyUnit(ref ByteBuffer buffer)
         {
-            Debug.Log("destroy unit");
             string networkId = buffer.ReadString(true);
             Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
             if(sameEntity != null)
+            {
+                Debug.Log("destroy " + sameEntity.Name);
                 sameEntity.DestroyMyself();
+            }
         }
 
     }

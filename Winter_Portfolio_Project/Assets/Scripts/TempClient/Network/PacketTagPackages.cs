@@ -42,7 +42,9 @@ namespace WPP.Network
 
     public enum Peer_PacketTagPackages
     {
-        P_REQUEST_SPAWN_CARD = 30,
+        P_REQUEST_PING = 30,
+        P_ANSWER_PING,
+        P_REQUEST_SPAWN_CARD,
         P_REQUEST_SPAWN_TOWER,
         P_REQUEST_SPAWN_UNIT,
         P_REQUEST_SYNCHRONIZATION,

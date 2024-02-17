@@ -1,4 +1,4 @@
-#define UNITY_EDITOR
+#undef UNITY_EDITOR
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -149,9 +149,7 @@ namespace WPP.Network
             if (_isInGamePacketSegmentated == false)
             {
                 _inGamePacketLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
-                Debug.Log("total inGamePacket length: " + _inGamePacketLength);
             }
-            Debug.Log("received inGamePacket length: " + packet.Length);
 
             // 처음으로 패킷이 분할되어 왔을 경우
             if (_inGamePacketLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isInGamePacketSegmentated == false)
@@ -437,6 +435,7 @@ namespace WPP.Network
 
                 // 자신과 동일한 networkId를 지닌 entity를 찾아 동기화를 해준다
                 Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
+
                 if (sameEntity == null)
                 {
                     ByteBuffer idBuffer = new ByteBuffer();
@@ -445,9 +444,13 @@ namespace WPP.Network
                     continue;
                 }
 
-                if (sameEntity.IsMyEntity)
+                if (!sameEntity.IsMyEntity)
                 {
-                    sameEntity.SynchronizeHP(targetHP);
+                    if((sameEntity as Life).HP != targetHP)
+                    {
+                        Debug.Log("Synchronize" + sameEntity.Name + (sameEntity as Life).HP + " to " + targetHP);
+                        sameEntity.SynchronizeHP(targetHP);
+                    }
                     sameEntity.transform.position = targetPos;
                     sameEntity.transform.rotation = targetRotation;
                 }
@@ -456,11 +459,13 @@ namespace WPP.Network
 
         public void DestroyUnit(ref ByteBuffer buffer)
         {
-            Debug.Log("destroy unit");
             string networkId = buffer.ReadString(true);
             Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
             if(sameEntity != null)
+            {
+                Debug.Log("destroy " + sameEntity.Name);
                 sameEntity.DestroyMyself();
+            }
         }
 
     }

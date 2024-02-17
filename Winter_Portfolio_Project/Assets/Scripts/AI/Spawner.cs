@@ -38,6 +38,19 @@ namespace WPP.AI.SPAWNER
             _spawnedEntities.Remove(entity);
         }
 
+        public int FindSameNameEntityCount(int ownershipId, string name)
+        {
+            int sameNameCount = 1;
+            foreach(Entity entity in _spawnedEntities)
+            {
+                if(entity.Name == name && entity.OwnershipId == ownershipId)
+                {
+                    ++sameNameCount;
+                }
+            }
+            return sameNameCount;
+        }
+
         public Entity FindSameNetwordIdEntity(string networkId)
         {
             return _spawnedEntities.Find(x => x.NetwordId == networkId);
@@ -100,9 +113,10 @@ namespace WPP.AI.SPAWNER
             else return _rMagicProjectileStartPoint.position;
         }
 
-        string ReturnNetworkId(int ownershipId)
+        string ReturnNetworkId(int ownershipId, string name, int spawnCount)
         {
-            return ownershipId.ToString() + _spawnCount.ToString();
+            //return ownershipId.ToString() + _spawnCount.ToString();
+            return ownershipId.ToString() + name + spawnCount.ToString();
         }
 
         // entityId 이거를 string로 해서 받기
@@ -110,10 +124,13 @@ namespace WPP.AI.SPAWNER
         {
             Entity entity = _entityPrefabs.Find(x => x.Name == name);
             if (entity == null) return null;
-
+            /*
             _spawnCount++; // 여기서 스폰 카운트를 올려준다.
             string networkId = ReturnNetworkId(ownershipId); // 이거를 생성되는 오브젝트에 부여해야한다 --> 따로 서버를 통해서 넘겨서 받아주기
                                                              // 매개변수로 받아야할 듯?
+            */
+            _spawnCount = FindSameNameEntityCount(ownershipId, name);
+            string networkId = ReturnNetworkId(ownershipId, name, _spawnCount);
 
             int clientId = ClientData.Instance().player_id_in_game; // 본인 클라이언트 아이디를 받아와서 넣어준다.
 
@@ -250,6 +267,9 @@ namespace WPP.AI.SPAWNER
         /// </summary>
         public Entity[] Spawn(Card card, int level, int ownershipId, Vector3 pos)
         {
+            if (ownershipId != ClientData.Instance().player_id_in_game)
+                return null;
+
             CardData cardData = CardCollection.Instance().FindCard(card.id, level);
             float duration = cardData.duration;
 
@@ -268,8 +288,11 @@ namespace WPP.AI.SPAWNER
             return spawnedEntities;
         }
 
-        public Entity[] Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
+        public void Spawn(string cardId, int level, int ownershipId, Vector3 pos, Vector3[] offsets)
         {
+            if (ownershipId != ClientData.Instance().player_id_in_game)
+                return;
+
             CardData cardData = CardCollection.Instance().FindCard(cardId, level);
             float duration = cardData.duration;
 
@@ -279,7 +302,7 @@ namespace WPP.AI.SPAWNER
                 ClientTCP.Instance().SpawnUnit(cardId, level, ownershipId, pos + offsets[i]);
             }
 
-            return new Entity[0];
+            return;
         }
 
 

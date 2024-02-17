@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace WPP.Battle.UI
 {
@@ -8,15 +9,18 @@ namespace WPP.Battle.UI
     {
         [SerializeField] private GameObject _gameOverPanel;
         [Space]
+        [SerializeField] private Color _unlockedCrownColor;
+        [SerializeField] private Color _lockedCrownColor;
+        [Space]
         [SerializeField] private GameObject _playerWinnerText;
-        [SerializeField] private GameObject _playerCrown1;
-        [SerializeField] private GameObject _playerCrown2;
-        [SerializeField] private GameObject _playerCrown3;
+        [SerializeField] private Image _playerCrown1;
+        [SerializeField] private Image _playerCrown2;
+        [SerializeField] private Image _playerCrown3;
         [Space]
         [SerializeField] private GameObject _opponentWinnerText;
-        [SerializeField] private GameObject _opponentCrown1;
-        [SerializeField] private GameObject _opponentCrown2;
-        [SerializeField] private GameObject _opponentCrown3;
+        [SerializeField] private Image _opponentCrown1;
+        [SerializeField] private Image _opponentCrown2;
+        [SerializeField] private Image _opponentCrown3;
 
         private BattleManager _battleManager;
         private void OnEnable()
@@ -36,14 +40,14 @@ namespace WPP.Battle.UI
 
             int playerCrown = _battleManager.Player.CrownSystem.CrownCount;
             int opponentCrown = _battleManager.Opponent.CrownSystem.CrownCount;
-            
-            _playerCrown1.SetActive(playerCrown >= 1);
-            _playerCrown2.SetActive(playerCrown >= 2);
-            _playerCrown3.SetActive(playerCrown >= 3);
 
-            _opponentCrown1.SetActive(opponentCrown >= 1);
-            _opponentCrown2.SetActive(opponentCrown >= 2);
-            _opponentCrown3.SetActive(opponentCrown >= 3);
+            _playerCrown1.color = playerCrown >= 1 ? _unlockedCrownColor : _lockedCrownColor;
+            _playerCrown2.color = playerCrown >= 2 ? _unlockedCrownColor : _lockedCrownColor;
+            _playerCrown3.color = playerCrown >= 3 ? _unlockedCrownColor : _lockedCrownColor;
+
+            _opponentCrown1.color = opponentCrown >= 1 ? _unlockedCrownColor : _lockedCrownColor;
+            _opponentCrown2.color = opponentCrown >= 2 ? _unlockedCrownColor : _lockedCrownColor;
+            _opponentCrown3.color = opponentCrown >= 3 ? _unlockedCrownColor : _lockedCrownColor;
 
             if (result == BattleResult.Win)
             {

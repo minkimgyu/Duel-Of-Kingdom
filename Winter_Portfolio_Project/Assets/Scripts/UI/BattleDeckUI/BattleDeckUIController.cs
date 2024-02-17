@@ -35,6 +35,7 @@ namespace WPP.Battle.UI
         [SerializeField] private RectTransform _elixirFillArea;
         [SerializeField] private Slider _elixirSlider;
         [SerializeField] private Slider _usingElixir;
+        [SerializeField] private Slider _warningElixir;
         [SerializeField] private TextMeshProUGUI _elixirText;
         private enum State
         {
@@ -300,23 +301,38 @@ namespace WPP.Battle.UI
         private void HideUsingElixirBar()
         {
             _isUsingElixir = false;
+
             _usingElixir.gameObject.SetActive(false);
+            _warningElixir.gameObject.SetActive(false);
         }
 
         private void UpdateUsingElixirPos()
         {
-            if (!_isUsingElixir) _usingElixir.gameObject.SetActive(false);
-            else if (_battleManager.DeckSystem.Hand[_selectedCardIndex].cost > _battleManager.ElixirSystem.ElixirCount)
+            if (!_isUsingElixir)
+            {
                 _usingElixir.gameObject.SetActive(false);
-            else _usingElixir.gameObject.SetActive(true);
+                _warningElixir.gameObject.SetActive(false);
+            }
+            else if (_battleManager.DeckSystem.Hand[_selectedCardIndex].cost > _battleManager.ElixirSystem.ElixirCount)
+            {
+                _warningElixir.gameObject.SetActive(true);
+                _usingElixir.gameObject.SetActive(false);
 
-            var fillAreaWidth = _elixirFillArea.rect.width;
-            float offsetX = fillAreaWidth * (1 - (_battleManager.ElixirSystem.ElixirCount - 0.5f) / _battleManager.ElixirSystem.MaxElixirCount);
+                _warningElixir.value = _elixirSlider.value;
+            }
+            else
+            {
+                _warningElixir.gameObject.SetActive(false);
+                _usingElixir.gameObject.SetActive(true);
 
-            var usingRect = _usingElixir.GetComponent<RectTransform>();
+                var fillAreaWidth = _elixirFillArea.rect.width;
+                float offsetX = fillAreaWidth * (1 - (_battleManager.ElixirSystem.ElixirCount - 0.5f) / _battleManager.ElixirSystem.MaxElixirCount);
 
-            var y = usingRect.anchoredPosition.y;
-            usingRect.anchoredPosition = new Vector2(_elixirFillArea.anchoredPosition.x - offsetX, y);
+                var usingRect = _usingElixir.GetComponent<RectTransform>();
+
+                var y = usingRect.anchoredPosition.y;
+                usingRect.anchoredPosition = new Vector2(_elixirFillArea.anchoredPosition.x - offsetX, y);
+            }
         }
     }
 }

@@ -24,14 +24,18 @@ namespace WPP.Battle.UI
         [Header("Card")]
         [SerializeField] private CardUI[] _cards;
 
-        [SerializeField] private TextMeshProUGUI _next;
-        [SerializeField] private TextMeshProUGUI _nextElixir;
+        //[SerializeField] private TextMeshProUGUI _next;
+        //[SerializeField] private TextMeshProUGUI _nextElixir;
+        [SerializeField] private CardUI _nextCard;
         [SerializeField] private TextMeshProUGUI _cooldown;
         [Space]
         [SerializeField] private float _selectedCardOffset = 50f;
         [SerializeField] private float _selectedCardScale = 1.2f;
         [Header("Elixir")]
+        [SerializeField] private RectTransform _elixirFillArea;
         [SerializeField] private Slider _elixirSlider;
+        [SerializeField] private Slider _usingElixir;
+        [SerializeField] private Slider _warningElixir;
         [SerializeField] private TextMeshProUGUI _elixirText;
         private enum State
         {
@@ -81,8 +85,15 @@ namespace WPP.Battle.UI
             _fsm.OnFsmStep(FsmStep.Update);
 
             if (_battleManager.DeckSystem.LeftCooldown > 0f)
+            {
+                _nextCard.SetInteractable(false);
                 _cooldown.text = _battleManager.DeckSystem.LeftCooldown.ToString("F1");
-            else _cooldown.text = "";
+            }
+            else
+            {
+                _nextCard.SetInteractable(true);
+                _cooldown.text = "";
+            }
         }
 
         private void OnIdle(Fsm<State> fsm, FsmStep step)
@@ -91,6 +102,7 @@ namespace WPP.Battle.UI
             {
                 _selectedCardIndex = -1;
                 UpdateCardTransform();
+                HideUsingElixirBar();
             }
             else if(step == FsmStep.Update)
             {
@@ -123,6 +135,7 @@ namespace WPP.Battle.UI
             if (step == FsmStep.Enter)
             {
                 UpdateCardTransform();
+                ShowUsingElixirBar(_battleManager.DeckSystem.Hand[_selectedCardIndex]);
             }
             else if (step == FsmStep.Update)
             {
@@ -135,6 +148,7 @@ namespace WPP.Battle.UI
             }
             else if (step == FsmStep.Exit)
             {
+                HideUsingElixirBar();
             }
         }
 
@@ -163,6 +177,8 @@ namespace WPP.Battle.UI
                 {
                     _gridController.OnSelect(selectedCardData.radius);
                 }
+
+                ShowUsingElixirBar(card);
 
                 _placedCard = false;
             }
@@ -202,6 +218,7 @@ namespace WPP.Battle.UI
                 _battleManager.DeckSystem.OnCardUsed -= OnCardUsed;
 
                 _gridController.FSM.OnCancelSelect();
+                HideUsingElixirBar();
             }
         }
 
@@ -240,8 +257,9 @@ namespace WPP.Battle.UI
                 }
             }
 
-            _next.text = _battleManager.DeckSystem.Next.id;
-            _nextElixir.text = _battleManager.DeckSystem.Next.cost.ToString();
+            //_next.text = _battleManager.DeckSystem.Next.id;
+            //_nextElixir.text = _battleManager.DeckSystem.Next.cost.ToString();
+            _nextCard.SetCard(_battleManager.DeckSystem.Next);
         }
 
         private void UpdateCardTransform()
@@ -266,8 +284,55 @@ namespace WPP.Battle.UI
         {
             _elixirSlider.value = count;
             _elixirText.text = count.ToString();
+
+            UpdateUsingElixirPos();
         }
 
+        bool _isUsingElixir = false;
+        private void ShowUsingElixirBar(Card card)
+        {
+            _isUsingElixir = true;
 
+            _usingElixir.value = card.cost;
+
+            UpdateUsingElixirPos();
+        }
+
+        private void HideUsingElixirBar()
+        {
+            _isUsingElixir = false;
+
+            _usingElixir.gameObject.SetActive(false);
+            _warningElixir.gameObject.SetActive(false);
+        }
+
+        private void UpdateUsingElixirPos()
+        {
+            if (!_isUsingElixir)
+            {
+                _usingElixir.gameObject.SetActive(false);
+                _warningElixir.gameObject.SetActive(false);
+            }
+            else if (_battleManager.DeckSystem.Hand[_selectedCardIndex].cost > _battleManager.ElixirSystem.ElixirCount)
+            {
+                _warningElixir.gameObject.SetActive(true);
+                _usingElixir.gameObject.SetActive(false);
+
+                _warningElixir.value = _battleManager.DeckSystem.Hand[_selectedCardIndex].cost;
+            }
+            else
+            {
+                _warningElixir.gameObject.SetActive(false);
+                _usingElixir.gameObject.SetActive(true);
+
+                var fillAreaWidth = _elixirFillArea.rect.width;
+                float offsetX = fillAreaWidth * (1 - (_battleManager.ElixirSystem.ElixirCount - 0.5f) / _battleManager.ElixirSystem.MaxElixirCount);
+
+                var usingRect = _usingElixir.GetComponent<RectTransform>();
+
+                var y = usingRect.anchoredPosition.y;
+                usingRect.anchoredPosition = new Vector2(_elixirFillArea.anchoredPosition.x - offsetX, y);
+            }
+        }
     }
 }

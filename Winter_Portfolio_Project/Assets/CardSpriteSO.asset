@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f833c0e08952edb44a4fcaea4bd49f48, type: 3}
   m_Name: CardSpriteSO
   m_EditorClassIdentifier: 
-  _emptySprite: {fileID: 21300000, guid: 3f6d32c6fea91b64a923b1d696062cc7, type: 3}
+  _emptySprite: {fileID: 21300000, guid: a72fe3ebf165b72418e57a5e7e2d1e25, type: 3}
   _notFoundSprite: {fileID: 21300000, guid: 3f6d32c6fea91b64a923b1d696062cc7, type: 3}
   _cardSprites:
   - name: barbarian

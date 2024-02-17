@@ -1889,7 +1889,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 44575196261c6ed429dee7cf90cb4b7a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a6bd2c58e035624428f8edc10253c311, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1898,7 +1898,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.7
+  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &539813405
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2091,14 +2091,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.25490198, g: 0.53333336, b: 0.909804, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 08be396919339734d9e79a155bc521d0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a6bd2c58e035624428f8edc10253c311, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2107,7 +2107,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 0.7
+  m_PixelsPerUnitMultiplier: 1
 --- !u!222 &626517975
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2446,8 +2446,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4281545523
-  m_fontColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5898,6 +5898,17 @@ MonoBehaviour:
   _cardHolder: {fileID: 6822504361130168963, guid: 29fd1fed913bdda4aa63937e6842da07, type: 3}
   _cardPrefab: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
   _cardPopupPrefab: {fileID: 49880545053364226, guid: 1f5cc962169640c45aac218480b0bc5b, type: 3}
+--- !u!114 &1991249258 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4242830810157409943, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+  m_PrefabInstance: {fileID: 3258422320103053230}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2042164738
 GameObject:
   m_ObjectHideFlags: 0
@@ -6339,6 +6350,22 @@ PrefabInstance:
     - target: {fileID: 3531062170382161388, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 351.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4212591909553859840, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_TargetGraphic
+      value: 
+      objectReference: {fileID: 1991249258}
+    - target: {fileID: 4212591909553859840, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1959935772}
+    - target: {fileID: 4212591909553859840, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TurnAllPopupsOff
+      objectReference: {fileID: 0}
+    - target: {fileID: 4212591909553859840, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: WPP.DeckManagement.UI.DeckEditorUIController, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 4700825059361839713, guid: 3a32d1ecbeb5f1147a5797a026d96f39, type: 3}
       propertyPath: m_AnchorMax.y

@@ -318,7 +318,7 @@ namespace WPP.Battle.UI
                 _warningElixir.gameObject.SetActive(true);
                 _usingElixir.gameObject.SetActive(false);
 
-                _warningElixir.value = _elixirSlider.value;
+                _warningElixir.value = _battleManager.DeckSystem.Hand[_selectedCardIndex].cost;
             }
             else
             {

@@ -147,6 +147,7 @@ namespace WPP.Battle
             }
         }
 
+        private bool _isBattleLastMinute = false;
         private void Battle(Fsm<Status> fsm, FsmStep step)
         {
             if (step == FsmStep.Enter)
@@ -154,21 +155,36 @@ namespace WPP.Battle
                 print("Battle Start");
 
                 _battleTimer.StartTimer(_battleLength * 60);
-                //_battleTimer.OnTimerEnd += TransitionToOvertime;
+                _battleTimer.OnTimerEnd += StopTime;
                 _elixirSystem.SetElixirRegenTime(_battleRegenRate);
                 _elixirSystem.StartRegen();
 
                 _player.CrownSystem.OnCrownCountMax += OnBattleStatusEndCondition;
                 _opponent.CrownSystem.OnCrownCountMax += OnBattleStatusEndCondition;
             }
+            else if(step == FsmStep.Update)
+            {
+                if (!_isBattleLastMinute)
+                {
+                    if (_battleTimer.TimeLeft <= 60f)
+                    {
+                        _elixirSystem.SetElixirRegenTime(_overtimeRegenRate1);
+                        _isBattleLastMinute = true;
+                    }
+                }
+            }
             else if(step == FsmStep.Exit)
             {
                 _battleTimer.PauseTimer();
-                //_battleTimer.OnTimerEnd -= TransitionToOvertime;
+                _battleTimer.OnTimerEnd -= StopTime;
 
                 _player.CrownSystem.OnCrownCountMax -= OnBattleStatusEndCondition;
                 _opponent.CrownSystem.OnCrownCountMax -= OnBattleStatusEndCondition;
             }
+        }
+        private void StopTime()
+        {
+            Time.timeScale = 0;
         }
         private void OnBattleStatusEndCondition()
         {
@@ -182,11 +198,15 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
+                if(CheckBattleEndCondition())
+                {
+                    _fsm.TransitionTo(Status.PostBattle);
+                    return;
+                }
+                Time.timeScale = 1;
+
                 _battleTimer.StartTimer(_overtimeLength * 60);
                 _battleTimer.OnTimerEnd += OnOverTimeStatusEndCondition;
-                //_battleTimer.OnTimerEnd += TransitionToTiebreaker;
-
-                _elixirSystem.SetElixirRegenTime(_overtimeRegenRate1);
 
                 _player.CrownSystem.OnCrownCountChange += OnOverTimeStatusEndCondition;
                 _opponent.CrownSystem.OnCrownCountChange += OnOverTimeStatusEndCondition;
@@ -206,7 +226,6 @@ namespace WPP.Battle
             {
                 _battleTimer.PauseTimer();
                 _battleTimer.OnTimerEnd -= OnOverTimeStatusEndCondition;
-                //_battleTimer.OnTimerEnd -= TransitionToTiebreaker;
 
                 _elixirSystem.StopRegen();
 
@@ -216,7 +235,7 @@ namespace WPP.Battle
         }
         private void OnOverTimeStatusEndCondition()
         {
-            if (_fsm.CurrentState == Status.Overtime)
+            if (_fsm.CurrentState == Status.Overtime && CheckBattleEndCondition())
                 _fsm.TransitionTo(Status.PostBattle);
         }
         private void OnOverTimeStatusEndCondition(int _) => OnOverTimeStatusEndCondition();
@@ -230,6 +249,8 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
+                Time.timeScale = 0;
+
                 BattleResult result;
 
                 if(_player.CrownSystem.CrownCount > _opponent.CrownSystem.CrownCount)
@@ -250,6 +271,17 @@ namespace WPP.Battle
 
                 OnGameOver?.Invoke(result);
             }
+        }
+    
+        private bool CheckBattleEndCondition()
+        {
+            if (_player.CrownSystem.CrownCount != _opponent.CrownSystem.CrownCount)
+            {
+                return true;
+            }
+
+            return false;
+        
         }
     }
 

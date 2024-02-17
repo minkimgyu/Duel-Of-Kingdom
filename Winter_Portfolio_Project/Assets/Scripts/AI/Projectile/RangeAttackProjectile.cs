@@ -14,15 +14,15 @@ namespace WPP.AI.PROJECTILE
 
         RangeDamageComponent _rangeDamageComponent;
 
-        public override void Initialize(ITarget target, float damage)
+        public override void Initialize(ITarget target, float damage, int ownershipId)
         {
-            base.Initialize(target, damage);
+            base.Initialize(target, damage, ownershipId);
             _rangeDamageComponent = GetComponent<RangeDamageComponent>();
         }
 
         protected override void DoDamageTask()
         {
-            _rangeDamageComponent.ApplyRangeDamage(_damage, _radius);
+            _rangeDamageComponent.ApplyRangeDamage(_damage, _radius, _ownershipId);
         }
     }
 }

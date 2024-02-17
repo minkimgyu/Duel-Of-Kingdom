@@ -22,24 +22,24 @@ namespace WPP.AI.UNIT
             GroundUnit,
         }
 
-        // ±âº»ÀûÀÎ °ãÄ¡´Â ±â´ÉÀº ¿©±â¼­ ±¸Çö
-        // ÀÌµ¿¼ºÀ» °¡Áü
+        // ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½
+        // ï¿½Ìµï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
-        // Ready --> Active State·Î ÀüÈ¯µÊ
+        // Ready --> Active Stateï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½
 
         /// <summary>
-        /// º®À» ¹«½ÃÇÒ°ÇÁö È®ÀÎ.
-        /// °øÁß À¯´ÖÀÇ °æ¿ì ¼º¸³
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ò°ï¿½ï¿½ï¿½ È®ï¿½ï¿½.
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         protected bool IgnoreWall { get { return CompareTag(Type.AirUnit.ToString()); } }
 
         protected MoveComponent _moveComponent;
         protected ViewComponent _viewComponent;
-        protected CaptureComponent _captureComponent; // Æ÷Âø ±â´ÉÀº Æ÷Å¾ÀÌ¶û À¯´Ö Å¬·¹½º¸¸ °¡Áö°í ÀÖÀ½
+        protected CaptureComponent _captureComponent; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¾ï¿½Ì¶ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 
         protected CapsuleCollider _capsuleCollider;
 
-        protected List<Vector3> _posListForDrawingGizmo = new List<Vector3>(); // ÀÌ°Å´Â BT¿¡¼­ ÁöÁ¤ÇØÁÖ±â
+        protected List<Vector3> _posListForDrawingGizmo = new List<Vector3>(); // ï¿½Ì°Å´ï¿½ BTï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½
 
         protected Vector3 _synchronizedPosition;
         public Vector3 SynchronizedPosition { get { return _synchronizedPosition; } }
@@ -64,11 +64,11 @@ namespace WPP.AI.UNIT
 
         protected bool IsPosListEmpty() { return _posListForDrawingGizmo.Count == 0; }
 
-        protected override void DrawGizmo() // ÀÌ°Íµµ ÀÌº¥Æ®·Î ³Ñ°ÜÁÖÀÚ
+        protected override void DrawGizmo() // ï¿½Ì°Íµï¿½ ï¿½Ìºï¿½Æ®ï¿½ï¿½ ï¿½Ñ°ï¿½ï¿½ï¿½ï¿½ï¿½
         {
             base.DrawGizmo();
 
-            // °¡Àå ÃÖ±Ù ¸®ÅÏÇÑ ±æÀ» º¸¿©ÁÜ
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½Ö±ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             if (_posListForDrawingGizmo.Count == 0) return;
 
             Gizmos.color = Color.blue;
@@ -82,7 +82,7 @@ namespace WPP.AI.UNIT
 
         public override float ReturnColliderSize()
         {
-            return _capsuleCollider.radius * (transform.localScale.x + transform.localScale.z) / 2; // ÀÌ°Å´Â Ä¸½¶ÄÝ¶óÀÌ´õ¸¦ »ç¿ëÇÔ + scaleÀÇ Æò±Õ °ª¸¸ Àû¿ë½ÃÄÑ¾ßÇÔ
+            return _capsuleCollider.radius * (transform.localScale.x + transform.localScale.z) / 2; // ï¿½Ì°Å´ï¿½ Ä¸ï¿½ï¿½ï¿½Ý¶ï¿½ï¿½Ì´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ + scaleï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½
         }
 
         public override void Die()
@@ -92,20 +92,20 @@ namespace WPP.AI.UNIT
         }
     }
 
-    // ±âº»ÀûÀÎ °ø°Ý ±â´ÉÀÌ °®ÃçÁø À¯´Ö
-    // Ground ¶Ç´Â Air À¯´ÖÀÎÁö´Â ÇÏÀ§ Å¬·¹½º¿¡¼­ Á÷Á¢ ÇÒ´ç
+    // ï¿½âº»ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+    // Ground ï¿½Ç´ï¿½ Air ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½
     abstract public class AttackUnit : Unit
     {
-        // ±âº» ´É·ÂÄ¡
-        protected float _damage; // µ¥¹ÌÁö
-        protected float _hitSpeed; // °ø°Ý ¼Óµµ
-        protected float _range; // ¹üÀ§
+        // ï¿½âº» ï¿½É·ï¿½Ä¡
+        protected float _damage; // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        protected float _hitSpeed; // ï¿½ï¿½ï¿½ï¿½ ï¿½Óµï¿½
+        protected float _range; // ï¿½ï¿½ï¿½ï¿½
 
-        protected float _offsetDistance = 0.45f; // ÃßÀû °Å¸® ¿ÀÇÁ¼Â
-        protected float _directFollowOffset = 2f; // Á÷Á¢ ÃßÀû ±â´É È°¼ºÈ­ °Å¸®
+        protected float _offsetDistance = 0.45f; // ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        protected float _directFollowOffset = 2f; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ È°ï¿½ï¿½È­ ï¿½Å¸ï¿½
         //
 
-        protected float _delayDuration = 0; // ½ºÆù ½Ã ÀÏÁ¤ ½Ã°£ µô·¹ÀÌ
+        protected float _delayDuration = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         AttackComponent _attackComponent;
 
@@ -114,29 +114,29 @@ namespace WPP.AI.UNIT
         protected override void InitializeComponent()
         {
             _attackComponent = GetComponent<AttackComponent>();
-            _attackComponent.Initialize(_damage);
+            _attackComponent.Initialize(_damage, _ownershipId);
             base.InitializeComponent();
         }
 
         public override void Initialize(int level, string name, float hp, CaptureTag[] targetTag, float damage, float hitSpeed, float range, float captureRange)
         {
-            // BT¿¡ »ç¿ëµÉ º¯¼ö´Â ¿©±â¼­ ÃÊ±âÈ­ÇØ¾ßÇÔ
+            // BTï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½â¼­ ï¿½Ê±ï¿½È­ï¿½Ø¾ï¿½ï¿½ï¿½
 
             //_id = id;
             _level = level;
             _name = name;
 
-            _maxHp = hp; // ÃÖ´ë Ã¼·Â ÁöÁ¤
+            _maxHp = hp; // ï¿½Ö´ï¿½ Ã¼ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             HP = hp;
             _damage = damage;
             _hitSpeed = hitSpeed;
             _range = range;
 
             InitializeComponent(); 
-            // ¿©±â¼­ ÄÄÆ÷³ÍÆ®¸¦ °¡Á®¿Í¼­ ÃÊ±âÈ­ÇØÁØ´Ù.
-            // Ãß°¡·Î BTµµ ÃÊ±âÈ­ÇØÁØ´Ù.
+            // ï¿½ï¿½ï¿½â¼­ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ï¿½Ø´ï¿½.
+            // ï¿½ß°ï¿½ï¿½ï¿½ BTï¿½ï¿½ ï¿½Ê±ï¿½È­ï¿½ï¿½ï¿½Ø´ï¿½.
            
-            _captureComponent.Initialize(targetTag, OwnershipId, captureRange); // ÀÌ·± ½ÄÀ¸·Î ¼¼ºÎ º¯¼ö¸¦ ÇÒ´çÇØÁØ´Ù.
+            _captureComponent.Initialize(targetTag, OwnershipId, captureRange); // ï¿½Ì·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ò´ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
 
             Dictionary<ActionState, BaseState> attackStates = new Dictionary<ActionState, BaseState>()
             {
@@ -167,7 +167,7 @@ namespace WPP.AI.UNIT
                         (
                             new List<Node>
                             {
-                                new CanFindTarget(_captureComponent), // ¸¸¾à Å¸°ÙÀÌ ¾ø´Ù¸é Å¸¿ö¸¦ Å¸°ÙÀ¸·Î ÁöÁ¤ÇØÁØ´Ù.
+                                new CanFindTarget(_captureComponent), // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
                                 new Selector
                                 (
                                     new List<Node>
@@ -180,14 +180,14 @@ namespace WPP.AI.UNIT
                                                 (
                                                     new List<Node>
                                                     {
-                                                        // Å¸°ÙÀÌ ¹Ù²î´Â °æ¿ì, ÀÏÁ¤ ½Ã°£ µô·¹ÀÌ ³Ö¾îÁÖ±â
-                                                        new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttackµµ ³Ö¾îÁÖ±â
+                                                        // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö±ï¿½
+                                                        new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttackï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö±ï¿½
                                                         new LookAtTarget(_captureComponent, _viewComponent),
                                                         new Stop(_moveComponent),
 
                                                         new Attack(_attackComponent, _captureComponent)
-                                                        // °ø°Ý ÁøÇà
-                                                        // ¸¸¾à °ø°ÝÀÌ ÁøÇà ÁßÀÎ °æ¿ì °Å¸®°¡ ¸Ö¾îÁ®µµ °è¼Ó ÁøÇà
+                                                        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                                                        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                                                     }
                                                 ),
                                                 new Sequence
@@ -222,7 +222,7 @@ namespace WPP.AI.UNIT
             //                (
             //                    new List<Node>
             //                    {
-            //                        new CanFindTarget(_captureComponent), // ¸¸¾à Å¸°ÙÀÌ ¾ø´Ù¸é Å¸¿ö¸¦ Å¸°ÙÀ¸·Î ÁöÁ¤ÇØÁØ´Ù.
+            //                        new CanFindTarget(_captureComponent), // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø´ï¿½.
             //                        new Selector
             //                        (
             //                            new List<Node>
@@ -235,14 +235,14 @@ namespace WPP.AI.UNIT
             //                                        (
             //                                            new List<Node>
             //                                            {
-            //                                                // Å¸°ÙÀÌ ¹Ù²î´Â °æ¿ì, ÀÏÁ¤ ½Ã°£ µô·¹ÀÌ ³Ö¾îÁÖ±â
-            //                                                new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttackµµ ³Ö¾îÁÖ±â
+            //                                                // Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½Ù²ï¿½ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö±ï¿½
+            //                                                new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttackï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½Ö±ï¿½
             //                                                new LookAtTarget(_captureComponent, _viewComponent),
             //                                                new Stop(_moveComponent),
 
             //                                                new Attack(_attackComponent, _captureComponent)
-            //                                                // °ø°Ý ÁøÇà
-            //                                                // ¸¸¾à °ø°ÝÀÌ ÁøÇà ÁßÀÎ °æ¿ì °Å¸®°¡ ¸Ö¾îÁ®µµ °è¼Ó ÁøÇà
+            //                                                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+            //                                                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½Ö¾ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
             //                                            }
             //                                        ),
             //                                        new Sequence

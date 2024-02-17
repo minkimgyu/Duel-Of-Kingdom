@@ -70,7 +70,7 @@ namespace WPP.AI.BUILDING
             _captureComponent = GetComponentInChildren<CaptureComponent>();
             _viewComponent = GetComponentInChildren<ViewComponent>();
             _attackComponent = GetComponent<AttackComponent>();
-            _attackComponent.Initialize(_damage);
+            _attackComponent.Initialize(_damage, _ownershipId);
 
             base.InitializeComponent();
         }

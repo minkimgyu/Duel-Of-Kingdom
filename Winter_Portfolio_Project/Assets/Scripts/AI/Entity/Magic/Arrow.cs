@@ -31,7 +31,7 @@ namespace WPP
             // 화살이 박힌 효과 구현
             // 오브젝트 땅에 박아버리기
             _groundTrasform = Instantiate(_projectileGroundPrefab, transform.position, Quaternion.identity);
-            _rangeDamageComponent.ApplyRangeDamage(_damage, _range);
+            _rangeDamageComponent.ApplyRangeDamage(_damage, _range, _ownershipId);
             Invoke("DestroyThis", _durationBeforeDestroy);
         }
 

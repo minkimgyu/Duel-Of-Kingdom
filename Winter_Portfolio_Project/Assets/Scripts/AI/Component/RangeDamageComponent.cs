@@ -27,7 +27,7 @@ namespace WPP.AI.ATTACK
             return Physics.OverlapSphere(transform.position, radius, layer);
         }
 
-        public void ApplyRangeDamage(float damage, float radius)
+        public void ApplyRangeDamage(float damage, float radius, float ownershipId)
         {
             DrawRange(radius);
             Collider[] hitColliders = ReturnColliders(radius);
@@ -36,6 +36,9 @@ namespace WPP.AI.ATTACK
             {
                 ITarget target = hitColliders[i].GetComponent<ITarget>();
                 if (target == null) continue;
+
+                int targetId = target.ReturnOwnershipId();
+                if (ownershipId == targetId) continue; // ownershipId != targetId 이면 공격 진행
 
                 target.ReturnDamagable().GetDamage(damage);
             }

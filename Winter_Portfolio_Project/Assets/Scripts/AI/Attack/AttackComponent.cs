@@ -27,6 +27,8 @@ namespace WPP.AI.ATTACK
         protected ITarget _target;
         public ITarget Target { get { return _target; } }
 
+        protected int _ownershipId;
+
         protected float _damage;
         public float Damage { get { return _damage; } }
 
@@ -38,9 +40,10 @@ namespace WPP.AI.ATTACK
         public void CancelAttackAnimation() => _animator.SetTrigger("CancelAttack");
         public void PlayAttackAnimation() => _animator.SetTrigger("NowAttack");
 
-        public void Initialize(float damage)
+        public void Initialize(float damage, int ownershipId)
         {
             _damage = damage;
+            _ownershipId = ownershipId;
 
             _animator = GetComponent<Animator>();
             _fsm = new StateMachine<AttackState>();

@@ -13,10 +13,13 @@ namespace WPP.AI.PROJECTILE
         Vector3 _storedPosition;
         protected float _damage;
 
-        public virtual void Initialize(ITarget target, float damage)
+        protected int _ownershipId;
+
+        public virtual void Initialize(ITarget target, float damage, int ownershipId)
         {
             _target = target;
             _damage = damage;
+            _ownershipId = ownershipId;
         }
 
         private void OnTriggerEnter(Collider other)

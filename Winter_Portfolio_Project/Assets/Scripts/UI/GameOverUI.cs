@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,7 @@ namespace WPP.Battle.UI
     public class GameOverUI : MonoBehaviour
     {
         [SerializeField] private GameObject _gameOverPanel;
+        [SerializeField] private float _gameOverPanelDelay = 1.5f;
         [Space]
         [SerializeField] private Color _unlockedCrownColor;
         [SerializeField] private Color _lockedCrownColor;
@@ -21,11 +23,15 @@ namespace WPP.Battle.UI
         [SerializeField] private Image _opponentCrown1;
         [SerializeField] private Image _opponentCrown2;
         [SerializeField] private Image _opponentCrown3;
+        [Space]
+        [SerializeField] private GameObject _tieText;
 
         private BattleManager _battleManager;
         private void OnEnable()
         {
             _battleManager = BattleManager.Instance();
+            _gameOverPanel.SetActive(false);
+
             _battleManager.OnGameOver += OnGameOver;
         }
 
@@ -34,8 +40,10 @@ namespace WPP.Battle.UI
             _battleManager.OnGameOver -= OnGameOver;
         }
 
-        private void OnGameOver(BattleResult result)
+        private async void OnGameOver(BattleResult result)
         {
+            await Task.Delay(Mathf.RoundToInt(_gameOverPanelDelay * 1000));
+
             _gameOverPanel.SetActive(true);
 
             int playerCrown = _battleManager.Player.CrownSystem.CrownCount;
@@ -53,15 +61,18 @@ namespace WPP.Battle.UI
             {
                 _playerWinnerText.SetActive(true);
                 _opponentWinnerText.SetActive(false);
+                _tieText.SetActive(false);
             }
             else if (result == BattleResult.Lose)
             {
                 _opponentWinnerText.SetActive(true);
                 _playerWinnerText.SetActive(false);
+                _tieText.SetActive(false);
             } else
             {
                 _playerWinnerText.SetActive(false);
                 _opponentWinnerText.SetActive(false);
+                _tieText.SetActive(true);
             }
         }
     }

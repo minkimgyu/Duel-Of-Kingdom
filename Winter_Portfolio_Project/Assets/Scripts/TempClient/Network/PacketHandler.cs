@@ -1,4 +1,4 @@
-#undef UNITY_EDITOR
+#define UNITY_EDITOR
 
 using System.Collections.Generic;
 using UnityEngine;
@@ -415,6 +415,12 @@ namespace WPP.Network
             string cardName = buffer.ReadString(true);
             int level = buffer.ReadInteger(true);
             int opponentOwnershipId = buffer.ReadInteger(true);
+            int numOfCardsToSpawn = buffer.ReadInteger(true);
+            string[] networkIds = new string[numOfCardsToSpawn];
+            for(int i=0;i< numOfCardsToSpawn; i++)
+            {
+                networkIds[i] = buffer.ReadString(true);
+            }
             Vector3 pos = buffer.ReadVector3(true);
 
             CardData cardData = CardCollection.Instance().FindCard(cardName, level);
@@ -427,7 +433,7 @@ namespace WPP.Network
 
             for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
             Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
@@ -438,12 +444,13 @@ namespace WPP.Network
             string cardName = buffer.ReadString(true);
             int level = buffer.ReadInteger(true);
             int opponentOwnershipId = buffer.ReadInteger(true);
+            string networkId = buffer.ReadString(true);
             Vector3 pos = buffer.ReadVector3(true);
 
             CardData cardData = CardCollection.Instance().FindCard(cardName, level);
             float duration = cardData.duration;
 
-            Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, pos);
+            Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, networkId, pos);
             Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
         }
 
@@ -451,10 +458,15 @@ namespace WPP.Network
         {
             int ownershipId = buffer.ReadInteger(true);
             Vector3 kingTowerPos = buffer.ReadVector3(true);
-            Vector3 leftPrincessTowerPos = buffer.ReadVector3(true);
-            Vector3 rightPrincessTowerPos = buffer.ReadVector3(true);
+            string kingTowerNetworkId = buffer.ReadString(true);
 
-            Spawner.Instance().Instantiate(ownershipId, kingTowerPos, leftPrincessTowerPos, rightPrincessTowerPos);
+            Vector3 leftPrincessTowerPos = buffer.ReadVector3(true);
+            string leftPrincessTowerNetworkId = buffer.ReadString(true);
+
+            Vector3 rightPrincessTowerPos = buffer.ReadVector3(true);
+            string rightPrincessTowerNetworkId = buffer.ReadString(true);
+
+            Spawner.Instance().Instantiate(ownershipId, kingTowerPos, kingTowerNetworkId, leftPrincessTowerPos, leftPrincessTowerNetworkId, rightPrincessTowerPos, rightPrincessTowerNetworkId);
         }
 
         public void SynchronizeUnits(ref ByteBuffer buffer)

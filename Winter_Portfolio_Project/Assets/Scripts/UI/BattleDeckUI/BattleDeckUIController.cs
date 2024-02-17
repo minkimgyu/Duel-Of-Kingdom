@@ -65,6 +65,7 @@ namespace WPP.Battle.UI
         private void OnDisable()
         {
             _battleManager.OnStatusChange -= OnStatusChange;
+            Time.timeScale = 1f;
         }
 
         private void OnStatusChange(BattleManager.Status status)

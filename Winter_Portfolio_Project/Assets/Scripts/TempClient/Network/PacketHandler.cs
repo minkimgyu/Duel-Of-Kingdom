@@ -339,8 +339,8 @@ namespace WPP.Network
 
         public void HandleOverTime(ref ByteBuffer buffer)
         {
-            BattleManager.Instance().StartOverTime();
             Debug.Log("Handle over time");
+            BattleManager.Instance().StartOverTime();
         }
 
         public void HandleEndGame(ref ByteBuffer buffer)
@@ -349,7 +349,6 @@ namespace WPP.Network
             ClientTCP.Instance().ClosePeerConnection();
             // initialize new peer socket for next matching
             ClientTCP.Instance().InitializePeerSock();
-            SceneManager.LoadScene("Lobby");
         }
 
         public void HandleHolePunching(ref ByteBuffer buffer)

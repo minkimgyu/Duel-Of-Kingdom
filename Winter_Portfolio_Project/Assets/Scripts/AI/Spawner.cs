@@ -130,17 +130,17 @@ namespace WPP.AI.SPAWNER
             // ���߿� ���� ����
             Quaternion rotation = ReturnQuaternionUsingLandFormation(clientId);
             Entity spawnedEntity = Instantiate(entity, pos, rotation);
+            
 
+            spawnedEntity.InitializeListRemover(RemoveFromListInSpawner);
+            spawnedEntity.ResetId(ownershipId, clientId, networkId);
+            // ���⿡ ��� �ð��� �߰����ش�.
 
             // ü�¹ٸ� ���� �� �ִ� ��쿡�� ����
             if (spawnedEntity.CanAttachHpBar() == true)
             {
                 SpawnHpContainerUI(spawnedEntity);
             }
-
-            spawnedEntity.InitializeListRemover(RemoveFromListInSpawner);
-            spawnedEntity.ResetId(ownershipId, clientId, networkId);
-            // ���⿡ ��� �ð��� �߰����ش�.
 
             Vector3 magicStartPosition = ReturnMagicProjectileStartPoint(ownershipId);
             spawnedEntity.ResetMagicStartPosition(magicStartPosition);

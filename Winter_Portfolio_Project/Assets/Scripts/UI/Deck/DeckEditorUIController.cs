@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace WPP.DeckManagement.UI
         [SerializeField] private GameObject _cardHolder;
         [SerializeField] private GameObject _cardPrefab;
         [SerializeField] private GameObject _cardPopupPrefab;
+        [Space]
+        [SerializeField] private CardInfoUI _cardInfoUI;
 
         //private List<Card> _cardCollection;
 
@@ -192,6 +195,11 @@ namespace WPP.DeckManagement.UI
         public void SetTotalPoint(Deck deck)
         {
             _deckTotalPoint.text = _deckEditor.GetTotalDeckPoint(deck).ToString() + "/" + _deckEditor.MaxPoint;
+        }
+
+        public void ShowInfo(int gridIndex)
+        {
+            _cardInfoUI.ShowCardInfo(_deckEditor.SelectedDeck.Cards[gridIndex], _deckEditor.SelectedDeck.GetCardLevel(gridIndex));
         }
     }
 }

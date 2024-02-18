@@ -64,5 +64,10 @@ namespace WPP.DeckManagement.UI
         {
             _controller.LevelDownCard(_gridIndex);
         }
+
+        public void ShowInfo()
+        {
+            _controller.ShowInfo(_gridIndex);
+        }
     }
 }

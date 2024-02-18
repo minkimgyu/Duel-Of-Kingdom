@@ -204,7 +204,9 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
-                if(CheckBattleEndCondition())
+                print("Overtime Start");
+
+                if (CheckBattleEndCondition())
                 {
                     _fsm.TransitionTo(Status.PostBattle);
                     return;
@@ -260,6 +262,7 @@ namespace WPP.Battle
 
                 BattleResult result;
 
+                SoundManager.StopBGM();
                 SoundManager.PlaySFX("Fanfare");
 
                 if(_player.CrownSystem.CrownCount > _opponent.CrownSystem.CrownCount)

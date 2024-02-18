@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using WPP.SOUND;
 
 namespace WPP.DeckManagement.UI
 {
@@ -68,6 +69,7 @@ namespace WPP.DeckManagement.UI
         public void ShowInfo()
         {
             _controller.ShowInfo(_gridIndex);
+            SoundManager.PlaySFX("Button1");
         }
     }
 }

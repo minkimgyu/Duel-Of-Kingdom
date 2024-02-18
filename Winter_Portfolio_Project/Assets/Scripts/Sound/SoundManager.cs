@@ -40,18 +40,25 @@ namespace WPP.SOUND
 
         private void Awake()
         {
+            Debug.Log("SoundManager instance test: " + _instance);
             _instance = this;
+            Debug.Log("SoundManager instance test: " + _instance);
+
             _bgmPlayer = GetComponent<AudioSource>();
             _sfxPlayers = _sfxTransform.GetComponents<AudioSource>();
         }
 
         public static void StopBGM()
         {
+            if (_instance == null) return;
+
             if (_instance._bgmPlayer.isPlaying == true) _instance._bgmPlayer.Stop();
         }
 
         public static void StopSFX()
         {
+            if (_instance == null) return;
+
             for (int i = 0; i < _instance._sfxPlayers.Length; i++)
             {
                 if (_instance._sfxPlayers[i].isPlaying == false) continue;
@@ -61,6 +68,8 @@ namespace WPP.SOUND
 
         public static void PlayBGM(string name, bool isLooping = false)
         {
+            if (_instance == null) return;
+
             Sound sound = _instance._sounds.Find(x => x.Name == name);
             if (sound == null) return;
 
@@ -75,6 +84,8 @@ namespace WPP.SOUND
 
         public static void PlaySFX(string name)
         {
+            if(_instance == null) return;
+
             Sound sound = _instance._sounds.Find(x => x.Name == name);
             if (sound == null) return;
 

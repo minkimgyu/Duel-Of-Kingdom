@@ -26,6 +26,8 @@ namespace WPP.UI
             _battleMenuButton.anchorMax = new Vector2(1, 0);
             _cardMenuButton.anchorMin = new Vector2(0, 0);
             _cardMenuButton.anchorMax = new Vector2(1 - _selectedButtonRatio, 0);
+
+            Time.timeScale = 1;
         }
 
         public void OnBattleButtonClicked()

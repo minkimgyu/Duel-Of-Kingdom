@@ -52,16 +52,16 @@ MonoBehaviour:
     volume: 0.3
   - name: TowerExplosion
     audioClip: {fileID: 8300000, guid: 84faa5e8db336754fa17a3a851f8d6aa, type: 3}
-    volume: 0.5
+    volume: 0.15
   - name: PunchSound
     audioClip: {fileID: 8300000, guid: c76b5cdbb62f3fa47afa736ef374b357, type: 3}
-    volume: 0.3
+    volume: 0.2
   - name: SwordAttackSound
     audioClip: {fileID: 8300000, guid: ef656a47f1f8cfe499bc8213841f36f9, type: 3}
     volume: 0.3
   - name: ShootSound
     audioClip: {fileID: 8300000, guid: 1eba62c74eb4bdf4485ee61bbc34f1b7, type: 3}
-    volume: 0.3
+    volume: 0.4
   - name: BatAttackSound
     audioClip: {fileID: 8300000, guid: c4555a3fd6d635d4b97876940e53ff8f, type: 3}
     volume: 0.3
@@ -88,7 +88,7 @@ MonoBehaviour:
     volume: 0.7
   - name: Fanfare
     audioClip: {fileID: 8300000, guid: 1b7bed58a1868c7478d7c2a8a1568784, type: 3}
-    volume: 1
+    volume: 0.2
   - name: Spawn
     audioClip: {fileID: 8300000, guid: 9476054f12ec59f46939ed3122d02499, type: 3}
     volume: 0.7
@@ -103,7 +103,7 @@ MonoBehaviour:
     volume: 0.3
   - name: BGM4
     audioClip: {fileID: 8300000, guid: 27dd589758c531145ae451d998d36960, type: 3}
-    volume: 0.3
+    volume: 0.1
   - name: BGM5
     audioClip: {fileID: 8300000, guid: f98f47c00b28a724cb13fb931072791c, type: 3}
     volume: 0.3

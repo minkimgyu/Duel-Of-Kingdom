@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UIElements;
 
 namespace WPP.POOL
 {
@@ -27,10 +28,13 @@ namespace WPP.POOL
 
 
 
-		public static GameObject SpawnFromPool(string tag, Vector3 position) =>
-			inst._SpawnFromPool(tag, position, Quaternion.identity);
+		public static GameObject SpawnFromPool(string tag, Vector3 position)
+		{
+            if (inst == null) return null;
+            return inst._SpawnFromPool(tag, position, Quaternion.identity);
+        }
 
-		public static GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation) =>
+        public static GameObject SpawnFromPool(string tag, Vector3 position, Quaternion rotation) =>
 			inst._SpawnFromPool(tag, position, rotation);
 
 		public static T SpawnFromPool<T>(string tag, Vector3 position) where T : Component
@@ -59,7 +63,9 @@ namespace WPP.POOL
 
 		public static List<GameObject> GetAllPools(string tag)
 		{
-			if (!inst.poolDictionary.ContainsKey(tag))
+            if (inst == null) return null;
+
+            if (!inst.poolDictionary.ContainsKey(tag))
 				throw new Exception($"Pool with tag {tag} doesn't exist.");
 
 			return inst.spawnObjects.FindAll(x => x.name == tag);
@@ -77,7 +83,9 @@ namespace WPP.POOL
 
 		public static void ReturnToPool(GameObject obj)
 		{
-			if (!inst.poolDictionary.ContainsKey(obj.name))
+            if (inst == null) return;
+
+            if (!inst.poolDictionary.ContainsKey(obj.name))
 				throw new Exception($"Pool with tag {obj.name} doesn't exist.");
 
 			inst.poolDictionary[obj.name].Enqueue(obj);
@@ -95,7 +103,7 @@ namespace WPP.POOL
 
 		GameObject _SpawnFromPool(string tag, Vector3 position, Quaternion rotation)
 		{
-			if (!poolDictionary.ContainsKey(tag))
+            if (!poolDictionary.ContainsKey(tag))
 				throw new Exception($"Pool with tag {tag} doesn't exist.");
 
 			// 큐에 없으면 새로 추가

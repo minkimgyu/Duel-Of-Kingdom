@@ -35,6 +35,12 @@ namespace WPP.AI.PROJECTILE
 
         void Move(Vector3 targetPos)
         {
+            if (_target.Equals(null) == false)
+            {
+                Vector3 dir = (targetPos - transform.position).normalized;
+                transform.rotation = Quaternion.LookRotation(dir);
+            }
+
             transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * _speed);
             if (_target.Equals(null) == true && Vector3.Distance(transform.position, _storedPosition) < 0.1f)
             {

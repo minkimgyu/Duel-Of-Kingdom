@@ -15,6 +15,10 @@ namespace WPP.AI.UI
             transform.LookAt(transform.position + _cameraTransform.rotation * Vector3.forward, _cameraTransform.rotation * Vector3.up);
         }
 
-        public virtual void OnDestroyRequested() => Destroy(gameObject);
+        public virtual void OnDestroyRequested()
+        {
+            if (gameObject == null) return;
+            Destroy(gameObject);
+        }
     }
 }

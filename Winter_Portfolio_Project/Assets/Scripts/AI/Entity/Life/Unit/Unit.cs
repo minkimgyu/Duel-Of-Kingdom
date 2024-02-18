@@ -116,7 +116,7 @@ namespace WPP.AI.UNIT
         protected override void InitializeComponent()
         {
             _attackComponent = GetComponent<AttackComponent>();
-            _attackComponent.Initialize(_damage, _ownershipId);
+            _attackComponent.Initialize(_damage, _hitSpeed, _ownershipId);
             base.InitializeComponent();
         }
 

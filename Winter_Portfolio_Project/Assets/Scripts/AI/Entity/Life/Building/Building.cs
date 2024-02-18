@@ -55,7 +55,7 @@ namespace WPP.AI.BUILDING
     {
         // 기본 능력치
         protected float _damage; // 데미지
-        protected float _hitSpeed; // 공격 속도
+        protected float _hitSpeed; // 공격 속도 --> 사실상 Attack Delay로 보는게 좋을 듯
         protected float _range; // 범위
         //
 
@@ -71,7 +71,7 @@ namespace WPP.AI.BUILDING
             _captureComponent = GetComponentInChildren<CaptureComponent>();
             _viewComponent = GetComponentInChildren<ViewComponent>();
             _attackComponent = GetComponent<AttackComponent>();
-            _attackComponent.Initialize(_damage, _ownershipId);
+            _attackComponent.Initialize(_damage, _hitSpeed, _ownershipId);
 
             base.InitializeComponent();
         }

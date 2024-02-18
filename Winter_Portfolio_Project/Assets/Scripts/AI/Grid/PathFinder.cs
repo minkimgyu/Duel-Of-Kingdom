@@ -224,7 +224,7 @@ namespace WPP.AI.GRID
                 if (NeighborNode.IsFastPath)
                     MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 2 : 3);
                 else
-                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 10 : 14);
+                    MoveCost = CurNode.G + (CurNode.x - checkX == 0 || CurNode.z - checkZ == 0 ? 20 : 28);
                 // 여기서 타일 piece를 보고 경우가 맞다면 movecost를 일부 줄여준다.
 
                 // 이동비용이 이웃노드G보다 작거나 또는 열린리스트에 이웃노드가 없다면 G, H, ParentNode를 설정 후 열린리스트에 추가

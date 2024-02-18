@@ -42,6 +42,12 @@ namespace WPP.AI.UI
             _hpTxt.text = hp.ToString();
         }
 
+        public void OnContentColorChangeRequested(bool isMyEntity)
+        {
+            if(isMyEntity) _content.color = Color.blue;
+            else _content.color = Color.red;
+        }
+
         public override void OnDestroyRequested()
         {
             DOTween.Kill(_content);

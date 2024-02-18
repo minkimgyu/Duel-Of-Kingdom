@@ -26,9 +26,9 @@ namespace WPP.AI.ATTACK
             Dictionary<AttackState, BaseState> attackStates = new Dictionary<AttackState, BaseState>();
 
             BaseState ready = new ReadyState(this);
-            BaseState preDelay = new DelayState(this, 2, AttackState.Fire);
+            BaseState preDelay = new DelayState(this, _attackDelay, AttackState.Fire);
             BaseState fire = new FireState(this, _delayBeforeApplyingTask, 0.4f);
-            BaseState afterDelay = new DelayState(this, 2);
+            BaseState afterDelay = new DelayState(this, _attackDelay);
 
             attackStates.Add(AttackState.Ready, ready);
             attackStates.Add(AttackState.PreDelay, preDelay);

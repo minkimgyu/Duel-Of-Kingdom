@@ -110,6 +110,8 @@ namespace WPP.AI
             OnTxtVisibleRequested = hpContainer.OnTxtVisibleRequested;
 
             OnHpDestroyRequested = hpContainer.OnDestroyRequested;
+
+            hpContainer.OnContentColorChangeRequested(IsMyEntity);
         }
 
         protected override void InitializeComponent()

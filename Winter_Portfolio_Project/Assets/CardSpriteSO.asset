@@ -35,3 +35,5 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: f7918c0f9bfef7a48b14705e8d65a3b2, type: 3}
   - name: cannon
     sprite: {fileID: 21300000, guid: cbd782fd43a93624da3d340fed6f881c, type: 3}
+  - name: arrows
+    sprite: {fileID: 21300000, guid: 8c025d0c89d669845acfbe9d65cd2d2c, type: 3}

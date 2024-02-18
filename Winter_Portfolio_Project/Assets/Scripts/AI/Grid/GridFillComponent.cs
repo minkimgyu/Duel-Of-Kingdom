@@ -224,14 +224,14 @@ namespace WPP.AI.GRID
                 {
                     if (_storedTowerCondition == TowerCondition.LeftDestroy)
                     {
-                        ResetArea(grids, rRightAreaData);
-                        _spawnImpossibleRect.Initialize(rRightDestroyDrawingData);
+                        ResetArea(grids, rLeftAreaData);
+                        _spawnImpossibleRect.Initialize(rLeftDestroyDrawingData);
                         return;
                     }
                     else if (_storedTowerCondition == TowerCondition.RightDestroy)
                     {
-                        ResetArea(grids, rLeftAreaData);
-                        _spawnImpossibleRect.Initialize(rLeftDestroyDrawingData);
+                        ResetArea(grids, rRightAreaData);
+                        _spawnImpossibleRect.Initialize(rRightDestroyDrawingData);
                         return;
                     }
                 }

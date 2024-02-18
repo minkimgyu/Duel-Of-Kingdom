@@ -71,11 +71,10 @@ namespace WPP.DeckManagement.UI
                     var spawnUnitData = CardCollection.Instance().FindCard(livingOutSpawnBuildingStat._spawnUnitId);
                     if (spawnUnitData != null)
                     {
-                        AddStatUI("Spawns", spawnUnitData.unit._name);
                         AddStatUI("Spawns", string.Format("{0} x{1}", spawnUnitData.unit._name, livingOutSpawnBuildingStat._spawnUnitCount));
                     }
 
-                    AddStatUI("Spawn Speed", livingOutSpawnBuildingStat._spawnDelay.ToString("0.#"));
+                    AddStatUI("Spawn Speed", livingOutSpawnBuildingStat._spawnDelay.ToString("0.#") + "s");
                 }
             }
 

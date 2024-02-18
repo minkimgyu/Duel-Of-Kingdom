@@ -285,6 +285,8 @@ namespace WPP.AI.SPAWNER
                 Instantiate(cardData, duration, ownershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
+
+
             SpawnClockUI(cardData.type, pos, duration);
 
             ByteBuffer bufferToSend = GetSpawnBuffer(card.id, level, ownershipId, unitCount, networkIds, pos);

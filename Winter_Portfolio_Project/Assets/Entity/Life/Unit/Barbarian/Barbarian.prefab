@@ -556,6 +556,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayBeforeApplyingTask: 0.22
+  _attackSoundName: SwordAttackSound
 --- !u!1 &4546391942953351621
 GameObject:
   m_ObjectHideFlags: 0

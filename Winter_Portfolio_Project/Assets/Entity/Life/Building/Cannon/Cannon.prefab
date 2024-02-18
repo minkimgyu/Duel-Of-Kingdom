@@ -449,6 +449,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc04ce14a0d175244921d99b1a916827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _delayBeforeApplyingTask: 0.2
+  _attackSoundName: CannonAttack
   _projectile: {fileID: 7702195051959480771, guid: 09628477cca5d284f8a463741242fccc, type: 3}
   _spawnPoint: {fileID: 4928432467531958692}
 --- !u!114 &2109852938594641250
@@ -464,6 +466,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: cannon
+  _ownershipId: 0
   _arm: {fileID: 5404684568102403405}
 --- !u!65 &3122808474945610857
 BoxCollider:

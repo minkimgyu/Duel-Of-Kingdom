@@ -322,6 +322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayBeforeApplyingTask: 0.18
+  _attackSoundName: BatAttackSound
 --- !u!1 &1872030959927217136
 GameObject:
   m_ObjectHideFlags: 0

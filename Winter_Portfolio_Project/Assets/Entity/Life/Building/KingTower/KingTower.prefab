@@ -268,6 +268,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc04ce14a0d175244921d99b1a916827, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _delayBeforeApplyingTask: 0.2
+  _attackSoundName: CannonAttack
   _projectile: {fileID: 7702195051959480771, guid: 09628477cca5d284f8a463741242fccc, type: 3}
   _spawnPoint: {fileID: 1608619782948784725}
 --- !u!114 &8401401061194717960
@@ -283,6 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _name: king_tower
+  _ownershipId: 0
   _arm: {fileID: 3069928848148665816}
   blueFlag: {fileID: 2100000, guid: 50811157ba00ba645a12614a790a1b37, type: 2}
   redFlag: {fileID: 2100000, guid: 7e01c7dfec3a48141825b2497396a902, type: 2}

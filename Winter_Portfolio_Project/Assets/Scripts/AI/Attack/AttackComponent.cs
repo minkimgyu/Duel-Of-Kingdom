@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using WPP.AI.TARGET;
 using WPP.AI.FSM;
+using WPP.SOUND;
 
 namespace WPP.AI.ATTACK
 {
@@ -36,6 +37,7 @@ namespace WPP.AI.ATTACK
         public bool Fix { get { return _fix; } set { _fix = value; } }
 
         [SerializeField] protected float _delayBeforeApplyingTask = 0.2f; // 이거는 나중에 데이터베이스에 추가하던가 해야할 듯?
+        [SerializeField] string _attackSoundName;
 
         public void CancelAttackAnimation() => _animator.SetTrigger("CancelAttack");
         public void PlayAttackAnimation() => _animator.SetTrigger("NowAttack");
@@ -72,6 +74,9 @@ namespace WPP.AI.ATTACK
 
         protected void ApplyDamage(IDamagable damagable, float damage) => damagable.GetDamage(damage);
 
-        public virtual void DoAttackTask() { }
+        public virtual void DoAttackTask() 
+        {
+            SoundManager.PlaySFX(_attackSoundName);
+        }
     }
 }

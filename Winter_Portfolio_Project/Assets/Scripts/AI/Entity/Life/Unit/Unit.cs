@@ -11,6 +11,7 @@ using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
 using WPP.POOL;
+using WPP.SOUND;
 
 namespace WPP.AI.UNIT
 {
@@ -87,6 +88,7 @@ namespace WPP.AI.UNIT
 
         public override void Die()
         {
+            SoundManager.PlaySFX("UnitDie");
             ObjectPooler.SpawnFromPool("DieEffect", transform.position);
             base.Die();
         }

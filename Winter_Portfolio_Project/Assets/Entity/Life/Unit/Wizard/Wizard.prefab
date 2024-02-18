@@ -680,6 +680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayBeforeApplyingTask: 0.3
+  _attackSoundName: FireAttackSound
   _projectile: {fileID: 6419330595228977566, guid: acfb46c1195bbf140b376722f1238319, type: 3}
   _spawnPoint: {fileID: 8017472577742261182}
 --- !u!1 &5980656703280752435

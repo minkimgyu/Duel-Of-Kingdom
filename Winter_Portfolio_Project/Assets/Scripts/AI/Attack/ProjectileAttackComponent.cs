@@ -16,6 +16,7 @@ namespace WPP.AI.ATTACK
 
         public override void DoAttackTask()
         {
+            base.DoAttackTask();
             BaseProjectile projectile = Instantiate(_projectile, _spawnPoint.position, Quaternion.identity);
             projectile.Initialize(Target, Damage, _ownershipId);
         }

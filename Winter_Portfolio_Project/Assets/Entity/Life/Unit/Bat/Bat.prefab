@@ -713,3 +713,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayBeforeApplyingTask: 0.12
+  _attackSoundName: BatAttackSound

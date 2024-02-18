@@ -8,10 +8,11 @@ namespace WPP.SOUND
     [Serializable]
     public class Sound
     {
-        public Sound(string name, AudioClip audioClip)
+        public Sound(string name, AudioClip audioClip, float volume)
         {
             this.name = name;
             this.audioClip = audioClip;
+            this.volume = volume;
         }
 
         [SerializeField]
@@ -21,6 +22,10 @@ namespace WPP.SOUND
         [SerializeField]
         AudioClip audioClip;
         public AudioClip AudioClip { get { return audioClip; } }
+
+        [SerializeField]
+        float volume = 1;
+        public float Volume { get { return volume; } }
     }
 
     public class SoundManager : MonoBehaviour
@@ -63,6 +68,7 @@ namespace WPP.SOUND
 
             _instance._bgmPlayer.clip = sound.AudioClip;
             _instance._bgmPlayer.loop = isLooping;
+            _instance._bgmPlayer.volume = sound.Volume;
 
             _instance._bgmPlayer.Play();
         }
@@ -77,6 +83,7 @@ namespace WPP.SOUND
                 if (_instance._sfxPlayers[i].isPlaying == true) continue;
 
                 _instance._sfxPlayers[i].clip = sound.AudioClip;
+                _instance._sfxPlayers[i].volume = sound.Volume;
                 _instance._sfxPlayers[i].Play();
                 break;
             }

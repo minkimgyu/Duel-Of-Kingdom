@@ -10,6 +10,7 @@ using WPP.AI.GRID;
 using WPP.AI.FSM;
 using WPP.AI.ACTION.STATE;
 using WPP.POOL;
+using WPP.SOUND;
 using System;
 
 namespace WPP.AI.BUILDING
@@ -293,6 +294,12 @@ namespace WPP.AI.BUILDING
         public override float ReturnColliderSize()
         {
             return ((_boxCollider.size.x / 2) * (transform.localScale.x + transform.localScale.z) / 2);
+        }
+
+        public override void Die()
+        {
+            SoundManager.PlaySFX("TowerExplosion");
+            base.Die();
         }
     }
 }

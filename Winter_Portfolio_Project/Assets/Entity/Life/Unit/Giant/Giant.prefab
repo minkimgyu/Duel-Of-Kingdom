@@ -458,6 +458,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delayBeforeApplyingTask: 0.33
+  _attackSoundName: PunchSound
 --- !u!1 &3772023278739475027
 GameObject:
   m_ObjectHideFlags: 0

@@ -13,6 +13,7 @@ using WPP.ClientInfo.Tower;
 using System;
 using WPP.Network;
 using Unity.VisualScripting;
+using WPP.SOUND;
 
 namespace WPP.AI.SPAWNER
 {
@@ -163,6 +164,8 @@ namespace WPP.AI.SPAWNER
         {
             if (type == CardType.spell)
                 return;
+
+            SoundManager.PlaySFX("ClockTicking");
             ClockUI clockUI = Instantiate(_clockUIPrefab);
             clockUI.Initialize(pos, duration);
         }
@@ -285,7 +288,7 @@ namespace WPP.AI.SPAWNER
                 Instantiate(cardData, duration, ownershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
             }
 
-
+            SoundManager.PlaySFX("Spawn");
 
             SpawnClockUI(cardData.type, pos, duration);
 
@@ -301,6 +304,8 @@ namespace WPP.AI.SPAWNER
 
             CardData cardData = CardCollection.Instance().FindCard(cardId, level);
             float duration = cardData.duration;
+
+            SoundManager.PlaySFX("Spawn");
 
             for (int i = 0; i < offsets.Length; i++)
             {

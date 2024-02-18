@@ -7,6 +7,7 @@ using WPP.Battle.Fsm;
 using WPP.CAMERA;
 using WPP.ClientInfo;
 using WPP.DeckManagement;
+using WPP.SOUND;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -132,6 +133,8 @@ namespace WPP.Battle
         {
             if(step == FsmStep.Enter)
             {
+                SoundManager.PlayBGM("BGM4", true);
+
                 OnStatusChange?.Invoke(fsm.CurrentState);
                 _deckSystem.Init(DeckManager.CurrentDeck);
 
@@ -256,6 +259,8 @@ namespace WPP.Battle
                 Time.timeScale = 0;
 
                 BattleResult result;
+
+                SoundManager.PlaySFX("Fanfare");
 
                 if(_player.CrownSystem.CrownCount > _opponent.CrownSystem.CrownCount)
                 {

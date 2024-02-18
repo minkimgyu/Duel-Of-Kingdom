@@ -9,6 +9,7 @@ using WPP.Battle.Fsm;
 using WPP.Collection;
 using WPP.ClientInfo.Card;
 using System;
+using WPP.SOUND;
 
 namespace WPP.Battle.UI
 {
@@ -101,6 +102,8 @@ namespace WPP.Battle.UI
         {
             if(step == FsmStep.Enter)
             {
+                SoundManager.PlaySFX("CardDrop");
+
                 _selectedCardIndex = -1;
                 UpdateCardTransform();
                 HideUsingElixirBar();
@@ -125,6 +128,8 @@ namespace WPP.Battle.UI
                 }
                 else
                 {
+
+
                     _fsm.TransitionTo(State.Idle);
                     return;
                 }
@@ -135,14 +140,19 @@ namespace WPP.Battle.UI
         {
             if (step == FsmStep.Enter)
             {
+                SoundManager.PlaySFX("CardDraw");
+
                 UpdateCardTransform();
                 ShowUsingElixirBar(_battleManager.DeckSystem.Hand[_selectedCardIndex]);
+
             }
             else if (step == FsmStep.Update)
             {
                 Vector2 localMousePosition = _cardSection.InverseTransformPoint(Input.mousePosition);
                 if (!_cardSection.rect.Contains(localMousePosition))
                 {
+                    SoundManager.PlaySFX("CardUp");
+
                     fsm.TransitionTo(State.Placing);
                     return;
                 }
@@ -227,6 +237,8 @@ namespace WPP.Battle.UI
         {
             _placedCard = true;
             //Debug.Log("Plant id : " + _selectedCardData.id);
+
+            SoundManager.PlaySFX("CardDrop");
 
             // temp id
             //int id = UnityEngine.Random.Range(0, 8);

@@ -11,6 +11,7 @@ namespace WPP.AI.ATTACK
     {
         public override void DoAttackTask() 
         {
+            base.DoAttackTask();
             ApplyDamage(Target.ReturnDamagable(), Damage);
         }
 

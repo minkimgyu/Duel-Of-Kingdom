@@ -354,7 +354,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2627502876671133769}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: -4849222204777771428}
+        m_TargetAssemblyTypeName: WPP.DeckManagement.UI.CardPopupUI, Assembly-CSharp
+        m_MethodName: ShowInfo
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2806097191474576228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1639,6 +1651,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2725322936728164349, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
       propertyPath: m_ConstrainProportionsScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4286060030227430923, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7212589590382295020, guid: cc12486ec34070d44af4d8d477b4068e, type: 3}

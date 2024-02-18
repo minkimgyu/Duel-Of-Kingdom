@@ -32,35 +32,41 @@ namespace WPP.DeckManagement.UI
 
             if(unitStat is LifeStat)
             {
-                AddStatUI("Hit Point", (unitStat as LifeStat)._hp.ToString("N1"));
+                AddStatUI("Hit Point", (unitStat as LifeStat)._hp.ToString("0.#"));
 
                 if (unitStat is UnitStat)
                 {
-                    AddStatUI("Damage", (unitStat as UnitStat)._damage.ToString("N1"));
-                    AddStatUI("Hit Speed", (unitStat as UnitStat)._hitSpeed.ToString("N1"));
 
-                    AddStatUI("Speed", (unitStat as UnitStat)._moveSpeed.ToString("N1"));
-                    AddStatUI("Range", (unitStat as UnitStat)._range.ToString("N1"));
-                    // capture tag
+                    if((unitStat as UnitStat)._targetTag.Length == 1)
+                    {
+                        AddStatUI("Target", (unitStat as UnitStat)._targetTag[0].ToString());
+                    }
+
+                    
+                    AddStatUI("Damage", (unitStat as UnitStat)._damage.ToString("0.#"));
+                    AddStatUI("Hit Speed", (unitStat as UnitStat)._hitSpeed.ToString("0.#"));
+
+                    //AddStatUI("Speed", (unitStat as UnitStat)._moveSpeed.ToString("0.#"));
+                    AddStatUI("Range", (unitStat as UnitStat)._range.ToString("0.#"));
                 }
 
                 if (unitStat is AttackBuildingStat)
                 {
-                    AddStatUI("Damage", (unitStat as AttackBuildingStat)._damage.ToString("N1"));
-                    AddStatUI("Hit Speed", (unitStat as AttackBuildingStat)._hitSpeed.ToString("N1"));
+                    AddStatUI("Damage", (unitStat as AttackBuildingStat)._damage.ToString("0.#"));
+                    AddStatUI("Hit Speed", (unitStat as AttackBuildingStat)._hitSpeed.ToString("0.#"));
 
-                    AddStatUI("Range", (unitStat as AttackBuildingStat)._range.ToString("N1"));
+                    AddStatUI("Range", (unitStat as AttackBuildingStat)._range.ToString("0.#"));
 
                     if (unitStat is LivingOutAttackBuildingStat)
                     {
-                        AddStatUI("Lifetime", (unitStat as LivingOutAttackBuildingStat)._lifeTime.ToString("N1"));
+                        AddStatUI("Lifetime", (unitStat as LivingOutAttackBuildingStat)._lifeTime.ToString("0.#"));
                     }
                 }
 
                 if (unitStat is LivingOutSpawnBuildingStat)
                 {
                     var livingOutSpawnBuildingStat = unitStat as LivingOutSpawnBuildingStat;
-                    AddStatUI("Lifetime", livingOutSpawnBuildingStat._lifeTime.ToString("N1"));
+                    AddStatUI("Lifetime", livingOutSpawnBuildingStat._lifeTime.ToString("0.#"));
 
                     var spawnUnitData = CardCollection.Instance().FindCard(livingOutSpawnBuildingStat._spawnUnitId);
                     if (spawnUnitData != null)
@@ -69,17 +75,17 @@ namespace WPP.DeckManagement.UI
                         AddStatUI("Spawns", string.Format("{0} x{1}", spawnUnitData.unit._name, livingOutSpawnBuildingStat._spawnUnitCount));
                     }
 
-                    AddStatUI("Spawn Speed", livingOutSpawnBuildingStat._spawnDelay.ToString("N1"));
+                    AddStatUI("Spawn Speed", livingOutSpawnBuildingStat._spawnDelay.ToString("0.#"));
                 }
             }
 
             if (unitStat is MagicStat)
             {
-                AddStatUI("Range", (unitStat as MagicStat)._range.ToString("N1"));
+                AddStatUI("Range", (unitStat as MagicStat)._range.ToString("0.#"));
 
                 if (unitStat is ProjectileMagicStat)
                 {
-                    AddStatUI("Damage", (unitStat as ProjectileMagicStat)._damage.ToString("N1"));
+                    AddStatUI("Damage", (unitStat as ProjectileMagicStat)._damage.ToString("0.#"));
                 }
             }
         }

@@ -82,7 +82,7 @@ namespace WPP.Network
 
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
-            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnUsingUnitData);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnWithUnitData);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, SynchronizeUnits);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_DESTROY_UNIT, DestroyUnit);
         }
@@ -438,19 +438,31 @@ namespace WPP.Network
             Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
         }
 
-        public void SpawnUsingUnitData(ref ByteBuffer buffer)
+        public void SpawnWithUnitData(ref ByteBuffer buffer)
         {
             string cardName = buffer.ReadString(true);
             int level = buffer.ReadInteger(true);
             int opponentOwnershipId = buffer.ReadInteger(true);
-            string networkId = buffer.ReadString(true);
+            int numOfCardsToSpawn = buffer.ReadInteger(true);
+            string[] networkIds = new string[numOfCardsToSpawn];
+            for (int i = 0; i < numOfCardsToSpawn; i++)
+            {
+                networkIds[i] = buffer.ReadString(true);
+            }
             Vector3 pos = buffer.ReadVector3(true);
 
             CardData cardData = CardCollection.Instance().FindCard(cardName, level);
             float duration = cardData.duration;
 
-            Spawner.Instance().Instantiate(cardData, duration, opponentOwnershipId, networkId, pos);
-            Spawner.Instance().SpawnClockUI(cardData.type, pos, duration);
+            int unitCount = cardData.spawnData.spawnUnitCount;
+            SerializableVector2[] offset = cardData.spawnData.spawnOffset;
+
+            Entity[] spawnedEntities = new Entity[unitCount];
+
+            for (int i = 0; i < unitCount; i++)
+            {
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, 0, opponentOwnershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+            }
         }
 
         public void SpawnTower(ref ByteBuffer buffer)

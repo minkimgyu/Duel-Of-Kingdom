@@ -238,18 +238,6 @@ namespace WPP.AI.SPAWNER
             return entity;
         }
 
-        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, string networkId, Vector3 pos)
-        {
-            ByteBuffer bufferToSend = new ByteBuffer();
-            bufferToSend.WriteString(cardId);
-            bufferToSend.WriteInteger(level);
-            bufferToSend.WriteInteger(ownershipId);
-            bufferToSend.WriteInteger(1);
-            bufferToSend.WriteString(networkId);
-            bufferToSend.WriteVector3(pos);
-            return bufferToSend;
-        }
-
         ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, int numOfCardsToSpawn, string[] networkIds, Vector3 pos)
         {
             ByteBuffer bufferToSend = new ByteBuffer();
@@ -305,18 +293,22 @@ namespace WPP.AI.SPAWNER
             CardData cardData = CardCollection.Instance().FindCard(cardId, level);
             float duration = cardData.duration;
 
-            SoundManager.PlaySFX("Spawn");
+            int unitCount = offsets.Length;
+            string[] networkIds = new string[unitCount];
 
             for (int i = 0; i < offsets.Length; i++)
             {
                 ++_spawnCount;
                 string networkId = ReturnNetworkId(ownershipId, cardData.unit._name, _spawnCount);
+                networkIds[i] = networkId;
 
-                Instantiate(cardData, duration, ownershipId, networkId, pos + new Vector3(offsets[i].x, 0, offsets[i].y));
-
-                ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, networkId, pos);
-                ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
+                Instantiate(cardData, 0, ownershipId, networkId, pos + new Vector3(offsets[i].x, 0, offsets[i].y));
             }
+
+            SoundManager.PlaySFX("Spawn");
+
+            ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, unitCount, networkIds, pos);
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
 
             return;
         }

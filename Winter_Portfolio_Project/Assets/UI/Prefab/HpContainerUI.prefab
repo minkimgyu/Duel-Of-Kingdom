@@ -58,14 +58,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c8fbeda36f3d0fa44afa3e35f19c0653, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2e9bcca830e093a4f81e7b6a485068b0, type: 3}
   m_Type: 3
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -221,7 +221,7 @@ GameObject:
   - component: {fileID: 8348509256007596222}
   - component: {fileID: 6165515181368872772}
   m_Layer: 5
-  m_Name: Image
+  m_Name: LevelContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -268,7 +268,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.746696, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -370,7 +370,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5376969771141780615
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -404,6 +404,9 @@ MonoBehaviour:
   _content: {fileID: 1801661459122659232}
   _levelTxt: {fileID: 5744816946502888237}
   _hpTxt: {fileID: 4299267567181638784}
+  _levelContainer: {fileID: 6165515181368872772}
+  _redSprite: {fileID: 21300000, guid: c8fbeda36f3d0fa44afa3e35f19c0653, type: 3}
+  _blueSprite: {fileID: 21300000, guid: e8b2944abafa3b14dac35dcd541a68d0, type: 3}
 --- !u!1 &3365209944023275168
 GameObject:
   m_ObjectHideFlags: 0

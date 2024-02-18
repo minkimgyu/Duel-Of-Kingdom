@@ -14,6 +14,12 @@ namespace WPP.AI.UI
         [SerializeField] TMP_Text _levelTxt;
         [SerializeField] TMP_Text _hpTxt;
 
+        [SerializeField] Image _levelContainer;
+
+        [SerializeField] Sprite _redSprite;
+        [SerializeField] Sprite _blueSprite;
+
+
         Transform _parentTransform;
 
         public void Initialize(int level, float hp, Transform parentTransform)
@@ -44,8 +50,16 @@ namespace WPP.AI.UI
 
         public void OnContentColorChangeRequested(bool isMyEntity)
         {
-            if(isMyEntity) _content.color = Color.blue;
-            else _content.color = Color.red;
+            if(isMyEntity)
+            {
+                _levelContainer.color = new Color(22 / 255f, 106 / 255f, 255 / 255f);
+                _content.sprite = _blueSprite;
+            }
+            else
+            {
+                _levelContainer.color = new Color(255 / 255f, 70 / 255f, 70 / 255f);
+                _content.sprite = _redSprite;
+            }
         }
 
         public override void OnDestroyRequested()

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using WPP.Network;
 using WPP.ClientInfo;
+using WPP.SOUND;
 
 namespace WPP
 {
@@ -28,6 +29,8 @@ namespace WPP
 
         public void RegisterButtonOnClick(string username, string password, string repeatPassword)
         {
+            SoundManager.PlaySFX("Button2");
+
             if (!password.Equals(repeatPassword))
             {
                 Debug.Log("password is not same");
@@ -42,6 +45,8 @@ namespace WPP
 
         public void LoginButtonOnClick(string username, string password)
         {
+            SoundManager.PlaySFX("Button2");
+
             ByteBuffer buffer = new ByteBuffer();
             buffer.WriteString(username);
             buffer.WriteString(password);

@@ -6,6 +6,7 @@ using System.Text;
 using TMPro;
 using UnityEngine;
 using WPP.Collection;
+using WPP.SOUND;
 
 namespace WPP.DeckManagement.UI
 {
@@ -127,29 +128,39 @@ namespace WPP.DeckManagement.UI
 
         public void SelectDeck(int index)
         {
+            SoundManager.PlaySFX("Button1");
+
             TurnAllPopupsOff();
             _deckEditor.SelectDeck(index);
         }
 
         public void AddCardToDeck(int index)
         {
+            SoundManager.PlaySFX("CardDrop");
+
             _deckEditor.AddCard(CardDatabase.Cards.ElementAt(index).Value);
             TurnAllPopupsOff();
         }
 
         public void RemoveCardFromDeck(int index)
         {
+            SoundManager.PlaySFX("CardDrop");
+
             _deckEditor.RemoveCard(index);
             TurnAllPopupsOff();
         }
 
         public void LevelUpCard(int index)
         {
+            SoundManager.PlaySFX("Button1");
+
             _deckEditor.IncreaseCardLevel(index);
         }
 
         public void LevelDownCard(int index)
         {
+            SoundManager.PlaySFX("Button1");
+
             _deckEditor.DecreaseCardLevel(index);
         }
     

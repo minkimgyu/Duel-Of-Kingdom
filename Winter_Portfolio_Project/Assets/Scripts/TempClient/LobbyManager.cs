@@ -8,6 +8,7 @@ using WPP.Network;
 using System.Net;
 using WPP.AI.SPAWNER;
 using WPP.ClientInfo;
+using WPP.SOUND;
 
 namespace WPP
 {

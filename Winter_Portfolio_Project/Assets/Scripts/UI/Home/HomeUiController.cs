@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using WPP.SOUND;
 
 namespace WPP.UI
 {
@@ -29,6 +30,8 @@ namespace WPP.UI
 
         public void OnBattleButtonClicked()
         {
+            SoundManager.PlaySFX("Button2");
+
             _battleMenu.DOAnchorPos(new Vector2(0, 0), 0.5f);
             _cardsMenu.DOAnchorPos(new Vector2(-_cardsMenu.rect.width, 0), 0.5f);
 
@@ -38,6 +41,8 @@ namespace WPP.UI
 
         public void OnCardsButtonClicked()
         {
+            SoundManager.PlaySFX("Button2");
+
             _battleMenu.DOAnchorPos(new Vector2(_battleMenu.rect.width, 0), 0.5f);
             _cardsMenu.DOAnchorPos(new Vector2(0, 0), 0.5f);
 

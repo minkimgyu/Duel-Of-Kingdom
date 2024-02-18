@@ -110,6 +110,12 @@ MonoBehaviour:
   - name: BGM6
     audioClip: {fileID: 8300000, guid: 156935bc17fc8ad44bbfe2c56a7091f8, type: 3}
     volume: 0.3
+  - name: Button1
+    audioClip: {fileID: 8300000, guid: 89b5c5f22a5cf3b48b103f6639d8b35c, type: 3}
+    volume: 0.5
+  - name: Button2
+    audioClip: {fileID: 8300000, guid: 29759386456af094c97ae1252c797ee8, type: 3}
+    volume: 0.3
   _sfxTransform: {fileID: 2279290214279278103}
 --- !u!82 &5402625103381991628
 AudioSource:

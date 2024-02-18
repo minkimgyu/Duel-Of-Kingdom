@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using WPP.SOUND;
 
 namespace WPP.DeckManagement.UI
 {
@@ -60,6 +61,8 @@ namespace WPP.DeckManagement.UI
 
         public void TogglePopup()
         {
+            SoundManager.PlaySFX("CardUp");
+
             bool isPopupActive = _popup.activeSelf;
             _controller.TurnAllPopupsOff();
             _popup.SetActive(!isPopupActive);

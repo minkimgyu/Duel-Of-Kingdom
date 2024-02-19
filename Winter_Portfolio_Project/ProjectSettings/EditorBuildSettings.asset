@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TempClient/Loading.unity
     guid: 79dfbc49527c66441a95aab3988e1ac0
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/TempClient/Lobby.unity
     guid: 39970c1d75243d44aabfb06415f972ec
   - enabled: 1

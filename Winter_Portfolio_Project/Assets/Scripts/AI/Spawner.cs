@@ -253,6 +253,25 @@ namespace WPP.AI.SPAWNER
             return bufferToSend;
         }
 
+        ByteBuffer GetSpawnBuffer(string cardId, int level, int ownershipId, int numOfCardsToSpawn, string[] networkIds, Vector3 pos, Vector3[] offsets)
+        {
+            ByteBuffer bufferToSend = new ByteBuffer();
+            bufferToSend.WriteString(cardId);
+            bufferToSend.WriteInteger(level);
+            bufferToSend.WriteInteger(ownershipId);
+            bufferToSend.WriteInteger(numOfCardsToSpawn);
+            for (int i = 0; i < numOfCardsToSpawn; i++)
+            {
+                bufferToSend.WriteString(networkIds[i]);
+            }
+            bufferToSend.WriteVector3(pos);
+            for (int i = 0; i < numOfCardsToSpawn; i++)
+            {
+                bufferToSend.WriteVector3(offsets[i]);
+            }
+            return bufferToSend;
+        }
+
         /// <summary>
         /// ī�带 ����ؼ� ������Ű�� ���
         /// </summary>
@@ -307,7 +326,7 @@ namespace WPP.AI.SPAWNER
 
             SoundManager.PlaySFX("Spawn");
 
-            ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, unitCount, networkIds, pos);
+            ByteBuffer bufferToSend = GetSpawnBuffer(cardId, level, ownershipId, unitCount, networkIds, pos, offsets);
             ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, bufferToSend.ToArray());
 
             return;

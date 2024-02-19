@@ -37,7 +37,6 @@ namespace WPP.Network
 
         C_REQUEST_HOLE_PUNCHING,
         C_REQUEST_RELAY,
-        C_REQUEST_UPDATE_DECKS,
         C_CLOSE_CONNECTION,
     }
 

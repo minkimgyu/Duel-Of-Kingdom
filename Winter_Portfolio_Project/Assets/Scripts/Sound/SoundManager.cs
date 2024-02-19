@@ -40,9 +40,7 @@ namespace WPP.SOUND
 
         private void Awake()
         {
-            Debug.Log("SoundManager instance test: " + _instance);
             _instance = this;
-            Debug.Log("SoundManager instance test: " + _instance);
 
             _bgmPlayer = GetComponent<AudioSource>();
             _sfxPlayers = _sfxTransform.GetComponents<AudioSource>();

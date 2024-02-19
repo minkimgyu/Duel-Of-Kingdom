@@ -197,6 +197,14 @@ namespace WPP.Network
 
                 if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
                 {
+                    if(packetTag < 30)
+                    {
+                        Debug.Log("Handle " + (Server_PacketTagPackages)packetTag);
+                    }
+                    else
+                    {
+                        Debug.Log("Handle " + (Peer_PacketTagPackages)packetTag);
+                    }
                     func.Invoke(ref buffer);
                 }
             }
@@ -232,7 +240,6 @@ namespace WPP.Network
 
         public void HandleLoginAcception(ref ByteBuffer buffer)
         {
-            Debug.Log("Handle login");
             string accountString = buffer.ReadString(true);
             ClientData.Instance().account = JsonConvert.DeserializeObject<AccountData>(accountString);
 #if UNITY_EDITOR
@@ -299,8 +306,6 @@ namespace WPP.Network
 
         public void HandleEnterGame(ref ByteBuffer buffer)
         {
-            ClientTCP clientTCP = ClientTCP.Instance();
-
             // set room_id
             int roomID = buffer.ReadInteger(true);
             Debug.Log("roomID: " + roomID);
@@ -322,14 +327,14 @@ namespace WPP.Network
             ClientData.Instance().player_id_in_game = player_id_in_game;
 
             // try to connect with private end point
-            clientTCP.ConnectPeer(opponentPrivateEP);
-            if (clientTCP.peerSock == null || clientTCP.peerSock.Connected == false)
+            ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
+            if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
             {
                 // try to connect with public end point
-                clientTCP.ConnectPeer(opponentPublicEP);
+                ClientTCP.Instance().ConnectPeer(opponentPublicEP);
             }
 
-            clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_PING);
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_PING);
             Debug.Log("send ping");
 
             SceneManager.LoadScene("CameraTestScene");
@@ -450,18 +455,22 @@ namespace WPP.Network
                 networkIds[i] = buffer.ReadString(true);
             }
             Vector3 pos = buffer.ReadVector3(true);
+            Vector3[] offsets = new Vector3[numOfCardsToSpawn];
+            for (int i = 0; i < numOfCardsToSpawn; i++)
+            {
+                offsets[i] = buffer.ReadVector3(true);
+            }
 
             CardData cardData = CardCollection.Instance().FindCard(cardName, level);
             float duration = cardData.duration;
 
             int unitCount = cardData.spawnData.spawnUnitCount;
-            SerializableVector2[] offset = cardData.spawnData.spawnOffset;
 
             Entity[] spawnedEntities = new Entity[unitCount];
 
             for (int i = 0; i < unitCount; i++)
             {
-                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, 0, opponentOwnershipId, networkIds[i], pos + new Vector3(offset[i]._x, 0, offset[i]._y));
+                spawnedEntities[i] = Spawner.Instance().Instantiate(cardData, 0, opponentOwnershipId, networkIds[i], pos + new Vector3(offsets[i].x, 0, offsets[i].y));
             }
         }
 

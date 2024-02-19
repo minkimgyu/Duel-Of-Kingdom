@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - GroundUnit
+  - AirUnit
+  - Building
+  - Grid
+  - Spawner
   layers:
   - Default
   - TransparentFX
@@ -11,13 +16,13 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - GroundEntity
+  - CaptureTrigger
+  - Projectile
+  - AirEntity
+  - Tile
+  - AllBlock
+  - GroundEntityBlock
   - 
   - 
   - 

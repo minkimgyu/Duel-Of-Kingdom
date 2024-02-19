@@ -21,10 +21,25 @@ namespace WPP
         public TMP_InputField loginID;
         public TMP_InputField loginPassword;
         public Button loginButton;
+
+        [Header("IP")]
+        public TMP_InputField iP;
+        public Button assignButton;
+
         void Start()
         {
             registerButton.onClick.AddListener(() => RegisterButtonOnClick(registerID.text, registerPassword.text, registerRepeatPassword.text));
             loginButton.onClick.AddListener(() => LoginButtonOnClick(loginID.text, loginPassword.text));
+            assignButton.onClick.AddListener(() => ConnectServer());
+        }
+
+        public void ConnectServer()
+        {
+            ClientTCP.Instance().IP = iP.text;
+            ClientManager clientManager = FindObjectOfType<ClientManager>();
+            if (clientManager == null) return;
+
+            clientManager.ConnectServer();
         }
 
         public void RegisterButtonOnClick(string username, string password, string repeatPassword)

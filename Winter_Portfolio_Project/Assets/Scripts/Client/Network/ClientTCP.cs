@@ -33,6 +33,8 @@ namespace WPP.Network
 
         private object _packetQueueLockObject;
 
+        public string IP;
+
         public static ClientTCP Instance()
         {
             if (_instance == null)
@@ -44,7 +46,6 @@ namespace WPP.Network
         public ClientTCP()
         {
             InitializeClientSock();
-            InitializePeerSock();
             _packetQueueLockObject = new object();
             _receivedPacket = new byte[4096];
             _receivedPacketForHolePunching = new byte[4096];
@@ -102,7 +103,8 @@ namespace WPP.Network
 
         public void ConnectServer()
         {
-            clntSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBack, null);
+            //clntSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBack, null);
+            clntSock.BeginConnect(IPAddress.Parse(IP), Constants.SERVER_PORT, ConnectServerCallBack, null);
         }
 
         private void ConnectServerCallBack(IAsyncResult result)
@@ -121,7 +123,8 @@ namespace WPP.Network
                 Debug.Log("Connected to server with clntSock");
 
                 serverStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceivFromServerCallbck, null);
-                SendDataToServer(Client_PacketTagPackages.C_REQUEST_INITIAL_DATA);
+                //SendDataToServer(Client_PacketTagPackages.C_REQUEST_INITIAL_DATA);
+                InitializePeerSock();
             }
             catch (Exception e)
             {
@@ -186,7 +189,8 @@ namespace WPP.Network
         public void ConnectServerForHolePunching()
         {
             // for hole punching
-            peerSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBackForHolePunching, null);
+            //peerSock.BeginConnect(IPAddress.Parse(Constants.SERVER_IP), Constants.SERVER_PORT, ConnectServerCallBackForHolePunching, null);
+            peerSock.BeginConnect(IPAddress.Parse(IP), Constants.SERVER_PORT, ConnectServerCallBackForHolePunching, null);
         }
 
         private void ConnectServerCallBackForHolePunching(IAsyncResult result)

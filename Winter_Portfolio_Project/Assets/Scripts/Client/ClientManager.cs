@@ -18,6 +18,12 @@ namespace WPP
         void Awake()
         {
             _managerLockObj = new object();
+            //ClientTCP.Instance().ConnectServer();
+            //PacketHandler.Instance().InitializePacketHandler();
+        }
+
+        public void ConnectServer()
+        {
             ClientTCP.Instance().ConnectServer();
             PacketHandler.Instance().InitializePacketHandler();
         }

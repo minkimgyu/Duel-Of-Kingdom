@@ -848,6 +848,8 @@ MonoBehaviour:
   loginID: {fileID: 1749963807}
   loginPassword: {fileID: 1487676655}
   loginButton: {fileID: 605029616}
+  iP: {fileID: 946630117}
+  assignButton: {fileID: 1444682525}
 --- !u!4 &394538857
 Transform:
   m_ObjectHideFlags: 0

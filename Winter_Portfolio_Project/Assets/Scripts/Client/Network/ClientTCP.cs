@@ -21,6 +21,7 @@ namespace WPP.Network
         public NetworkStream P2Pstream { get; set; }
 
         private byte[] _receivedPacket;
+        private byte[] _receivedPacketForHolePunching;
         public ByteBuffer buffer { get; set; }
         public ByteBuffer inGameBuffer { get; set; }
         public IPEndPoint peerSockPublicEP { get; set; }
@@ -30,7 +31,7 @@ namespace WPP.Network
         public DateTime pingAnsweredTime { get; set; }
         public TimeSpan rtt { get; set; }
 
-        private object _tcpLockObject;
+        private object _packetQueueLockObject;
 
         public static ClientTCP Instance()
         {
@@ -44,8 +45,9 @@ namespace WPP.Network
         {
             InitializeClientSock();
             InitializePeerSock();
-            _tcpLockObject = new object();
+            _packetQueueLockObject = new object();
             _receivedPacket = new byte[4096];
+            _receivedPacketForHolePunching = new byte[4096];
             buffer = null;
         }
 
@@ -65,6 +67,8 @@ namespace WPP.Network
                 peerSock.NoDelay = true;
                 peerSock.ReceiveBufferSize = 4096;
                 peerSock.SendBufferSize = 4096;
+
+                ConnectServerForHolePunching();
             }
             catch (Exception e)
             {
@@ -141,7 +145,7 @@ namespace WPP.Network
                 byte[] dataToHandle = new byte[bytesReceived];
                 Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
 
-                lock(_tcpLockObject)
+                lock(_packetQueueLockObject)
                 {
                     PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
                 }
@@ -202,7 +206,9 @@ namespace WPP.Network
                 peerSockPrivateEP = peerSock.Client.LocalEndPoint as IPEndPoint;
 
                 SendDataToServerForHolePunching(Client_PacketTagPackages.C_REQUEST_HOLE_PUNCHING);
-                holePunchingStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceiveFromServerCallbckForHolePunching, null);
+                Debug.Log("C_REQUEST_HOLE_PUNCHING");
+
+                holePunchingStream.BeginRead(_receivedPacketForHolePunching, 0, _receivedPacketForHolePunching.Length, ReceiveFromServerCallbckForHolePunching, null);
             }
             catch (Exception e)
             {
@@ -227,14 +233,14 @@ namespace WPP.Network
                 }
 
                 byte[] dataToHandle = new byte[bytesReceived];
-                Buffer.BlockCopy(_receivedPacket, 0, dataToHandle, 0, bytesReceived);
+                Buffer.BlockCopy(_receivedPacketForHolePunching, 0, dataToHandle, 0, bytesReceived);
 
-                lock(_tcpLockObject)
+                lock(_packetQueueLockObject)
                 {
                     PacketHandler.Instance().packetQueue.Enqueue(dataToHandle);
                 }
 
-                holePunchingStream.BeginRead(_receivedPacket, 0, _receivedPacket.Length, ReceiveFromServerCallbckForHolePunching, null);
+                holePunchingStream.BeginRead(_receivedPacketForHolePunching, 0, _receivedPacketForHolePunching.Length, ReceiveFromServerCallbckForHolePunching, null);
                 return;
             }
             catch (Exception e)

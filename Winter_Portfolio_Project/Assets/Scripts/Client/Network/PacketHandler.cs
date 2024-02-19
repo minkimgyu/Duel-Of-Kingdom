@@ -74,10 +74,11 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_ALERT_OVER_TIME, HandleOverTime);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_END_GAME, HandleEndGame);
 
-            packetHandler.Add((int)Server_PacketTagPackages.S_REQUSET_HOLE_PUNCHING, HandleHolePunching);
+            packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_HOLE_PUNCHING, HandleHolePunching);
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
+            packetHandler.Add((int)Server_PacketTagPackages.S_SEND_PING, AnswerPing);
 
-            packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_PING, RequestRoundTripTime);
+            packetHandler.Add((int)Peer_PacketTagPackages.P_SEND_PING, RequestRoundTripTime);
             packetHandler.Add((int)Peer_PacketTagPackages.P_ANSWER_PING, GetRoundTripTime);
 
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
@@ -225,7 +226,7 @@ namespace WPP.Network
             File.WriteAllText(jsonFilePath, cardCollectionString);
             JsonParser.Instance().LoadCardCollection();
 
-            ClientTCP.Instance().ConnectServerForHolePunching();
+            //ClientTCP.Instance().ConnectServerForHolePunching();
         }
 
         public void HandleRegisterAcception(ref ByteBuffer buffer)
@@ -334,7 +335,7 @@ namespace WPP.Network
                 ClientTCP.Instance().ConnectPeer(opponentPublicEP);
             }
 
-            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_REQUEST_PING);
+            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_PING);
             Debug.Log("send ping");
 
             SceneManager.LoadScene("CameraTestScene");
@@ -364,6 +365,12 @@ namespace WPP.Network
 
             ClientTCP.Instance().CloseHolePunchingConnection();
         }
+
+        public void AnswerPing(ref ByteBuffer buffer)
+        {
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_ANSWER_PING);
+        }
+
 
         public void RequestRoundTripTime(ref ByteBuffer buffer)
         {

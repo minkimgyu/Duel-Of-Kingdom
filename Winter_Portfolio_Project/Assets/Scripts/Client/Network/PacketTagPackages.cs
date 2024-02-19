@@ -19,9 +19,10 @@ namespace WPP.Network
 
         S_REQUEST_END_GAME,
 
-        S_REQUSET_HOLE_PUNCHING,
+        S_REQUEST_HOLE_PUNCHING,
         S_REQUEST_RELAY,
         S_REQUEST_SYNCHRONIZATION,
+        S_SEND_PING,
     }
 
     public enum Client_PacketTagPackages
@@ -38,11 +39,12 @@ namespace WPP.Network
         C_REQUEST_HOLE_PUNCHING,
         C_REQUEST_RELAY,
         C_CLOSE_CONNECTION,
+        C_ANSWER_PING,
     }
 
     public enum Peer_PacketTagPackages
     {
-        P_REQUEST_PING = 30,
+        P_SEND_PING = 30,
         P_ANSWER_PING,
         P_REQUEST_SPAWN_CARD,
         P_REQUEST_SPAWN_TOWER,

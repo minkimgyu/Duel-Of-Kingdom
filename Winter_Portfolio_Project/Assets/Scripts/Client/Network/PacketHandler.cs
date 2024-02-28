@@ -225,8 +225,6 @@ namespace WPP.Network
             }
             File.WriteAllText(jsonFilePath, cardCollectionString);
             JsonParser.Instance().LoadCardCollection();
-
-            //ClientTCP.Instance().ConnectServerForHolePunching();
         }
 
         public void HandleRegisterAcception(ref ByteBuffer buffer)
@@ -296,7 +294,6 @@ namespace WPP.Network
             }
             File.WriteAllText(cardInstancessFilePath, cardInstancesString);
             JsonParser.Instance().LoadCardInstances();
-
             SceneManager.LoadScene("HomeUIScene");
         }
 
@@ -339,6 +336,8 @@ namespace WPP.Network
             Debug.Log("send ping");
 
             SceneManager.LoadScene("CameraTestScene");
+            //SceneManager.LoadScene("TestMapScene");
+            //SceneManager.LoadScene("TestMapScene1");
 
             Debug.Log("entered game");
         }

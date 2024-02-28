@@ -14,9 +14,18 @@ namespace WPP
 {
     public class ClientManager : MonoBehaviour
     {
+        private static ClientManager _instance;
         private object _managerLockObj;
+        public string serverIP = "192.168.1.81";
+        public short serverPort = 8000;
+
+        public static ClientManager Instance()
+        {
+            return _instance;
+        }
         void Awake()
         {
+            _instance = this;
             _managerLockObj = new object();
             //ClientTCP.Instance().ConnectServer();
             //PacketHandler.Instance().InitializePacketHandler();

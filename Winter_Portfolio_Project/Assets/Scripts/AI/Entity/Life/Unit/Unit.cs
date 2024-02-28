@@ -169,7 +169,7 @@ namespace WPP.AI.UNIT
                         (
                             new List<Node>
                             {
-                                new CanFindTarget(_captureComponent), // ���� Ÿ���� ���ٸ� Ÿ���� Ÿ������ �������ش�.
+                                new CanFindTarget(_captureComponent),
                                 new Selector
                                 (
                                     new List<Node>
@@ -182,14 +182,11 @@ namespace WPP.AI.UNIT
                                                 (
                                                     new List<Node>
                                                     {
-                                                        // Ÿ���� �ٲ�� ���, ���� �ð� ������ �־��ֱ�
                                                         new CheckIsNearAndCancelAttackWhenExit(_captureComponent, _range, _offsetDistance, _attackComponent, true, ReturnColliderSize()), // DelayForAttack�� �־��ֱ�
                                                         new LookAtTarget(_captureComponent, _viewComponent),
                                                         new Stop(_moveComponent),
 
                                                         new Attack(_attackComponent, _captureComponent)
-                                                        // ���� ����
-                                                        // ���� ������ ���� ���� ��� �Ÿ��� �־����� ��� ����
                                                     }
                                                 ),
                                                 new Sequence

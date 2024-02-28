@@ -102,6 +102,10 @@ namespace WPP.AI.GRID
             OnReturnGridRequested = gridStorage.ReturnGridArray;
             OnConvertV3ToIndexRequested = gridStorage.ConvertPositionToIndex;
             _storedTowerCondition = TowerCondition.NoDestroy; // 처음에는 이걸로 초기화
+
+            // 여기서 장애물 생성 진행
+            OnBuildingPlanted(new Vector3(3, 1, 1), new OffsetRect(0, 0, 0, 3));
+            OnBuildingPlanted(new Vector3(3, 1, -9), new OffsetRect(0, 0, 0, 3));
         }
 
         // 상대 진형에 오브젝트 못 심게 막아버리기
@@ -154,6 +158,48 @@ namespace WPP.AI.GRID
             //ResetPass(grids, index, offset, true);
         }
 
+        /// <summary>
+        /// 장애물 설치 시 사용
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="offset"></param>
+        public void OnBuildingPlanted(Vector3 pos, OffsetRect offset)
+        {
+            Vector2Int index = OnConvertV3ToIndexRequested(pos);
+
+            Grid[,] grids = OnReturnGridRequested();
+
+            AreaData data = ReturnFillData(index, offset, true);
+            ResetArea(grids, data); // filldata는 다시 만들어줘야 할 듯?
+
+            // 여기서 바로 리턴시키지 않고 경우에 따라서 나누기
+            ResetPass(grids, index, offset, false);
+
+            //if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
+            //ResetPass(grids, index, offset, false);
+        }
+
+        /// <summary>
+        /// 장애물 해제 시 사용
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="offset"></param>
+        public void OnBuildingReleased(Vector3 pos, OffsetRect offset)
+        {
+            Vector2Int index = OnConvertV3ToIndexRequested(pos);
+
+            Grid[,] grids = OnReturnGridRequested();
+
+            AreaData data = ReturnFillData(index, offset, false);
+            ResetArea(grids, data); // filldata는 다시 만들어줘야 할 듯?
+
+            // 여기서 바로 리턴시키지 않고 경우에 따라서 나누기
+            ResetPass(grids, index, offset, true);
+
+            //if (isMyBuilding == false) return; // Client Id와 owership Id가 같은 경우에만 아래 실행 --> 본인이 스폰시킨 오브젝트인 경우에만
+            //ResetPass(grids, index, offset, true);
+        }
+
         public void DrawSpawnImpossibleRect() => _spawnImpossibleRect.Draw();
 
         public void EraseSpawnImpossibleRect() => _spawnImpossibleRect.Erase();
@@ -178,6 +224,15 @@ namespace WPP.AI.GRID
             {
                 if (isMyBuilding) grids[i, index.y].MyEntityCanPass = canPass;
                 else grids[i, index.y].YourEntityCanPass = canPass;
+            }
+        }
+
+        void ResetPass(Grid[,] grids, Vector2Int index, OffsetRect offset, bool canPass)
+        {
+            for (int i = index.x - offset._left; i <= index.x + offset._left; i++)
+            {
+                grids[i, index.y].MyEntityCanPass = canPass;
+                grids[i, index.y].YourEntityCanPass = canPass;
             }
         }
 

@@ -9,26 +9,21 @@ using UnityEngine;
 using WPP.Network;
 using WPP.ClientInfo;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 namespace WPP
 {
     public class ClientManager : MonoBehaviour
     {
-        private static ClientManager _instance;
         private object _managerLockObj;
-        public string serverIP = "192.168.1.81";
-        public short serverPort = 8000;
+        public DateTime gameStartTime;
+        private static ClientManager _instance = null;
+        public static ClientManager Instance { get { return _instance; } } 
 
-        public static ClientManager Instance()
-        {
-            return _instance;
-        }
         void Awake()
         {
             _instance = this;
             _managerLockObj = new object();
-            //ClientTCP.Instance().ConnectServer();
-            //PacketHandler.Instance().InitializePacketHandler();
         }
 
         public void ConnectServer()
@@ -41,13 +36,13 @@ namespace WPP
         {
             if (PacketHandler.Instance().packetQueue.Count > 0)
             {
-                lock (_managerLockObj)
+                lock (ClientTCP.Instance().PacketQueueLockObject)
                 {
-                    PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
-
+                    byte[] packet = PacketHandler.Instance().packetQueue.Dequeue();
+                    PacketHandler.Instance().HandlePacket(packet);
                 }
             }
-
+            /*
             if (PacketHandler.Instance().inGamePacketQueue.Count > 0)
             {
                 lock (_managerLockObj)
@@ -56,6 +51,7 @@ namespace WPP
 
                 }
             }
+            */
         }
 
         private void OnApplicationQuit()

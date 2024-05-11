@@ -30,8 +30,8 @@ namespace WPP
              */
 
             ByteBuffer buffer = new ByteBuffer();
-            buffer.WriteEndPoint(ClientTCP.Instance().peerSockPrivateEP);
-            buffer.WriteEndPoint(ClientTCP.Instance().peerSockPublicEP);
+            buffer.WriteEndPoint(ClientTCP.Instance().PeerSockPrivateEP);
+            buffer.WriteEndPoint(ClientTCP.Instance().PeerSockPublicEP);
 
             ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_REQUEST_ENTER_ROOM, buffer.ToArray());
         }

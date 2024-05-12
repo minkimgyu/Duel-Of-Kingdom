@@ -84,6 +84,11 @@ namespace WPP
                     ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_COMMANDS, commandBuffer.ToArray());
                     Debug.Log("send commands");
                 }
+                else
+                {
+                    // 비어 있는 커맨드 송신
+                    ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_COMMANDS, null);
+                }
             }
         }
 
@@ -108,17 +113,22 @@ namespace WPP
 
         private void Update()
         {
+            // 10 프레임 때 내 보유 커맨드들을 상대방에게 전송
             if(_turn == 10)
             {
                 SendCommandsToOpponent();
             }
-            else if (_turn == 20)
+            // 20 프레임 때 보유 커맨드(자신의 커맨드와 상대방의 커맨드 모두를 지칭)들을 실행
+            // 10 프레임 간의 차이를 두는 이유는 전송과 실행 시간에 대한 여유를 주기 위함
+            else if (_turn == 20 && _commandsToExecute.Count > 0)
             {
                 ExecuteCommands();
             }
             else if (_turn == 30)
             {
                 _turn = 0;
+                _commandsToExecute.Clear();
+                _opponentCommandsToExecute.Clear();
             }
             ++_turn;
         }

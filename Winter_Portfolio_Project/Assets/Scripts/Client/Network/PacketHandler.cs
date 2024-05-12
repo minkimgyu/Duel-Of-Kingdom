@@ -539,6 +539,7 @@ namespace WPP.Network
             Debug.Log("HandleCommands");
 
             int numOfCommands = buffer.ReadInteger(true);
+
             Debug.Log($"numOfCommands: {numOfCommands}");
             for (int i=0; i< numOfCommands; i++)
             {
@@ -551,6 +552,17 @@ namespace WPP.Network
 
                 // 상대방의 command들을 내 List에 추가
                 TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, command);
+            }
+
+            // 공백의 커맨드를 내 List에 추가
+            // 공백인 커맨드를 추가하는 이유: 상대방의 전송 가능을 확인하기 위함
+            // 공백 커맨드 수신 => 상대방이 카드 소환을 하지 않고 대기 중을 의미 
+            // 공백 커맨드 수신x => 상대방과의 연결 두절 혹은 전송 딜레이
+            if (numOfCommands == 0)
+            {
+                int commandSize = buffer.ReadInteger(true);
+                int tag = buffer.ReadInteger(true);
+                TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, null);
             }
         }
     }

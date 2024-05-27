@@ -56,9 +56,15 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
 
 * ### FSM을 사용하여 GridController 구현
 
-  --> 링크 걸어주기
-  --> 제공하는 기능 움짤로 보여주기
-  FSM을 통해 Select, Plant 기능을 구현했습니다.
+  <div align="center">
+    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/902c6289-c666-4228-a484-86473a3aa128" width="30%" height="30%"/>
+    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/8c24f618-dc03-49e5-9dfb-f50dcef90d6d" width="30%" height="30%"/>
+  </div>
+
+  <div align="center">
+    </br>
+    FSM을 통해 GridController의 Select, Plant 기능을 구현했습니다.
+  </div>
 
 * ### A* 알고리즘을 활용한 길 찾기 알고리즘 구현 및 적용
 

@@ -84,11 +84,6 @@ namespace WPP
                     ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_COMMANDS, commandBuffer.ToArray());
                     Debug.Log("send commands");
                 }
-                else
-                {
-                    // ��� �ִ� Ŀ�ǵ� �۽�
-                    ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_COMMANDS, null);
-                }
             }
         }
 
@@ -113,22 +108,17 @@ namespace WPP
 
         private void Update()
         {
-            // 10 ������ �� �� ���� Ŀ�ǵ���� ���濡�� ����
             if(_turn == 10)
             {
                 SendCommandsToOpponent();
             }
-            // 20 ������ �� ���� Ŀ�ǵ�(�ڽ��� Ŀ�ǵ�� ������ Ŀ�ǵ� ��θ� ��Ī)���� ����
-            // 10 ������ ���� ���̸� �δ� ������ ���۰� ���� �ð��� ���� ������ �ֱ� ����
-            else if (_turn == 20 && _commandsToExecute.Count > 0)
+            else if (_turn == 20)
             {
                 ExecuteCommands();
             }
             else if (_turn == 30)
             {
                 _turn = 0;
-                _commandsToExecute.Clear();
-                _opponentCommandsToExecute.Clear();
             }
             ++_turn;
         }

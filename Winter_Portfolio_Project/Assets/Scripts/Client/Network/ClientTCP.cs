@@ -224,7 +224,7 @@ namespace WPP.Network
             }
         }
 
-        /***************** functions for p2p ******************/
+        // functions for p2p
 
         public ByteBuffer CreateBufferToSend(Peer_PacketTagPackages tag, byte[] data = null)
         {

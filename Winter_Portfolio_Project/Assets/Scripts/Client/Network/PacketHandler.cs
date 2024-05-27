@@ -539,7 +539,6 @@ namespace WPP.Network
             Debug.Log("HandleCommands");
 
             int numOfCommands = buffer.ReadInteger(true);
-
             Debug.Log($"numOfCommands: {numOfCommands}");
             for (int i=0; i< numOfCommands; i++)
             {
@@ -552,17 +551,6 @@ namespace WPP.Network
 
                 // ������ command���� �� List�� �߰�
                 TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, command);
-            }
-
-            // ������ Ŀ�ǵ带 �� List�� �߰�
-            // ������ Ŀ�ǵ带 �߰��ϴ� ����: ������ ���� ������ Ȯ���ϱ� ����
-            // ���� Ŀ�ǵ� ���� => ������ ī�� ��ȯ�� ���� �ʰ� ��� ���� �ǹ� 
-            // ���� Ŀ�ǵ� ����x => ������� ���� ���� Ȥ�� ���� ������
-            if (numOfCommands == 0)
-            {
-                int commandSize = buffer.ReadInteger(true);
-                int tag = buffer.ReadInteger(true);
-                TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, null);
             }
         }
     }

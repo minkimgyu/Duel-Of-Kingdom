@@ -18,9 +18,16 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
 ## 기능 설명
 
 * ### 상속을 활용하여 Unit, Tower 구현
-
---> 링크 걸어주기
-
+  <div align="center">
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/4ed4d99131ea823d88696ea89eb4fdc2b6e46629/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Entity.cs#L15">코드 보러가기</a>
+  </div>
+  
+  <div align="center">
+    Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다. 
+    </br>
+    </br>
+    Life에 FSM을 구현하여 Unit, Tower의 Base Class가 되는 LifeAI를 구현했습니다.
+  </div>
 * ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
 
 --> 링크 걸어주기

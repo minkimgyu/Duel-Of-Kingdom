@@ -20,6 +20,10 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
 * ### 상속을 활용하여 Unit, Building 구현
   <div align="center">
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/4ed4d99131ea823d88696ea89eb4fdc2b6e46629/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Entity.cs#L15">Entity 코드 보러가기</a>
+    </br>
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/86f37a56c46095dc7d33d6202c4ad793d9856898/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Building/Building.cs#L252">Building 코드 보러가기</a>
+    </br>
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L18">Unit 코드 보러가기</a>
   </div>
   
   <div align="center">
@@ -27,12 +31,27 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
     Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다. 
     </br>
     </br>
-    Life에 FSM을 구현하여 Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
+    Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
   </div>
 * ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
-
---> 링크 걸어주기
---> BT 그림 넣기
+  <div align="center">
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L99">AttackUnit 코드 보러가기</a>
+    </br>
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Building/Building.cs#L54C27-L54C42">AttackBuilding 코드 보러가기</a>
+    </br>
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Building/Building.cs#L172">LiveOutSpawnBuilding 코드 보러가기</a>
+  </div>
+  
+  <div align="center">
+    </br>
+    AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 모든 공격 유닛의 Base Class를 제작했습니다.
+    </br>
+    </br>
+    AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 모든 공격 타워의 Base Class를 제작했습니다.
+    </br>
+    </br>
+    LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 모든 생성 타워의 Base Class를 제작했습니다.
+  </div>
 
 * ### FSM을 사용하여 GridController 구현
 

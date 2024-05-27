@@ -4,7 +4,6 @@ using UnityEngine;
 using System;
 using System.Text;
 using System.Net;
-using System.Linq;
 
 namespace WPP.Network
 {
@@ -31,6 +30,10 @@ namespace WPP.Network
             return;
         }
 
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
         public byte[] ToArray()
         {
             return buffer.ToArray();
@@ -93,12 +96,6 @@ namespace WPP.Network
             buffer.AddRange(BitConverter.GetBytes(rotation.y));
             buffer.AddRange(BitConverter.GetBytes(rotation.z));
             buffer.AddRange(BitConverter.GetBytes(rotation.w));
-            return;
-        }
-
-        public void WriteDateTime(DateTime dateTime)
-        {
-            buffer.AddRange(BitConverter.GetBytes(dateTime.Ticks));
             return;
         }
 
@@ -210,15 +207,6 @@ namespace WPP.Network
                 readIndex += sizeof(float);
             Quaternion ret = new Quaternion(x, y, z, w);
             return ret;
-        }
-
-        public DateTime ReadDateTime(bool moveHead)
-        {
-            _tempBuffer = buffer.ToArray();
-            long ticks = BitConverter.ToInt64(_tempBuffer.ToArray(), readIndex);
-            if (moveHead)
-                readIndex += sizeof(long);
-            return new DateTime(ticks);
         }
     }
 }

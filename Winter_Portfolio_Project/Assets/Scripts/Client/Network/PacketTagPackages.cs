@@ -51,7 +51,5 @@ namespace WPP.Network
         P_REQUEST_SPAWN_UNIT,
         P_REQUEST_SYNCHRONIZATION,
         P_REQUEST_DESTROY_UNIT,
-
-        P_SEND_COMMANDS,
     }
 }

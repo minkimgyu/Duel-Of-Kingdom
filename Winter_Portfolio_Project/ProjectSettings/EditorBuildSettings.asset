@@ -15,12 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/EnableNetworkBattleScene.unity
     guid: ce27bb1e40e9bad4a983d9c5769d3cff
   - enabled: 1
-    path: Assets/Scenes/TestMap/TestMapScene.unity
-    guid: c3dd2f69c7d6ecf4d99899f4e022415f
-  - enabled: 1
-    path: Assets/Scenes/TestMap/TestMapScene 1.unity
-    guid: 2e088193a52907644955257d1055085f
-  - enabled: 1
     path: Assets/Scenes/BattleScene.unity
     guid: 4b4b1896a8ee3de4e8f3febf4f9f5727
   - enabled: 1

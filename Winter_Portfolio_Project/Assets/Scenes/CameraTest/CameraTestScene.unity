@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -9235,37 +9235,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4111116904279595642, guid: ee7178cfb7afcd84eb9ba897aaf77a6c, type: 3}
   m_PrefabInstance: {fileID: 231199408}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &233850540
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 233850541}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &233850541
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 233850540}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: 1, z: 1}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &236724100
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10111,10 +10080,6 @@ PrefabInstance:
     - target: {fileID: 6079452154602775913, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
       propertyPath: m_Name
       value: BattleManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 6079452154602775913, guid: 84e6b3e2401fcab4383b499260fe6d80, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -25618,10 +25583,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleDeckUIController
       objectReference: {fileID: 0}
-    - target: {fileID: 9108069768531895165, guid: 8fe1d44b326577449a3ed697f573afb3, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -36312,10 +36273,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattlePopupUI
       objectReference: {fileID: 0}
-    - target: {fileID: 7555992554034107948, guid: 02945d0dce3f2cc43a871f224f203ba8, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -41394,10 +41351,6 @@ PrefabInstance:
     - target: {fileID: 6830907753156026593, guid: 9a36406b4be93e54d8392efbdc3064fb, type: 3}
       propertyPath: m_Name
       value: MapObject
-      objectReference: {fileID: 0}
-    - target: {fileID: 6830907753156026593, guid: 9a36406b4be93e54d8392efbdc3064fb, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -80690,10 +80643,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleSystemUI
       objectReference: {fileID: 0}
-    - target: {fileID: 8377592768621093609, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 9132675381951277751, guid: 550e0e24700307e4d8501e38b2b5be85, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -84866,4 +84815,3 @@ SceneRoots:
   - {fileID: 260188907}
   - {fileID: 2050560859}
   - {fileID: 975211818}
-  - {fileID: 233850541}

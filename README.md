@@ -72,7 +72,7 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
 
 * ### A* 알고리즘을 활용한 길 찾기 알고리즘 구현 및 적용
   <div align="center">
-    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/abac3128-2fa6-4cac-87ff-399256cd6b0a" width="30%" height="30%"/>
+    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/abac3128-2fa6-4cac-87ff-399256cd6b0a" width="60%" height="60%"/>
   </div>
 
   <div align="center">

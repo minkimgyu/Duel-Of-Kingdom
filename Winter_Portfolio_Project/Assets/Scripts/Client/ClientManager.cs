@@ -9,17 +9,21 @@ using UnityEngine;
 using WPP.Network;
 using WPP.ClientInfo;
 using Newtonsoft.Json;
+using UnityEngine.SceneManagement;
 
 namespace WPP
 {
     public class ClientManager : MonoBehaviour
     {
         private object _managerLockObj;
+        public DateTime gameStartTime;
+        private static ClientManager _instance = null;
+        public static ClientManager Instance { get { return _instance; } } 
+
         void Awake()
         {
+            _instance = this;
             _managerLockObj = new object();
-            //ClientTCP.Instance().ConnectServer();
-            //PacketHandler.Instance().InitializePacketHandler();
         }
 
         public void ConnectServer()
@@ -32,13 +36,13 @@ namespace WPP
         {
             if (PacketHandler.Instance().packetQueue.Count > 0)
             {
-                lock (_managerLockObj)
+                lock (ClientTCP.Instance().PacketQueueLockObject)
                 {
-                    PacketHandler.Instance().HandlePacket(PacketHandler.Instance().packetQueue.Dequeue());
-
+                    byte[] packet = PacketHandler.Instance().packetQueue.Dequeue();
+                    PacketHandler.Instance().HandlePacket(packet);
                 }
             }
-
+            /*
             if (PacketHandler.Instance().inGamePacketQueue.Count > 0)
             {
                 lock (_managerLockObj)
@@ -47,18 +51,19 @@ namespace WPP
 
                 }
             }
+            */
         }
 
         private void OnApplicationQuit()
         {
-            // µ¦ÀÌ ¾ÆÁ÷ ¼³Á¤ µÇÁö ¾Ê¾ÒÀ» °æ¿ì (È¸¿ø°¡ÀÔ¸¸ ÇÏ°í °ÔÀÓÀ» Á¾·áÇÑ °æ¿ì)
+            // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (È¸ï¿½ï¿½ï¿½ï¿½ï¿½Ô¸ï¿½ ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½)
             if(ClientData.Instance().decks.decks.Count == 0)
             {
                 return;
             }
             ByteBuffer decksBuffer = new ByteBuffer();
 
-            // Å¬¶óÀÌ¾ðÆ® µ¦ Á¤º¸ JSONÈ­
+            // Å¬ï¿½ï¿½ï¿½Ì¾ï¿½Æ® ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ JSONÈ­
             string decksString = JsonConvert.SerializeObject(ClientData.Instance().decks);
             decksBuffer.WriteString(decksString);
             ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_CLOSE_CONNECTION, decksBuffer.ToArray());

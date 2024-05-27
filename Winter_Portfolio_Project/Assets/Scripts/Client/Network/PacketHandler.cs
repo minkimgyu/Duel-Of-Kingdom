@@ -32,7 +32,7 @@ namespace WPP.Network
         private delegate void HandleFunc(ref ByteBuffer buffer);
         private Dictionary<int, HandleFunc> packetHandler;
         public Queue<byte[]> packetQueue { get; set; }
-        public Queue<byte[]> inGamePacketQueue { get; set; }
+        //public Queue<byte[]> inGamePacketQueue { get; set; }
 
         private int _packetLength;
         private int _inGamePacketLength;
@@ -57,7 +57,7 @@ namespace WPP.Network
             _isSegmented = false;
             _isInGamePacketSegmentated = false;
             packetQueue = new Queue<byte[]>();
-            inGamePacketQueue = new Queue<byte[]>();
+            //inGamePacketQueue = new Queue<byte[]>();
             packetHandler = new Dictionary<int, HandleFunc>();
             _packetHandlerLockObj = new object();
             _inGamePacketHandlerLockObj = new object();
@@ -78,63 +78,65 @@ namespace WPP.Network
             packetHandler.Add((int)Server_PacketTagPackages.S_REQUEST_SYNCHRONIZATION, HandleSynchronization);
             packetHandler.Add((int)Server_PacketTagPackages.S_SEND_PING, AnswerPing);
 
-            packetHandler.Add((int)Peer_PacketTagPackages.P_SEND_PING, RequestRoundTripTime);
-            packetHandler.Add((int)Peer_PacketTagPackages.P_ANSWER_PING, GetRoundTripTime);
+            //packetHandler.Add((int)Peer_PacketTagPackages.P_SEND_PING, RequestRoundTripTime);
+            //packetHandler.Add((int)Peer_PacketTagPackages.P_ANSWER_PING, GetRoundTripTime);
 
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_CARD, SpawnCard);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_TOWER, SpawnTower);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SPAWN_UNIT, SpawnWithUnitData);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_SYNCHRONIZATION, SynchronizeUnits);
             packetHandler.Add((int)Peer_PacketTagPackages.P_REQUEST_DESTROY_UNIT, DestroyUnit);
+
+            packetHandler.Add((int)Peer_PacketTagPackages.P_SEND_COMMANDS, HandleCommands);
         }
 
         public void HandlePacket(byte[] packet)
         {
-            if (packet == null || packet.Length == 0)
-                return;
-
-            if (ClientTCP.Instance().buffer == null)
+            lock (_packetHandlerLockObj)
             {
-                ClientTCP.Instance().buffer = new ByteBuffer();
-            }
+                if (packet == null || packet.Length == 0)
+                    return;
 
-            // packet º¹»ç
-            ClientTCP.Instance().buffer.WriteBytes(packet);
-
-            if (_isSegmented == false)
-            {
-                _packetLength = ClientTCP.Instance().buffer.ReadInteger(true);
-            }
-
-            // Ã³À½À¸·Î ÆÐÅ¶ÀÌ ºÐÇÒµÇ¾î ¿ÔÀ» °æ¿ì
-            if (_packetLength > ClientTCP.Instance().buffer.Count() + 4 && _isSegmented == false)
-            {
-                _isSegmented = true;
-                return;
-            }
-
-            if (_isSegmented == true)
-            {
-                // ÆÐÅ¶À» ´Ù ¹Þ¾Ò´Ù¸é
-                if (_packetLength == ClientTCP.Instance().buffer.Count() + 4)
+                if (ClientTCP.Instance().Buffer == null)
                 {
-                    _isSegmented = false;
-                    HandleData(ClientTCP.Instance().buffer.ToArray());
-                    _packetLength = 0;
-                    ClientTCP.Instance().buffer.Dispose();
-                    ClientTCP.Instance().buffer = null;
-                    Debug.Log("received all packets");
+                    ClientTCP.Instance().Buffer = new ByteBuffer();
+                }
+
+                // packet ï¿½ï¿½ï¿½ï¿½
+                ClientTCP.Instance().Buffer.WriteBytes(packet);
+
+                if (_isSegmented == false)
+                {
+                    _packetLength = ClientTCP.Instance().Buffer.ReadInteger(true);
+                }
+
+                // Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ÒµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+                if (_packetLength > ClientTCP.Instance().Buffer.Count() + 4 && _isSegmented == false)
+                {
+                    _isSegmented = true;
                     return;
                 }
+
+                if (_isSegmented == true)
+                {
+                    // ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¾Ò´Ù¸ï¿½
+                    if (_packetLength == ClientTCP.Instance().Buffer.Count() + 4)
+                    {
+                        _isSegmented = false;
+                        HandleData(ClientTCP.Instance().Buffer.ToArray());
+                        _packetLength = 0;
+                        ClientTCP.Instance().Buffer = null;
+                        return;
+                    }
+                }
+                else
+                {
+                    HandleData(ClientTCP.Instance().Buffer.ToArray());
+                    _packetLength = 0;
+                    ClientTCP.Instance().Buffer = null;
+                }
+                return;
             }
-            else
-            {
-                HandleData(ClientTCP.Instance().buffer.ToArray());
-                _packetLength = 0;
-                ClientTCP.Instance().buffer.Dispose();
-                ClientTCP.Instance().buffer = null;
-            }
-            return;
         }
 
         public void HandleInGamePacket(byte[] packet)
@@ -142,21 +144,21 @@ namespace WPP.Network
             if (packet == null || packet.Length == 0)
                 return;
 
-            if (ClientTCP.Instance().inGameBuffer == null)
+            if (ClientTCP.Instance().InGameBuffer == null)
             {
-                ClientTCP.Instance().inGameBuffer = new ByteBuffer();
+                ClientTCP.Instance().InGameBuffer = new ByteBuffer();
             }
 
-            // packet º¹»ç
-            ClientTCP.Instance().inGameBuffer.WriteBytes(packet);
+            // packet ï¿½ï¿½ï¿½ï¿½
+            ClientTCP.Instance().InGameBuffer.WriteBytes(packet);
 
             if (_isInGamePacketSegmentated == false)
             {
-                _inGamePacketLength = ClientTCP.Instance().inGameBuffer.ReadInteger(true);
+                _inGamePacketLength = ClientTCP.Instance().InGameBuffer.ReadInteger(true);
             }
 
-            // Ã³À½À¸·Î ÆÐÅ¶ÀÌ ºÐÇÒµÇ¾î ¿ÔÀ» °æ¿ì
-            if (_inGamePacketLength > ClientTCP.Instance().inGameBuffer.Count() + 4 && _isInGamePacketSegmentated == false)
+            // Ã³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ï¿½ÒµÇ¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
+            if (_inGamePacketLength > ClientTCP.Instance().InGameBuffer.Count() + 4 && _isInGamePacketSegmentated == false)
             {
                 _isInGamePacketSegmentated = true;
                 return;
@@ -164,50 +166,45 @@ namespace WPP.Network
 
             if (_isInGamePacketSegmentated == true)
             {
-                // ÆÐÅ¶À» ´Ù ¹Þ¾Ò´Ù¸é
-                if (_inGamePacketLength == ClientTCP.Instance().inGameBuffer.Count() + 4)
+                // ï¿½ï¿½Å¶ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¾Ò´Ù¸ï¿½
+                if (_inGamePacketLength == ClientTCP.Instance().InGameBuffer.Count() + 4)
                 {
                     _isInGamePacketSegmentated = false;
-                    HandleData(ClientTCP.Instance().inGameBuffer.ToArray());
+                    HandleData(ClientTCP.Instance().InGameBuffer.ToArray());
                     _inGamePacketLength = 0;
-                    ClientTCP.Instance().inGameBuffer.Dispose();
-                    ClientTCP.Instance().inGameBuffer = null;
+                    ClientTCP.Instance().InGameBuffer = null;
                     Debug.Log("received all packets");
                     return;
                 }
             }
             else
             {
-                HandleData(ClientTCP.Instance().inGameBuffer.ToArray());
+                HandleData(ClientTCP.Instance().InGameBuffer.ToArray());
                 _packetLength = 0;
-                ClientTCP.Instance().inGameBuffer.Dispose();
-                ClientTCP.Instance().inGameBuffer = null;
+                ClientTCP.Instance().InGameBuffer = null;
             }
             return;
         }
 
         public void HandleData(byte[] data)
         {
-            lock(_packetHandlerLockObj)
-            {
-                ByteBuffer buffer = new ByteBuffer();
-                buffer.WriteBytes(data);
-                // skip size
-                buffer.ReadInteger(true);
-                int packetTag = buffer.ReadInteger(true);
+            ByteBuffer buffer = new ByteBuffer();
+            buffer.WriteBytes(data);
+            // skip size
+            buffer.ReadInteger(true);
+            int packetTag = buffer.ReadInteger(true);
 
-                if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
+            if (packetHandler.TryGetValue(packetTag, out HandleFunc func))
+            {
+                if(packetTag < 30)
                 {
-                    if(packetTag < 30)
-                    {
-                        Debug.Log("Handle " + (Server_PacketTagPackages)packetTag);
-                    }
-                    else
-                    {
-                        Debug.Log("Handle " + (Peer_PacketTagPackages)packetTag);
-                    }
-                    func.Invoke(ref buffer);
+                    Debug.Log("Handle " + (Server_PacketTagPackages)packetTag);
                 }
+                else
+                {
+                    Debug.Log("Handle " + (Peer_PacketTagPackages)packetTag);
+                }
+                func.Invoke(ref buffer);
             }
         }
 
@@ -225,8 +222,6 @@ namespace WPP.Network
             }
             File.WriteAllText(jsonFilePath, cardCollectionString);
             JsonParser.Instance().LoadCardCollection();
-
-            //ClientTCP.Instance().ConnectServerForHolePunching();
         }
 
         public void HandleRegisterAcception(ref ByteBuffer buffer)
@@ -315,8 +310,8 @@ namespace WPP.Network
             // set opponent player's IP address
             IPEndPoint opponentPrivateEP = buffer.ReadEndPoint(true);
             IPEndPoint opponentPublicEP = buffer.ReadEndPoint(true);
-            Debug.Log("my private ep: " + ClientTCP.Instance().peerSockPrivateEP);
-            Debug.Log("my public ep: " + ClientTCP.Instance().peerSockPublicEP);
+            Debug.Log("my private ep: " + ClientTCP.Instance().PeerSockPrivateEP);
+            Debug.Log("my public ep: " + ClientTCP.Instance().PeerSockPublicEP);
             Debug.Log("opponent's private ep: " + opponentPrivateEP);
             Debug.Log("opponent's public ep: " + opponentPublicEP);
             GameRoom.Instance().opponentPrivateEP = opponentPrivateEP;
@@ -329,18 +324,10 @@ namespace WPP.Network
 
             // try to connect with private end point
             ClientTCP.Instance().ConnectPeer(opponentPrivateEP);
-            if (ClientTCP.Instance().peerSock == null || ClientTCP.Instance().peerSock.Connected == false)
-            {
-                // try to connect with public end point
-                ClientTCP.Instance().ConnectPeer(opponentPublicEP);
-            }
 
-            ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_PING);
-            Debug.Log("send ping");
-
+            //ClientTCP.Instance().SendDataToPeer(Peer_PacketTagPackages.P_SEND_PING);
+            //Debug.Log("send ping");
             SceneManager.LoadScene("CameraTestScene");
-
-            Debug.Log("entered game");
         }
 
         public void HandleOverTime(ref ByteBuffer buffer)
@@ -355,13 +342,18 @@ namespace WPP.Network
             ClientTCP.Instance().ClosePeerConnection();
             // initialize new peer socket for next matching
             ClientTCP.Instance().InitializePeerSock();
+            ClientTCP.Instance().ConnectServerForHolePunching();
         }
 
         public void HandleHolePunching(ref ByteBuffer buffer)
         {
             IPEndPoint externalEP = buffer.ReadEndPoint(true);
             Debug.Log("my public ip: " + externalEP);
-            ClientTCP.Instance().peerSockPublicEP = externalEP;
+            ClientTCP.Instance().PeerSockPublicEP = externalEP;
+
+            // request initial data after hole punching finishes
+            ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_REQUEST_INITIAL_DATA);
+            Debug.Log("C_REQUEST_INITIAL_DATA");
 
             ClientTCP.Instance().CloseHolePunchingConnection();
         }
@@ -371,11 +363,10 @@ namespace WPP.Network
             ClientTCP.Instance().SendDataToServer(Client_PacketTagPackages.C_ANSWER_PING);
         }
 
-
-        public void RequestRoundTripTime(ref ByteBuffer buffer)
+        /*public void RequestRoundTripTime(ref ByteBuffer buffer)
         {
             ClientTCP clientTCP = ClientTCP.Instance();
-            clientTCP.pingSentTime = DateTime.Now;
+            clientTCP.PingSentTime = DateTime.Now;
             clientTCP.SendDataToPeer(Peer_PacketTagPackages.P_ANSWER_PING);
             Debug.Log("answer ping");
         }
@@ -383,12 +374,12 @@ namespace WPP.Network
         public void GetRoundTripTime(ref ByteBuffer buffer)
         {
             ClientTCP clientTCP = ClientTCP.Instance();
-            clientTCP.pingAnsweredTime = DateTime.Now;
-            clientTCP.rtt = clientTCP.pingAnsweredTime.Subtract(clientTCP.pingSentTime);
-            double rttMilliseconds = clientTCP.rtt.TotalMilliseconds;
+            clientTCP.PingAnsweredTime = DateTime.Now;
+            clientTCP.Rtt = clientTCP.PingAnsweredTime.Subtract(clientTCP.PingSentTime);
+            double rttMilliseconds = clientTCP.Rtt.TotalMilliseconds;
 
             Debug.Log("Round-Trip Time: " + rttMilliseconds + " milliseconds");
-        }
+        }*/
 
         public void HandleSynchronization(ref ByteBuffer buffer)
         {
@@ -428,6 +419,7 @@ namespace WPP.Network
             int opponentOwnershipId = buffer.ReadInteger(true);
             int numOfCardsToSpawn = buffer.ReadInteger(true);
             string[] networkIds = new string[numOfCardsToSpawn];
+
             for(int i=0;i< numOfCardsToSpawn; i++)
             {
                 networkIds[i] = buffer.ReadString(true);
@@ -507,7 +499,7 @@ namespace WPP.Network
                 Vector3 targetPos = buffer.ReadVector3(true);
                 Quaternion targetRotation = buffer.ReadQuaternion(true);
 
-                // ÀÚ½Å°ú µ¿ÀÏÇÑ networkId¸¦ Áö´Ñ entity¸¦ Ã£¾Æ µ¿±âÈ­¸¦ ÇØÁØ´Ù
+                // ï¿½Ú½Å°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ networkIdï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ entityï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½È­ï¿½ï¿½ ï¿½ï¿½ï¿½Ø´ï¿½
                 Entity sameEntity = Spawner.Instance().FindSameNetwordIdEntity(networkId);
 
                 if (sameEntity == null)
@@ -542,6 +534,37 @@ namespace WPP.Network
             }
         }
 
+        public void HandleCommands(ref ByteBuffer buffer)
+        {
+            Debug.Log("HandleCommands");
+
+            int numOfCommands = buffer.ReadInteger(true);
+
+            Debug.Log($"numOfCommands: {numOfCommands}");
+            for (int i=0; i< numOfCommands; i++)
+            {
+                int commandSize = buffer.ReadInteger(true);
+                int tag = buffer.ReadInteger(true);
+                byte[] command = buffer.ReadBytes(commandSize - 8, true);
+
+                Debug.Log($"commandSize: {commandSize}");
+                Debug.Log($"tag: {(Peer_PacketTagPackages)tag}");
+
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ commandï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Listï¿½ï¿½ ï¿½ß°ï¿½
+                TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, command);
+            }
+
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½Çµå¸¦ ï¿½ï¿½ Listï¿½ï¿½ ï¿½ß°ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½Çµå¸¦ ï¿½ß°ï¿½ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½
+            // ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½Çµï¿½ ï¿½ï¿½ï¿½ï¿½ => ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½ï¿½ ï¿½ï¿½È¯ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¹ï¿½ 
+            // ï¿½ï¿½ï¿½ï¿½ Ä¿ï¿½Çµï¿½ ï¿½ï¿½ï¿½ï¿½x => ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ È¤ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+            if (numOfCommands == 0)
+            {
+                int commandSize = buffer.ReadInteger(true);
+                int tag = buffer.ReadInteger(true);
+                TurnManager.Instance.AddOpponentCommand((Peer_PacketTagPackages)tag, null);
+            }
+        }
     }
 
 }

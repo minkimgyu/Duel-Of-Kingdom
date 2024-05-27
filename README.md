@@ -23,6 +23,7 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
   </div>
   
   <div align="center">
+    </br>
     Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다. 
     </br>
     </br>

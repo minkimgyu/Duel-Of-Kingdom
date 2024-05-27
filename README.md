@@ -1,5 +1,8 @@
 # Winter_Portfolio_Project
 
+![ezgif-2-1745cfa890](https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/cb1023ec-0d6a-41c4-9027-29aae4e79449)
+
+
 ## 프로젝트 소개
 Unity를 사용하여 개발한 멀티플레이 1vs1 3D 액션 게임
 

@@ -45,13 +45,13 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임
   
   <div align="center">
     </br>
-    AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 모든 공격 유닛의 Base Class를 제작했습니다.
+    AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 유닛의 Base Class를 제작했습니다.
     </br>
     </br>
-    AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 모든 공격 타워의 Base Class를 제작했습니다.
+    AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 타워의 Base Class를 제작했습니다.
     </br>
     </br>
-    LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 모든 생성 타워의 Base Class를 제작했습니다.
+    LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 생성 타워의 Base Class를 제작했습니다.
   </div>
 
 * ### FSM을 사용하여 GridController 구현

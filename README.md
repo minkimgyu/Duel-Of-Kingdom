@@ -52,9 +52,14 @@ Unity (C#)
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/9698e9124fb9c4698ac4604625f451922181f8bb/Winter_Portfolio_Project/Assets/Scripts/AI/Grid/GridController.cs#L12">GridController 코드 보러가기</a>
   </div>
   </br>
+ 
   <div align="center">
     <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/902c6289-c666-4228-a484-86473a3aa128" width="30%" height="30%"/>
     <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/8c24f618-dc03-49e5-9dfb-f50dcef90d6d" width="30%" height="30%"/>
+  </div>
+
+  <div align="center">
+    <img src="https://github.com/user-attachments/assets/9038cf6d-76ed-4de5-9248-614217025ad5" width="60%" height="60%"/>
   </div>
 
   <div align="center">

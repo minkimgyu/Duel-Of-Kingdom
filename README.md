@@ -47,11 +47,9 @@ Unity (C#)
   </div>
 
 ### FSM을 사용하여 GridController 구현
-
-  <div align="center">
-    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/9698e9124fb9c4698ac4604625f451922181f8bb/Winter_Portfolio_Project/Assets/Scripts/AI/Grid/GridController.cs#L12">GridController 코드 보러가기</a>
+   <div align="center">
+    <img src="https://github.com/user-attachments/assets/9038cf6d-76ed-4de5-9248-614217025ad5" width="60%" height="60%"/>
   </div>
-  </br>
  
   <div align="center">
     <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/902c6289-c666-4228-a484-86473a3aa128" width="30%" height="30%"/>
@@ -59,9 +57,9 @@ Unity (C#)
   </div>
 
   <div align="center">
-    <img src="https://github.com/user-attachments/assets/9038cf6d-76ed-4de5-9248-614217025ad5" width="60%" height="60%"/>
+    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/9698e9124fb9c4698ac4604625f451922181f8bb/Winter_Portfolio_Project/Assets/Scripts/AI/Grid/GridController.cs#L12">GridController 코드 보러가기</a>
   </div>
-
+  
   <div align="center">
     </br>
     GridController 내부에 FSM을 추가하여 Ready, Select, Plant State 기능을 구현했습니다.

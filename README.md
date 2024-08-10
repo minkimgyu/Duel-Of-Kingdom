@@ -59,7 +59,7 @@ Unity (C#)
 
   <div align="center">
     </br>
-    FSM을 통해 GridController의 Select, Plant 기능을 구현했습니다.
+    GridController 내부에 FSM을 추가하여 Ready, Select, Plant State 기능을 구현했습니다.
   </div>
 
 ### A* 알고리즘을 활용한 길 찾기 알고리즘 구현 및 적용

@@ -18,7 +18,11 @@ Unity (C#)
 
 ## 기능 설명
 
-### 상속을 활용하여 Unit, Building 구현
+### 상속을 활용하여 Unit, Building 구현  
+  * Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다.
+    </br>
+  * Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
+
   <div align="center">
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/4ed4d99131ea823d88696ea89eb4fdc2b6e46629/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Entity.cs#L15">Entity 코드 보러가기</a>
     </br>
@@ -27,11 +31,13 @@ Unity (C#)
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L18">Unit 코드 보러가기</a>
   </div>
   
-  * Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다.
-    </br>
-  * Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
-  
 ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
+  * AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 유닛의 Base Class를 제작했습니다.
+    </br>
+  * AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 타워의 Base Class를 제작했습니다.
+    </br>
+  * LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 생성 타워의 Base Class를 제작했습니다.
+
   <div align="center">
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L99">AttackUnit 코드 보러가기</a>
     </br>
@@ -39,12 +45,6 @@ Unity (C#)
     </br>
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Building/Building.cs#L172">LiveOutSpawnBuilding 코드 보러가기</a>
   </div>
-
-  * AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 유닛의 Base Class를 제작했습니다.
-    </br>
-  * AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 타워의 Base Class를 제작했습니다.
-    </br>
-  * LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 생성 타워의 Base Class를 제작했습니다.
 
 ### FSM을 사용하여 GridController 구현
 

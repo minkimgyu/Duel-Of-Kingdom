@@ -1,4 +1,4 @@
-# Duel_Of_Kingdom
+# Duel Of Kingdom
 
 ![ezgif-2-1745cfa890](https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/cb1023ec-0d6a-41c4-9027-29aae4e79449)
 </br>

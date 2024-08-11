@@ -38,11 +38,7 @@ Unity (C#)
     <img src="https://github.com/user-attachments/assets/388290ff-2805-4ce0-a67a-20418c08f1c6" width="60%" height="60%"/>
   </div>
 
-  * AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 유닛의 Base Class를 제작했습니다.
-    </br>
-  * AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 타워의 Base Class를 제작했습니다.
-    </br>
-  * LiveOutSpawnBuilding에 Behavior Tree를 구현하여 생성 기능을 구현했고 생성 타워의 Base Class를 제작했습니다.
+  * AttackUnit, AttackBuilding, LiveOutSpawnBuilding에 Behavior Tree를 구현하여 공격, 생성 기능을 구현하여 유닛의 Base Class를 제작했습니다.
 
   <div align="center">
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L99">AttackUnit 코드 보러가기</a>

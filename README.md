@@ -19,17 +19,24 @@ Unity (C#)
 ## 기능 설명
 
 ### 상속을 활용하여 Unit, Building 구현  
-  * Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다.
-    </br>
-  * Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
-
   <div align="center">
+    <img src="https://github.com/user-attachments/assets/653c3344-6b58-495e-a3cf-30f903baa9e4" width="80%" height="80%"/>
+  </div>
+
+   <div align="center">
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/4ed4d99131ea823d88696ea89eb4fdc2b6e46629/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Entity.cs#L15">Entity 코드 보러가기</a>
     </br>
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/86f37a56c46095dc7d33d6202c4ad793d9856898/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Building/Building.cs#L252">Building 코드 보러가기</a>
     </br>
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L18">Unit 코드 보러가기</a>
   </div>
+  
+  </br>
+
+  * Entity, IDamagable, ITarget을 상속 받아서 Life 클래스를 구현했습니다.
+  * Unit, Building의 Base Class가 되는 LifeAI를 구현했습니다.
+
+
 
 ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
 

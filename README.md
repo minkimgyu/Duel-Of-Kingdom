@@ -30,11 +30,11 @@ Unity (C#)
     </br>
     <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Entity/Life/Unit/Unit.cs#L18">Unit 코드 보러가기</a>
   </div>
-  
+
 ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
 
   <div align="center">
-    <img src="https://github.com/user-attachments/assets/7c282ff9-daea-4f99-9371-a02d73149721" width="70%" height="70%"/>
+    <img src="https://github.com/user-attachments/assets/05ebb2ec-d8aa-42d0-893c-fc400965218a" width="70%" height="70%"/>
     <img src="https://github.com/user-attachments/assets/388290ff-2805-4ce0-a67a-20418c08f1c6" width="60%" height="60%"/>
   </div>
 

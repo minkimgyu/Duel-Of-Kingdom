@@ -32,6 +32,10 @@ Unity (C#)
   </div>
   
 ### FSM과 Behavior Tree를 활용하여 AI 시스템 구축
+  <div align="center">
+    <img src="https://github.com/user-attachments/assets/7c282ff9-daea-4f99-9371-a02d73149721" width="80%" height="80%"/>
+  </div>
+
   * AttackUnit에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 유닛의 Base Class를 제작했습니다.
     </br>
   * AttackBuilding에 Behavior Tree를 구현하여 공격 기능을 구현했고 공격 타워의 Base Class를 제작했습니다.

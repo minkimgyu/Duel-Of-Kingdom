@@ -1,6 +1,7 @@
 # ⚔️ Duel Of Kingdom
 
 Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
+
 전략적인 유닛 배치와 스킬 사용으로 상대의 타워를 파괴하는 것이 목표입니다!
 
 ![ezgif-2-1745cfa890](https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/cb1023ec-0d6a-41c4-9027-29aae4e79449)

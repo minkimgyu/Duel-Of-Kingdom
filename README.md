@@ -9,7 +9,7 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
 플레이 영상: https://youtu.be/tywLCf7nhVU?si=j_xwbnCZY-g1Uv2o
 
 ## 🗓️ 개발 기간
-2024년 3월 ~ 2024년 6월
+2023년 12월 ~ 2024년 2월
 
 ## 🧑‍🤝‍🧑 팀 구성
 - 총 3명

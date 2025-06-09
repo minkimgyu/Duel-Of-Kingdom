@@ -91,5 +91,5 @@ AttackUnit, AttackBuilding, LiveOutSpawnBuilding에 **Behavior Tree**를 구현�
    A* 알고리즘을 이용하여 Pathfinder를 구현해 Unit에 길찾기 기능을 추가했습니다.
  </div>
 
-## 회고
+## 💭 회고
 팀 프로젝트를 진행하면서 Git 사용에 능숙해질 수 있었고 프로그래머들과 협업 경험을 얻을 수 있어서 좋은 시간이었습니다.

@@ -25,7 +25,6 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
 - ✅ **Finite State Machine과 Behavior Tree를 활용하여 AI 시스템 구축**
 - ✅ **Finite State Machine을 사용하여 GridController 구현**
 - ✅ **A\* 알고리즘을 활용한 길찾기 알고리즘 구현 및 적용**
-- 
 
 ---
 

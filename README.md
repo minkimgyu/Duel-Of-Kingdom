@@ -31,7 +31,6 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
 ## 🏰 상속을 활용하여 Unit, Building 구현
 
 ![Unit Building Inheritance](https://github.com/user-attachments/assets/653c3344-6b58-495e-a3cf-30f903baa9e4)
-*유닛 및 건물 상속 구조 다이어그램*
 
 * Entity, IDamagable, ITarget을 상속받아 Life 클래스를 구현했습니다.
 * Unit, Building의 기반 클래스가 되는 LifeAI를 구현하여 공통 로직을 관리합니다.
@@ -47,8 +46,6 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
 
 ![AI System 1](https://github.com/user-attachments/assets/05ebb2ec-d8aa-42d0-893c-fc400965218a)
 ![AI System 2](https://github.com/user-attachments/assets/388290ff-2805-4ce0-a67a-20418c08f1c6)
-
-*AI 시스템 다이어그램 (좌: Behavior Tree, 우: FSM 예시)*
 
 AttackUnit, AttackBuilding, LiveOutSpawnBuilding에 **Behavior Tree**를 구현하여 공격 및 생성 기능을 구현하고 유닛의 기반 클래스를 제작했습니다.
 

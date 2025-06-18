@@ -24,7 +24,6 @@ Unity를 사용하여 개발한 Clash Royale 모작 게임입니다.
 - ✅ **상속을 활용하여 Unit, Building 기능 구현**
 - ✅ **Finite State Machine과 Behavior Tree를 활용하여 AI 시스템 구축**
 - ✅ **Finite State Machine을 사용하여 GridController 구현**
-- ✅ **A\* 알고리즘을 활용한 길찾기 알고리즘 구현 및 적용**
 
 ---
 
@@ -74,22 +73,6 @@ AttackUnit, AttackBuilding, LiveOutSpawnBuilding에 **Behavior Tree**를 구현�
     </br>
     GridController 내부에 **FSM (Finite State Machine)**을 추가하여 Ready, Select, Plant State 기능을 구현했습니다.
   </div>
-
----
-
-## 🗺️ A* 알고리즘을 활용한 길 찾기 알고리즘 구현 및 적용
-  <div align="center">
-    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/abac3128-2fa6-4cac-87ff-399256cd6b0a" width="60%" height="60%"/>
-  </div>
-
-  <div align="center">
-    <a href="https://github.com/minkimgyu/Winter_Portfolio_Project/blob/c975441a8055f5e664d597710e416eef119e1bea/Winter_Portfolio_Project/Assets/Scripts/AI/Grid/PathFinder.cs#L29">Pathfinder 코드 보러가기</a>
-  </div>
-  </br>
-
- <div align="center">
-   A* 알고리즘을 이용하여 Pathfinder를 구현해 Unit에 길찾기 기능을 추가했습니다.
- </div>
 
 ## 💭 회고
 팀 프로젝트를 진행하면서 Git 사용에 능숙해질 수 있었고 프로그래머들과 협업 경험을 얻을 수 있어서 좋은 시간이었습니다.

@@ -58,7 +58,6 @@ AttackUnit, AttackBuilding, LiveOutSpawnBuilding에 **Behavior Tree**를 구현�
 ## 🎮 FSM을 사용하여 GridController 구현
    <div align="center">
     <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/902c6289-c666-4228-a484-86473a3aa128"/>
-    <img src="https://github.com/minkimgyu/Winter_Portfolio_Project/assets/48249824/8c24f618-dc03-49e5-9dfb-f50dcef90d6d"/>
   </div>
 
    <div align="center">
